@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-GeekApplication<geek>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.espacogeek.geek.GeekApplication",
+            "projectName": "geek",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
