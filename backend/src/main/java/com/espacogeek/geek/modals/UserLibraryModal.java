@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
 import lombok.Data;
 
@@ -31,6 +32,7 @@ public class UserLibraryModal {
     private Date addedAt;
 
     @Column(name = "id_user")
+    @Transient
     private UserModal userModal;
 
     @Column(name = "status")
