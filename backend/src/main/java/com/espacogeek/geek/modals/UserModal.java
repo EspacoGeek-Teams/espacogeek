@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class User {
+public class UserModal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_user")
