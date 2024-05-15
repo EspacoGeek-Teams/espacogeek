@@ -32,4 +32,7 @@ public class UserLibraryModal {
 
     @Column(name = "id_user")
     private UserModal userModal;
+
+    @Column(name = "status")
+    private TypeStatusModal typeStatusModal;
 }
