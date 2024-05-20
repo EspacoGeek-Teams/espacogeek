@@ -1,10 +1,15 @@
 package com.espacogeek.geek.modals;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -34,4 +39,11 @@ public class MidiaModal {
 
     @Column(name = "category")
     private MidiaCategoryModal midiaCategoryModal;
+
+    @ManyToMany
+    @JoinTable(
+        name = "midias_has_companies",
+        joinColumns = @JoinColumn(name = "midias_id_midia"),
+        inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
+    private List<CompanyModal> companyModals;
 }
