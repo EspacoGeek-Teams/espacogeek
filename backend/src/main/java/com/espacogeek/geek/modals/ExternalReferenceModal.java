@@ -8,15 +8,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Data
 @Entity
-@Table(name = "midia_categories")
-public class MidiaCategoryModal {
+@Table(name = "externals_referenceies")
+@Data
+public class ExternalReferenceModal {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_midia_category")
+    @Column(name = "id_external_reference")
     private Integer id;
 
-    @Column(name = "type_category")
-    private String typeCategory;
+    @Column(name = "type_reference")
+    private String typeReference;
+
+    @Column(name = "midias_id_midia")
+    private MidiaModal midiaModal;
 }
