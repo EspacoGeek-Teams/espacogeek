@@ -38,6 +38,9 @@ public class MidiaModal {
     @Column(name = "path_cover")
     private String pathCover;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private MidiaCategoryModal midiaCategoryModal;
 
     @ManyToMany
     @JoinTable(
