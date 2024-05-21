@@ -53,4 +53,11 @@ public class MidiaModal {
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
     private List<PeopleModal> peopleModals;
+
+    @ManyToMany
+    @JoinTable(
+        name = "midias_has_genre",
+        joinColumns = @JoinColumn(name = "midias_id_midia"),
+        inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
+    private List<GenreModal> genreModals;
 }
