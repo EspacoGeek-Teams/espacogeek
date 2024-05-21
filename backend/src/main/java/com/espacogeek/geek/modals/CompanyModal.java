@@ -1,6 +1,6 @@
 package com.espacogeek.geek.modals;
 
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,5 +21,5 @@ public class CompanyModal {
     private String name;
 
     @ManyToMany(mappedBy = "companyModals")
-    private List<MidiaModal> midiaModals;
+    private Set<MidiaModal> midiaModals;
 }

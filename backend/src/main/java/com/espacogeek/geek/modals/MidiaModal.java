@@ -1,6 +1,6 @@
 package com.espacogeek.geek.modals;
 
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,19 +45,19 @@ public class MidiaModal {
         name = "midias_has_companies",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
-    private List<CompanyModal> companyModals;
+    private Set<CompanyModal> companyModals;
 
     @ManyToMany
     @JoinTable(
         name = "midias_has_people",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
-    private List<PeopleModal> peopleModals;
+    private Set<PeopleModal> peopleModals;
 
     @ManyToMany
     @JoinTable(
         name = "midias_has_genre",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
-    private List<GenreModal> genreModals;
+    private Set<GenreModal> genreModals;
 }

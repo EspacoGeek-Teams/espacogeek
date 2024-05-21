@@ -1,5 +1,7 @@
 package com.espacogeek.geek.modals;
 
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,5 +24,5 @@ public class GenreModal {
     private String name;
 
     @ManyToMany(mappedBy = "genreModals")
-    private MidiaModal midiaModal;
+    private Set<MidiaModal> midiaModals;
 }

@@ -1,6 +1,6 @@
 package com.espacogeek.geek.modals;
 
-import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,5 +26,5 @@ public class PeopleModal {
     private TypePerson typePerson;
 
     @ManyToMany(mappedBy = "peopleModals")
-    private List<MidiaModal> midiaModal;
+    private Set<MidiaModal> midiaModal;
 }
