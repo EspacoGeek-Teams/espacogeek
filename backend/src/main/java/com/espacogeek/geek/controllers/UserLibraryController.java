@@ -6,6 +6,4 @@ import com.espacogeek.geek.repositories.UserLibraryRepository;
 
 public class UserLibraryController {
     
-    @Autowired
-    private UserLibraryRepository userLibraryRepository;
 }
