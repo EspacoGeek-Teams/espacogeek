@@ -13,7 +13,7 @@ import lombok.Data;
 @Table(name = "types_person")
 public class TypePerson {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name_type_person")

@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public class ExternalReferenceModal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_external_reference")
     private Integer id;
 

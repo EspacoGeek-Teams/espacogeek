@@ -19,7 +19,7 @@ import lombok.Data;
 @Data
 public class UserLibraryModal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user_library")
     private Integer id;
 

@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 public class TypeStatusModal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Size(max = 45, message = "{validation.name.size.too_long}")

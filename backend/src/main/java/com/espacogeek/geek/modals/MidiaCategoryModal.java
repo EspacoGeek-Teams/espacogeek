@@ -13,7 +13,7 @@ import lombok.Data;
 @Table(name = "midia_categories")
 public class MidiaCategoryModal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_midia_category")
     private Integer id;
 

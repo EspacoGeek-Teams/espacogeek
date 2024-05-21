@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public class TypeReferenceModal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_type_reference")
     private Integer id;
 

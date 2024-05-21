@@ -14,7 +14,7 @@ import lombok.Data;
 @Table(name = "users")
 public class UserModal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
     private Integer id;
 

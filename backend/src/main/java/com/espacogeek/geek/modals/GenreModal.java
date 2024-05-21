@@ -16,7 +16,7 @@ import lombok.Data;
 @Table(name = "genres")
 public class GenreModal {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_genre")
     private Integer id;
 
