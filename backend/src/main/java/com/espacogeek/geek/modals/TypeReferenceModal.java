@@ -1,5 +1,7 @@
 package com.espacogeek.geek.modals;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +13,7 @@ import lombok.Data;
 @Entity
 @Table(name = "type_reference")
 @Data
-public class TypeReferenceModal {
+public class TypeReferenceModal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_type_reference")

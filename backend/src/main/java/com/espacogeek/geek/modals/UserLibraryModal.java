@@ -1,5 +1,6 @@
 package com.espacogeek.geek.modals;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,7 +19,7 @@ import lombok.Data;
 @Entity
 @Table(name = "users_library")
 @Data
-public class UserLibraryModal {
+public class UserLibraryModal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user_library")

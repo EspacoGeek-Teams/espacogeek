@@ -1,6 +1,7 @@
 package com.espacogeek.geek.modals;
 
-import java.util.Set;
+import java.io.Serializable;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ import lombok.Data;
 @Entity
 @Table(name = "midias")
 @Data
-public class MidiaModal {
+public class MidiaModal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_midia")
@@ -47,19 +48,19 @@ public class MidiaModal {
         name = "midias_has_companies",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
-    private Set<CompanyModal> companyModals;
+    private List<CompanyModal> companyModals;
 
     @ManyToMany
     @JoinTable(
         name = "midias_has_people",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
-    private Set<PeopleModal> peopleModals;
+    private List<PeopleModal> peopleModals;
 
     @ManyToMany
     @JoinTable(
-        name = "midias_has_genre",
+        name = "midias_has_genres",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
-    private Set<GenreModal> genreModals;
+    private List<GenreModal> genreModals;
 }

@@ -1,5 +1,7 @@
 package com.espacogeek.geek.modals;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +14,7 @@ import lombok.Data;
 @Entity
 @Table(name = "externals_referenceies")
 @Data
-public class ExternalReferenceModal {
+public class ExternalReferenceModal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_external_reference")

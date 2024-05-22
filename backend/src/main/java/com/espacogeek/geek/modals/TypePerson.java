@@ -1,5 +1,7 @@
 package com.espacogeek.geek.modals;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +13,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "types_person")
-public class TypePerson {
+public class TypePerson implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

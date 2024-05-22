@@ -1,5 +1,7 @@
 package com.espacogeek.geek.modals;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +14,7 @@ import lombok.Data;
 @Entity
 @Table(name = "types_status")
 @Data
-public class TypeStatusModal {
+public class TypeStatusModal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

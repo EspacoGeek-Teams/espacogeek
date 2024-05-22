@@ -1,6 +1,7 @@
 package com.espacogeek.geek.modals;
 
-import java.util.Set;
+import java.io.Serializable;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +15,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "companies")
-public class CompanyModal {
+public class CompanyModal implements Serializable {
     @Id
     @Column(name = "id_company")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,5 +25,5 @@ public class CompanyModal {
     private String name;
 
     @ManyToMany(mappedBy = "companyModals")
-    private Set<MidiaModal> midiaModals;
+    private List<MidiaModal> midiaModals;
 }
