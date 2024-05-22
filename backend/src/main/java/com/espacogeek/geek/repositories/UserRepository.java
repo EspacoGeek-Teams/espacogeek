@@ -1,8 +1,11 @@
 package com.espacogeek.geek.repositories;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Integer>{
-    User findByUsername(String username);
+import com.espacogeek.geek.modals.UserModal;
+
+public interface UserRepository extends JpaRepository<UserModal, Integer>{
+    List<UserModal> findByUsername(UserModal id);
 }
