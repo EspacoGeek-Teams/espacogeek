@@ -29,15 +29,15 @@ public class UserModal implements Serializable {
     @Column(name = "id_user")
     private Integer id;
 
-    @Size(max = 20, message = "{validation.name.size.too_long}")
+    @Size(max = 20, message = "username too long")
     @Column(name = "username", nullable = false)
     private String username;
     
-    @Size(max = 45, message = "{validation.name.size.too_long}")
-    @Column(name = "email", nullable = false)
+    @Size(max = 50, message = "email too long")
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Size(max = 45, message = "{validation.name.size.too_long}")
+    @Size(max = 70, message = "Password too long")
     @Column(name = "password", nullable = false)
-    private String password;
+    private byte[] password;
 }
