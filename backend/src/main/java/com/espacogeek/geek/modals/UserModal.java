@@ -1,6 +1,11 @@
 package com.espacogeek.geek.modals;
 
 import java.io.Serializable;
+import java.util.Optional;
+
+import org.springframework.http.HttpStatus;
+
+import com.espacogeek.geek.exception.GenericExeption;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,11 +14,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserModal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
