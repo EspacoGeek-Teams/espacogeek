@@ -1,5 +1,11 @@
 type Query {
-    userByUsername(username: String): User
+    findUserByUsername(username: String!): User
+    findUserById(id: ID!): User
+    findUserByEmail(email: String!): User
+}
+
+type Mutation {
+    registerUser(username: String!, email: String!, password: String!): User
 }
 
 type User {
