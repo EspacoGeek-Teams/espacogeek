@@ -5,11 +5,17 @@ type Query {
 }
 
 type Mutation {
-    registerUser(username: String!, email: String!, password: String!): User
+    registerUser(user: UserInput!): User
 }
 
 type User {
     id: ID
     username: String
     email: String
+}
+
+input UserInput {
+    username: String!
+    email: String!
+    password: String!
 }
