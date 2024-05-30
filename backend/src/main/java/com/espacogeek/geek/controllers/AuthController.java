@@ -18,6 +18,8 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
+    // Use GET to get api-key jwt
+
     @PostMapping("/")
     public UserModal addUser(@RequestBody NewUser newUser) {
         var passwordCrypted = BCrypt.withDefaults().hash(12, newUser.password().toCharArray());
