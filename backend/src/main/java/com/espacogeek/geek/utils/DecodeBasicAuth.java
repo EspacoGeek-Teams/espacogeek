@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.espacogeek.geek.modals.UserModal;
+import com.espacogeek.geek.models.UserModel;
 import com.espacogeek.geek.services.User.UserService;
 
 /**

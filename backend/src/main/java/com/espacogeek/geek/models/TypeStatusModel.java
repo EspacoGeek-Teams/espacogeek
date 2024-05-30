@@ -1,29 +1,25 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
-import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-@Data
 @Entity
-@Table(name = "genres")
-public class GenreModal implements Serializable {
+@Table(name = "types_status")
+@Data
+public class TypeStatusModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_genre")
     private Integer id;
 
-    @Column(name = "name_genre")
+    @Size(max = 45, message = "{validation.name.size.too_long}")
+    @Column(name = "name_status")
     private String name;
-
-    @ManyToMany(mappedBy = "genreModals")
-    private List<MidiaModal> midiaModals;
 }

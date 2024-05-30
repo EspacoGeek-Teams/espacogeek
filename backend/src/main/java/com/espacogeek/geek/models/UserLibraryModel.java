@@ -1,4 +1,4 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -19,7 +19,7 @@ import lombok.Data;
 @Entity
 @Table(name = "users_library")
 @Data
-public class UserLibraryModal implements Serializable {
+public class UserLibraryModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user_library")
@@ -35,8 +35,8 @@ public class UserLibraryModal implements Serializable {
 
     @JoinColumn(name = "id_user")
     @Transient
-    private UserModal userModal;
+    private UserModel userModal;
 
     @JoinColumn(name = "status")
-    private TypeStatusModal typeStatusModal;
+    private TypeStatusModel typeStatusModal;
 }

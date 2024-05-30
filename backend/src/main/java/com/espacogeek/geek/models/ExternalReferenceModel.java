@@ -1,4 +1,4 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
 
@@ -14,7 +14,7 @@ import lombok.Data;
 @Entity
 @Table(name = "externals_referenceies")
 @Data
-public class ExternalReferenceModal implements Serializable {
+public class ExternalReferenceModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_external_reference")
@@ -24,8 +24,8 @@ public class ExternalReferenceModal implements Serializable {
     private String typeReference;
 
     @JoinColumn(name = "midias_id_midia")
-    private MidiaModal midiaModal;
+    private MidiaModel midiaModal;
 
     @JoinColumn(name = "type_reference")
-    private TypeReferenceModal typeReferenceModal;
+    private TypeReferenceModel typeReferenceModal;
 }

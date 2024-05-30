@@ -1,4 +1,4 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
 import java.util.List;
@@ -18,7 +18,7 @@ import lombok.Data;
 @Entity
 @Table(name = "midias")
 @Data
-public class MidiaModal implements Serializable {
+public class MidiaModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_midia")
@@ -41,26 +41,26 @@ public class MidiaModal implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private MidiaCategoryModal midiaCategoryModal;
+    private MidiaCategoryModel midiaCategoryModal;
 
     @ManyToMany
     @JoinTable(
         name = "midias_has_companies",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
-    private List<CompanyModal> companyModals;
+    private List<CompanyModel> companyModals;
 
     @ManyToMany
     @JoinTable(
         name = "midias_has_people",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
-    private List<PeopleModal> peopleModals;
+    private List<PeopleModel> peopleModals;
 
     @ManyToMany
     @JoinTable(
         name = "midias_has_genres",
         joinColumns = @JoinColumn(name = "midias_id_midia"),
         inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
-    private List<GenreModal> genreModals;
+    private List<GenreModel> genreModals;
 }

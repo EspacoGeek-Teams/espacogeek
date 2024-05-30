@@ -1,4 +1,4 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
 
@@ -8,18 +8,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
-@Table(name = "types_status")
+@Table(name = "type_reference")
 @Data
-public class TypeStatusModal implements Serializable {
+public class TypeReferenceModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_type_reference")
     private Integer id;
 
-    @Size(max = 45, message = "{validation.name.size.too_long}")
-    @Column(name = "name_status")
-    private String name;
+    @Column(name = "name_reference")
+    private String nameReference;
 }

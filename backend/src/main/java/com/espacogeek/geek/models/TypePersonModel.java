@@ -1,4 +1,4 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
 
@@ -11,14 +11,13 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "type_reference")
 @Data
-public class TypeReferenceModal implements Serializable {
+@Table(name = "types_person")
+public class TypePersonModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_type_reference")
     private Integer id;
 
-    @Column(name = "name_reference")
-    private String nameReference;
+    @Column(name = "name_type_person")
+    private String nameTypePerson;
 }

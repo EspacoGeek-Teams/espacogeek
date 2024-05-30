@@ -1,4 +1,4 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,26 +8,22 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-@Entity
-@Table(name = "people")
 @Data
-public class PeopleModal implements Serializable {
+@Entity
+@Table(name = "genres")
+public class GenreModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_person")
+    @Column(name = "id_genre")
     private Integer id;
 
-    @Column(name = "name_person")
+    @Column(name = "name_genre")
     private String name;
 
-    @JoinColumn(name = "type_person")
-    private TypePerson typePerson;
-
-    @ManyToMany(mappedBy = "peopleModals")
-    private List<MidiaModal> midiaModal;
+    @ManyToMany(mappedBy = "genreModals")
+    private List<MidiaModel> midiaModals;
 }

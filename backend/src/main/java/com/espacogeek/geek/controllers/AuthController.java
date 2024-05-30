@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.espacogeek.geek.modals.UserModal;
+import com.espacogeek.geek.models.UserModel;
 import com.espacogeek.geek.services.User.UserService;
 import com.espacogeek.geek.types.NewUser;
 
@@ -21,9 +21,9 @@ public class AuthController {
     // Use GET to get api-key jwt
 
     @PostMapping("/")
-    public UserModal addUser(@RequestBody NewUser newUser) {
+    public UserModel addUser(@RequestBody NewUser newUser) {
         var passwordCrypted = BCrypt.withDefaults().hash(12, newUser.password().toCharArray());
-        UserModal user = new UserModal(null, newUser.username(), newUser.email(), passwordCrypted);
+        UserModel user = new UserModel(null, newUser.username(), newUser.email(), passwordCrypted);
         return userService.save(user);
     }
 }
