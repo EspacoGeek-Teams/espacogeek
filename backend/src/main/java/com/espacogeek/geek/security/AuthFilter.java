@@ -1,7 +1,8 @@
-package com.espacogeek.geek.config;
+package com.espacogeek.geek.security;
 
 import java.io.IOException;
 import java.util.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -17,10 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-/*
- * Filter if user is loged
- */
-public class FilterTaskAuth extends OncePerRequestFilter {
+public class AuthFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserService userService;
@@ -30,7 +28,7 @@ public class FilterTaskAuth extends OncePerRequestFilter {
             throws ServletException, IOException {
             
         var servletPath = request.getServletPath();
-        if (!servletPath.endsWith("/auth")) {
+        if (!servletPath.endsWith("/auth/")) {
             var authorization = request.getHeader("Authorization");
             if (authorization == null) {
                 response.sendError(401);
