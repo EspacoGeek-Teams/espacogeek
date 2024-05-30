@@ -9,7 +9,5 @@ import com.espacogeek.geek.modals.UserModal;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserModal, Integer>{
-    Optional<UserModal> findByUsernameContains(String id);
-
-    Optional<UserModal> findByEmail(String email);
+    Optional<UserModal> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email);
 }
