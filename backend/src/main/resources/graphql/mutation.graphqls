@@ -1,3 +1,0 @@
-type Mutation {
-    registerUser(newUser: NewUser): User
-}
