@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 
-import com.espacogeek.geek.exception.GenericExeption;
+import com.espacogeek.geek.exception.GenericException;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

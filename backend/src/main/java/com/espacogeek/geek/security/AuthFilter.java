@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.espacogeek.geek.exception.GenericExeption;
+import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.services.User.UserService;
 import com.espacogeek.geek.utils.DecodeBasicAuth;
 
@@ -29,20 +29,20 @@ public class AuthFilter extends OncePerRequestFilter {
         if (!servletPath.endsWith("/auth/")) {
             var authorization = request.getHeader("Authorization");
             if (authorization == null) {
-                throw new GenericExeption(HttpStatus.UNAUTHORIZED.toString());
+                throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
             }
 
             var decodeBasicAuth = new DecodeBasicAuth(authorization);
             var user = userService.findByIdOrUsernameContainsOrEmail(null, null, decodeBasicAuth.getEmail());
 
-            if (!user.isPresent()) {
-                throw new GenericExeption(HttpStatus.UNAUTHORIZED.toString());
+            if (!user.get(0).isPresent()) {
+                throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
             } else {
-                var resultPassword = BCrypt.verifyer().verify(decodeBasicAuth.getPassword().toCharArray(),user.get().getPassword()).verified;
+                var resultPassword = BCrypt.verifyer().verify(decodeBasicAuth.getPassword().toCharArray(),user.get(0).get().getPassword()).verified;
                 if (resultPassword) {
                     filterChain.doFilter(request, response);
                 } else {
-                    throw new GenericExeption(HttpStatus.UNAUTHORIZED.toString());
+                    throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
                 }
             }
         } else {

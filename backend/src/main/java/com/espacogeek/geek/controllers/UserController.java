@@ -1,5 +1,6 @@
 package com.espacogeek.geek.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 
-import com.espacogeek.geek.exception.GenericExeption;
+import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.modals.UserModal;
 import com.espacogeek.geek.services.User.UserService;
 import com.espacogeek.geek.types.UserInput;
@@ -24,7 +25,7 @@ public class UserController {
     private UserService userService;
 
     @QueryMapping
-    public Optional<UserModal> findUser(@Argument(name = "filter") UserInput userInput) {
+    public List<Optional<UserModal>> findUser(@Argument(name = "filter") UserInput userInput) {
         return userService.findByIdOrUsernameContainsOrEmail(userInput.getId(), userInput.getUsername(), userInput.getEmail());
     }
 

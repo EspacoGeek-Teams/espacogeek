@@ -1,16 +1,18 @@
 package com.espacogeek.geek.services.User.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.espacogeek.geek.exception.GenericExeption;
+import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.modals.UserModal;
 import com.espacogeek.geek.repositories.UserRepository;
 import com.espacogeek.geek.services.User.UserService;
 
 import jakarta.validation.ConstraintViolationException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,7 +24,7 @@ public class UserServiceImpl implements UserService {
      * @see UserService#findByIdOrUsernameContainsOrEmail(String, String, String)
      */
     @Override
-    public Optional<UserModal> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email) {
+    public List<Optional<UserModal>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email) {
         return userRepository.findByIdOrUsernameContainsOrEmail(id, username, email);
     }
 
@@ -41,8 +43,10 @@ public class UserServiceImpl implements UserService {
     public UserModal save(UserModal user) {
         try {
             return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new GenericException(HttpStatus.CONFLICT.toString());
         } catch (ConstraintViolationException e) {
-            throw new GenericExeption(HttpStatus.BAD_REQUEST.toString());
+            throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
     }
 
