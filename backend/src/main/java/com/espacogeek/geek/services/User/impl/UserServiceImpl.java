@@ -19,11 +19,11 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     /**
-     * @see UserService#findByEmail(String)
+     * @see UserService#findByIdOrUsernameContainsOrEmail(String, String, String)
      */
     @Override
-    public Optional<UserModal> findByEmail(String email) {
-        return Optional.ofNullable(userRepository.findByEmail(email).orElseThrow(() -> new GenericExeption(HttpStatus.NOT_FOUND+": Email not found")));
+    public Optional<UserModal> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email) {
+        return userRepository.findByIdOrUsernameContainsOrEmail(id, username, email);
     }
 
     /**
@@ -31,15 +31,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Optional<UserModal> findById(Integer id) {
-        return Optional.ofNullable(userRepository.findById(id).orElseThrow(() -> new GenericExeption(HttpStatus.NOT_FOUND+": Id not found")));
-    }
-
-    /**
-     * @see UserService#findByUsernameContains(String)
-     */
-    @Override
-    public Optional<UserModal> findByUsernameContains(String username) throws GenericExeption {
-        return Optional.ofNullable(userRepository.findByUsernameContains(username).orElseThrow(() -> new GenericExeption(HttpStatus.NOT_FOUND+": Username not found")));
+        return userRepository.findById(id);
     }
 
     /**
@@ -50,7 +42,15 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.save(user);
         } catch (ConstraintViolationException e) {
-            throw new GenericExeption(HttpStatus.BAD_REQUEST+": Data too long.");
+            throw new GenericExeption(HttpStatus.BAD_REQUEST.toString());
         }
+    }
+
+    /**
+     * @see UserService#delete(Integer)
+     */
+    @Override
+    public void deleteById(Integer id) {
+        userRepository.deleteById(id);
     }
 }
