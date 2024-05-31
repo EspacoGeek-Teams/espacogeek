@@ -25,5 +25,5 @@ public class CompanyModel implements Serializable {
     private String name;
 
     @ManyToMany(mappedBy = "companyModals")
-    private List<MediaModel> MediaModals;
+    private List<MediaModel> mediaModels;
 }

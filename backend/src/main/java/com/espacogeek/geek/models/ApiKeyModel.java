@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Entity
-@Table(name = "ApiKeys")
+@Table(name = "api_keys")
 @Getter
 public class ApiKeyModel implements Serializable {
     @Id

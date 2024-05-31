@@ -35,8 +35,8 @@ public class UserLibraryModel implements Serializable {
 
     @JoinColumn(name = "id_user")
     @Transient
-    private UserModel userModal;
+    private UserModel userModel;
 
     @JoinColumn(name = "status")
-    private TypeStatusModel typeStatusModal;
+    private TypeStatusModel typeStatusModel;
 }

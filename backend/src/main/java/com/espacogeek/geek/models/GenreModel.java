@@ -25,5 +25,5 @@ public class GenreModel implements Serializable {
     private String name;
 
     @ManyToMany(mappedBy = "genreModals")
-    private List<MediaModel> MediaModals;
+    private List<MediaModel> mediaModels;
 }
