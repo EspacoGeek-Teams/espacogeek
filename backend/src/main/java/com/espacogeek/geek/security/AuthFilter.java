@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.espacogeek.geek.exception.GenericException;
-import com.espacogeek.geek.services.User.UserService;
+import com.espacogeek.geek.services.UserService;
 import com.espacogeek.geek.utils.DecodeBasicAuth;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;

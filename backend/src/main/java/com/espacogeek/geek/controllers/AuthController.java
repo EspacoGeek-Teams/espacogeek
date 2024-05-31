@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.espacogeek.geek.models.UserModel;
-import com.espacogeek.geek.services.User.UserService;
+import com.espacogeek.geek.services.UserService;
 import com.espacogeek.geek.types.NewUser;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;

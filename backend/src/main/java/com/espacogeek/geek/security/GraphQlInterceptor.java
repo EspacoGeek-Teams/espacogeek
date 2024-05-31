@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.exception.GenericException;
-import com.espacogeek.geek.services.User.UserService;
+import com.espacogeek.geek.services.UserService;
 import com.espacogeek.geek.utils.DecodeBasicAuth;
 
 import reactor.core.publisher.Mono;

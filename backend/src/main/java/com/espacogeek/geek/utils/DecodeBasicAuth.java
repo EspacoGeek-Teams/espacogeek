@@ -1,12 +1,6 @@
 package com.espacogeek.geek.utils;
 
 import java.util.Base64;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.espacogeek.geek.models.UserModel;
-import com.espacogeek.geek.services.User.UserService;
 
 /**
  * Utility class to decode Basic Auth credentials and retrieve a UserModal object.

@@ -11,9 +11,8 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 
-import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.UserModel;
-import com.espacogeek.geek.services.User.UserService;
+import com.espacogeek.geek.services.UserService;
 import com.espacogeek.geek.types.UserInput;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
