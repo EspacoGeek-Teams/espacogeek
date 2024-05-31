@@ -1,6 +1,10 @@
-package com.espacogeek.geek.API;
+package com.espacogeek.geek.data.API;
 
 import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.espacogeek.geek.services.ApiKeyService;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.core.TvSeriesResultsPage;
@@ -11,8 +15,11 @@ import info.movito.themoviedbapi.tools.appendtoresponse.TvSeriesAppendToResponse
 public class TvSeriesAPI {
     private TmdbApi tmdbApi;
 
+    @Autowired
+    private ApiKeyService apiKeyService;
+
     public TvSeriesAPI() {
-        tmdbApi = new TmdbApi("");
+        tmdbApi = new TmdbApi(apiKeyService.findById(1).get().getKey());
     }
 
     public TvSeriesDb getDetails(Integer id) throws TmdbException {
