@@ -1,0 +1,17 @@
+type Midia {
+    id: ID
+    name: String
+    episode: Integer
+    episodeLenght: Integer
+    about: String
+    pathCover: String
+    midiaCategory: MidiaCategory
+    company: [Company]
+    people: [People]
+    genre: [Genre]
+}
+
+input MidiaInput {
+    id: ID
+    name: String
+}

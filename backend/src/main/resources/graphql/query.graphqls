@@ -1,3 +1,4 @@
 type Query {
     findUser(filter: UserInput): [User]
+    findMidia(filter: MidiaInput): [Midia]
 }

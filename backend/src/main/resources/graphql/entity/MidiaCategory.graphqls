@@ -1,0 +1,4 @@
+type MidiaCategory {
+    id: ID
+    typeCategory: String
+}

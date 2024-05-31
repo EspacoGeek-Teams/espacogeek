@@ -1,0 +1,4 @@
+type GenreModel{
+    id: ID
+    name: String
+}
