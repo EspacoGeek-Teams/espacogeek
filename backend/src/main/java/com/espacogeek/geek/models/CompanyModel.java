@@ -24,6 +24,6 @@ public class CompanyModel implements Serializable {
     @Column(name = "name_company")
     private String name;
 
-    @ManyToMany(mappedBy = "companyModals")
+    @ManyToMany(mappedBy = "companyModels")
     private List<MediaModel> mediaModels;
 }
