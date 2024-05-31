@@ -23,8 +23,8 @@ public class ExternalReferenceModel implements Serializable {
     @Column(name = "type_reference")
     private String typeReference;
 
-    @JoinColumn(name = "midias_id_midia")
-    private MidiaModel midiaModal;
+    @JoinColumn(name = "Medias_id_Media")
+    private MediaModel MediaModal;
 
     @JoinColumn(name = "type_reference")
     private TypeReferenceModel typeReferenceModal;

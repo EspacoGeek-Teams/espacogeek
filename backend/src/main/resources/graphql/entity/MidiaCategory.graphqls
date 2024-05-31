@@ -1,4 +1,4 @@
-type MidiaCategory {
+type MediaCategory {
     id: ID
     typeCategory: String
 }

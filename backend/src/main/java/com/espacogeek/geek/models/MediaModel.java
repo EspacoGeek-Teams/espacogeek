@@ -19,18 +19,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "midias")
+@Table(name = "Medias")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MidiaModel implements Serializable {
+public class MediaModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_midia")
+    @Column(name = "id_Media")
     private Integer id;
 
-    @Column(name = "name_midia")
+    @Column(name = "name_Media")
     private String name;
 
     @Column(name = "episode_count")
@@ -47,26 +47,26 @@ public class MidiaModel implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private MidiaCategoryModel midiaCategoryModal;
+    private MediaCategoryModel MediaCategoryModal;
 
     @ManyToMany
     @JoinTable(
-        name = "midias_has_companies",
-        joinColumns = @JoinColumn(name = "midias_id_midia"),
+        name = "Medias_has_companies",
+        joinColumns = @JoinColumn(name = "Medias_id_Media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> companyModals;
 
     @ManyToMany
     @JoinTable(
-        name = "midias_has_people",
-        joinColumns = @JoinColumn(name = "midias_id_midia"),
+        name = "Medias_has_people",
+        joinColumns = @JoinColumn(name = "Medias_id_Media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
     private List<PeopleModel> peopleModals;
 
     @ManyToMany
     @JoinTable(
-        name = "midias_has_genres",
-        joinColumns = @JoinColumn(name = "midias_id_midia"),
+        name = "Medias_has_genres",
+        joinColumns = @JoinColumn(name = "Medias_id_Media"),
         inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
     private List<GenreModel> genreModals;
 }

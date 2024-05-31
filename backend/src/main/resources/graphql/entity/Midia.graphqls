@@ -1,17 +1,17 @@
-type Midia {
+type Media {
     id: ID
     name: String
     episode: Integer
     episodeLenght: Integer
     about: String
     pathCover: String
-    midiaCategory: MidiaCategory
+    MediaCategory: MediaCategory
     company: [Company]
     people: [People]
     genre: [Genre]
 }
 
-input MidiaInput {
+input MediaInput {
     id: ID
     name: String
 }

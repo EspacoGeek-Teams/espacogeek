@@ -9,20 +9,20 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
-import com.espacogeek.geek.data.MidiaDataController;
-import com.espacogeek.geek.models.MidiaModel;
-import com.espacogeek.geek.services.MidiaService;
-import com.espacogeek.geek.types.MidiaInput;
+import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.services.MediaService;
+import com.espacogeek.geek.types.MediaInput;
 
 import info.movito.themoviedbapi.tools.TmdbException;
 
 @Controller
-public class MidiaController {
+public class MediaController {
     @Autowired
-    private MidiaService midiaService;
+    private MediaService MediaService;
 
     @QueryMapping
-    public List<Optional<MidiaModel>> findSerie(@Argument(name = "filter") MidiaInput midiaInput) throws IOException, TmdbException {
-        return new MidiaDataController().search(midiaInput.getName());
+    public List<Optional<MediaModel>> findSerie(@Argument(name = "filter") MediaInput MediaInput) throws IOException, TmdbException {
+        return new MediaDataController().search(MediaInput.getName());
     }
 }

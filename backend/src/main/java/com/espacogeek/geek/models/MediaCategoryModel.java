@@ -14,16 +14,16 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "midia_categories")
-public class MidiaCategoryModel implements Serializable {
+@Table(name = "Media_categories")
+public class MediaCategoryModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_midia_category")
+    @Column(name = "id_Media_category")
     private Integer id;
 
     @Column(name = "type_category")
     private String typeCategory;
 
-    @OneToMany(mappedBy = "midiaCategoryModal")
-    private List<MidiaModel> midiaModals;
+    @OneToMany(mappedBy = "MediaCategoryModal")
+    private List<MediaModel> MediaModals;
 }

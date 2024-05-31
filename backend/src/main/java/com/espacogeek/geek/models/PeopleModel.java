@@ -29,5 +29,5 @@ public class PeopleModel implements Serializable {
     private TypePersonModel typePerson;
 
     @ManyToMany(mappedBy = "peopleModals")
-    private List<MidiaModel> midiaModal;
+    private List<MediaModel> MediaModal;
 }
