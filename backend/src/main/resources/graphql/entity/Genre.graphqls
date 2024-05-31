@@ -1,4 +1,4 @@
-type GenreModel{
+type Genre{
     id: ID
     name: String
 }

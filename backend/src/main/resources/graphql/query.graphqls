@@ -1,4 +1,4 @@
 type Query {
     findUser(filter: UserInput): [User]
-    findMedia(filter: MediaInput): [Media]
+    findSerie(filter: MediaInput): [Media]
 }
