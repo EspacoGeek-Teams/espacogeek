@@ -28,6 +28,6 @@ public class PeopleModel implements Serializable {
     @JoinColumn(name = "type_person")
     private TypePersonModel typePerson;
 
-    @ManyToMany(mappedBy = "peopleModals")
+    @ManyToMany(mappedBy = "peopleModels")
     private List<MediaModel> mediaModel;
 }

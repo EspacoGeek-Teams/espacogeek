@@ -24,6 +24,6 @@ public class MediaCategoryModel implements Serializable {
     @Column(name = "type_category")
     private String typeCategory;
 
-    @OneToMany(mappedBy = "media_category_modal")
+    @OneToMany(mappedBy = "mediaCategoryModel")
     private List<MediaModel> mediaModels;
 }
