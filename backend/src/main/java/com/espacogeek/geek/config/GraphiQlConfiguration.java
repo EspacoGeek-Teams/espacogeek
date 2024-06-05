@@ -17,8 +17,8 @@ public class GraphiQlConfiguration {
 	public RouterFunction<ServerResponse> graphiQlRouterFunction() {
 		RouterFunctions.Builder builder = RouterFunctions.route();
 		ClassPathResource graphiQlPage = new ClassPathResource("graphiql/index.html"); 
-		GraphiQlHandler graphiQLHandler = new GraphiQlHandler("/api", "", graphiQlPage); 
-		builder = builder.GET("/api/graphiql", graphiQLHandler::handleRequest); 
+		GraphiQlHandler graphiQLHandler = new GraphiQlHandler("/api/graphiql", "", graphiQlPage); 
+		builder = builder.GET("/graphiql", graphiQLHandler::handleRequest); 
 		return builder.build(); 
 	}
 }
