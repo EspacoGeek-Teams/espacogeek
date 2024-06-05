@@ -1,6 +1,9 @@
 package com.espacogeek.geek.data.API;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.espacogeek.geek.services.ApiKeyService;
 
 import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.core.TvSeriesResultsPage;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
@@ -33,8 +37,13 @@ public class TvSeriesAPI {
     }
     
     //TODO: search function
-    public TvSeriesResultsPage doSearch(String query) throws IOException, TmdbException {
-        return tmdbApi.getSearch().searchTv(query, null, null, null, null, null);
+    public Map<Integer, Object> doSearch(String query) throws IOException, TmdbException {
+        var returnResult = new HashMap<Integer, Object>();
+        
+        returnResult.put(1, 1); // "1" is the code for The Movie Database
+        returnResult.put(2, tmdbApi.getSearch().searchTv(query, null, null, null, null, null));
+
+        return returnResult;
     }
     
     //TODO: get people (characters, staff, cast) function

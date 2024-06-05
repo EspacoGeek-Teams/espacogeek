@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +49,9 @@ public class MediaModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private MediaCategoryModel mediaCategoryModel;
+
+    @OneToMany(mappedBy = "mediaModal")
+    private ExternalReferenceModel externalReferenceModel;
 
     @ManyToMany
     @JoinTable(

@@ -12,7 +12,9 @@ import com.espacogeek.geek.data.API.TvSeriesAPI;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaService;
 
+import info.movito.themoviedbapi.model.core.Results;
 import info.movito.themoviedbapi.model.core.TvSeries;
+import info.movito.themoviedbapi.model.core.TvSeriesResultsPage;
 import info.movito.themoviedbapi.tools.TmdbException;
 
 @Component
@@ -24,13 +26,19 @@ public class MediaDataController {
     private TvSeriesAPI tvSeriesAPI;
 
     public List<Optional<MediaModel>> search(String query) throws IOException, TmdbException {
-        var result = tvSeriesAPI.doSearch(query).getResults();
+        @SuppressWarnings("unchecked")
+        TvSeriesResultsPage result = (TvSeriesResultsPage) ((Results<TvSeries>) tvSeriesAPI.doSearch(query).get(2)).getResults();
+        
+        var externalReference = 1;
+
         List<Optional<MediaModel>> medias = new ArrayList<>();
+
         for (TvSeries serie : result) {
-            var media = new MediaModel(null, serie.getName(), null, null, serie.getOverview(), null, null, null, null, null);
+            var media = new MediaModel(null, serie.getName(), null, null, serie.getOverview(), null, null, null, null, null, null);
             this.mediaService.save(media);
             medias.add(Optional.of(media));
         }
+        
         return medias;
     }
 }
