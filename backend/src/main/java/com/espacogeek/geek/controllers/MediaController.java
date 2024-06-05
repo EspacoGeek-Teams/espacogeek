@@ -21,8 +21,11 @@ public class MediaController {
     @Autowired
     private MediaService MediaService;
 
+    @Autowired
+    private MediaDataController mediaDataController;
+
     @QueryMapping
     public List<Optional<MediaModel>> findSerie(@Argument(name = "filter") MediaInput MediaInput) throws IOException, TmdbException {
-        return new MediaDataController().search(MediaInput.getName());
+        return this.mediaDataController.search(MediaInput.getName());
     }
 }
