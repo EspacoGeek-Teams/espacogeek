@@ -33,12 +33,12 @@ public class AuthFilter extends OncePerRequestFilter {
             }
 
             var decodeBasicAuth = new DecodeBasicAuth(authorization);
-            var user = userService.findByIdOrUsernameContainsOrEmail(null, null, decodeBasicAuth.getEmail());
+            var user = userService.findByIdOrUsernameContainsOrEmail(null, null, decodeBasicAuth.getEmail()).getFirst();
 
-            if (!user.get(0).isPresent()) {
+            if (!user.isPresent()) {
                 throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
             } else {
-                var resultPassword = BCrypt.verifyer().verify(decodeBasicAuth.getPassword().toCharArray(),user.get(0).get().getPassword()).verified;
+                var resultPassword = BCrypt.verifyer().verify(decodeBasicAuth.getPassword().toCharArray(),user.get().getPassword()).verified;
                 if (resultPassword) {
                     filterChain.doFilter(request, response);
                 } else {
