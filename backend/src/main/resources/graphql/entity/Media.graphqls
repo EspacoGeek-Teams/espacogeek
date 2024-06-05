@@ -1,8 +1,8 @@
 type Media {
     id: ID
     name: String
-    episode: Integer
-    episodeLenght: Integer
+    episode: Int
+    episodeLenght: Int
     about: String
     pathCover: String
     MediaCategory: MediaCategory
