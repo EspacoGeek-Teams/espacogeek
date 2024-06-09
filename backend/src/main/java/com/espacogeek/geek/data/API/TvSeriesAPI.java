@@ -36,7 +36,6 @@ public class TvSeriesAPI {
         return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES);
     }
     
-    //TODO: search function
     public Map<Integer, Object> doSearch(String query) throws IOException, TmdbException {
         var returnResult = new HashMap<Integer, Object>();
         

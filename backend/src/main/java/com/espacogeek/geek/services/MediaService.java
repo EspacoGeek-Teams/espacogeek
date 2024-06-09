@@ -6,7 +6,7 @@ import java.util.Optional;
 import com.espacogeek.geek.models.MediaModel;
 
 public interface MediaService {
-    List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String Name);
+    List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String name);
 
-    void save(MediaModel MediaModel);
+    void save(MediaModel mediaModel);
 }

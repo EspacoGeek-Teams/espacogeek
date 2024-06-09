@@ -13,19 +13,19 @@ import com.espacogeek.geek.services.MediaService;
 @Service
 public class MediaServiceImpl implements MediaService {
     @Autowired
-    private MediaRepository MediaRepository;
+    private MediaRepository mediaRepository;
 
 
     @Override
     /**
      * @see MediaService#save(MediaModel)
      */
-    public void save(MediaModel MediaModel) {
-        MediaRepository.save(MediaModel);        
+    public void save(MediaModel mediaModel) {
+        this.mediaRepository.save(mediaModel);        
     }
 
     @Override
-    public List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String Name) {
+    public List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String name) {
         // ...
         return null;
     }    
