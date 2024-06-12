@@ -1,10 +1,20 @@
-package com.espacogeek.geek.data.API;
+package com.espacogeek.geek.data.api;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -39,15 +49,20 @@ public class TvSeriesAPI {
         this.tmdbApi = new TmdbApi(this.apiKeyService.findById(1).get().getKey());
     }
 
-    @Scheduled(fixedRate = 3600000)
-    private void updateTitles() throws IOException {
+    public JSONArray updateTitles() throws IOException, ParseException {
+        var now = LocalDateTime.now();
+
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
-            .url("http://files.tmdb.org/p/exports/tv_series_ids_05_15_2024.json.gz")
+            .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", now.getMonth().getValue(), now.getDayOfMonth(), now.getYear()))
             .method("GET", null)
             .addHeader("Content-Type", "application/json")
             .build();
         Response response = client.newCall(request).execute();
+        
+        var inputSteam = new GZIPInputStream(new ByteArrayInputStream(response.body().bytes()));
+        var jsonParse = new JSONParser();
+        return (JSONArray) jsonParse.parse(new InputStreamReader(inputSteam, "UTF-8"));
     }
 
     public TvSeriesDb getDetails(Integer id) throws TmdbException {
