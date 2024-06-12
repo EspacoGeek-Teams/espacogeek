@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Medias")
+@Table(name = "medias")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -51,7 +51,7 @@ public class MediaModel implements Serializable {
     private MediaCategoryModel mediaCategoryModel;
 
     @OneToMany(mappedBy = "mediaModal")
-    private ExternalReferenceModel externalReferenceModel;
+    private List<ExternalReferenceModel> externalReferenceModel;
 
     @ManyToMany
     @JoinTable(
@@ -59,7 +59,7 @@ public class MediaModel implements Serializable {
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> companyModels;
-
+    
     @ManyToMany
     @JoinTable(
         name = "medias_has_people",

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.API.TvSeriesAPI;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.services.ExternalReferenceService;
 import com.espacogeek.geek.services.MediaService;
 
 import info.movito.themoviedbapi.model.core.Results;
@@ -29,10 +30,11 @@ public class MediaDataController {
         @SuppressWarnings("unchecked")
         TvSeriesResultsPage result = (TvSeriesResultsPage) ((Results<TvSeries>) tvSeriesAPI.doSearch(query).get(2)).getResults();
         
-        var externalReference = 1;
-
+        // fazer doSearch retornar um objeto TypeReference em vez de um numero 
+        
+        
         List<Optional<MediaModel>> medias = new ArrayList<>();
-
+        
         for (TvSeries serie : result) {
             var media = new MediaModel(null, serie.getName(), null, null, serie.getOverview(), null, null, null, null, null, null);
             this.mediaService.save(media);

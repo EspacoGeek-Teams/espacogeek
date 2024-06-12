@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,12 @@ import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
 import info.movito.themoviedbapi.tools.appendtoresponse.TvSeriesAppendToResponse;
 import jakarta.annotation.PostConstruct;
+import okhttp3.MediaType;
+import okhttp3.OkHttp;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 @Component
 public class TvSeriesAPI {
@@ -28,8 +35,19 @@ public class TvSeriesAPI {
     private ApiKeyService apiKeyService;
 
     @PostConstruct
-    void init() {
+    private void init() {
         this.tmdbApi = new TmdbApi(this.apiKeyService.findById(1).get().getKey());
+    }
+
+    @Scheduled(fixedRate = 3600000)
+    private void updateTitles() throws IOException {
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        Request request = new Request.Builder()
+            .url("http://files.tmdb.org/p/exports/tv_series_ids_05_15_2024.json.gz")
+            .method("GET", null)
+            .addHeader("Content-Type", "application/json")
+            .build();
+        Response response = client.newCall(request).execute();
     }
 
     public TvSeriesDb getDetails(Integer id) throws TmdbException {

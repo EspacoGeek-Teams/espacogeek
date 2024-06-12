@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 
 @Repository
-public interface ExternalReferenceRepository extends JpaRepository<ExternalReferenceModel, Integer> {
+public interface ExternalReferenceRepository<T> extends JpaRepository<ExternalReferenceModel, Integer> {
 
 }
