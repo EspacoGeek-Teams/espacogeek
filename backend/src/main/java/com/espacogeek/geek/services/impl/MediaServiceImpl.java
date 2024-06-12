@@ -15,18 +15,27 @@ public class MediaServiceImpl implements MediaService {
     @Autowired
     private MediaRepository mediaRepository;
 
-
-    @Override
     /**
      * @see MediaService#save(MediaModel)
      */
-    public void save(MediaModel mediaModel) {
-        this.mediaRepository.save(mediaModel);        
+    @Override
+    public void save(MediaModel media) {
+        this.mediaRepository.save(media);
     }
 
+    /**
+     * @see MediaService#saveAll(List<MediaModel>)
+     */
+    @Override
+    public void saveAll(List<MediaModel> medias) {
+        this.mediaRepository.saveAll(medias);
+    }  
+
+    /**
+     * @see MediaService#findSerieByIdOrName(Integer, String)
+     */
     @Override
     public List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String name) {
-        // ...
-        return null;
-    }    
+        return mediaRepository.findMediaByIdOrName(id, name);
+    }
 }

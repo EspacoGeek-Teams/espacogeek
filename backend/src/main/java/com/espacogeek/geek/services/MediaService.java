@@ -9,4 +9,6 @@ public interface MediaService {
     List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String name);
 
     void save(MediaModel mediaModel);
+
+    void saveAll(List<MediaModel> medias);
 }
