@@ -32,19 +32,19 @@ import info.movito.themoviedbapi.tools.TmdbException;
 public class MediaDataController {
     @Autowired
     private MediaService mediaService;
-
     @Autowired
     private TvSeriesAPI tvSeriesAPI;
-
     @Autowired
     private MediaCategoryService mediaCategoryService;
-
     @Autowired
     private TypeReferenceService typeReferenceService;
-
     @Autowired
     private ExternalReferenceService externalReferenceService;
 
+    /**
+     * This method update and add title of TV Series.
+     * Every day at 9:00AM this function is executed.
+     */
     @Scheduled(cron = "* * 9 * * *")
     public void updateTvSeries() {
         try {
@@ -71,37 +71,23 @@ public class MediaDataController {
                 externalReferenceList.add(externalReference);
                 media.setExternalReferenceModel(externalReferenceList);
                 externalReference.setMediaModal(media);
-                
+
                 externalReferencies.add(externalReference);
                 medias.add(media);
             }
-            
+
             mediaService.saveAll(medias);
             externalReferenceService.saveAll(externalReferencies);
-            
-            System.out.println("SUCCESS TO UPDATE TV SERIES, AT "+LocalDateTime.now());
+
+            System.out.println("SUCCESS TO UPDATE TV SERIES, AT " + LocalDateTime.now());
 
         } catch (Exception e) {
-            System.out.println(MessageFormat.format("*# ------- FAILED TO UPDATE TV SERIES, AT {0} ------- *#", LocalDateTime.now()));
+            System.out.println(MessageFormat.format("*# ------- FAILED TO UPDATE TV SERIES, AT {0} ------- *#",
+                    LocalDateTime.now()));
             e.printStackTrace();
             System.out.println("*# ----------------------------------------- *#");
         }
     }
+    
 
-    public List<Optional<MediaModel>> search(String query) throws IOException, TmdbException {
-        @SuppressWarnings("unchecked")
-        TvSeriesResultsPage result = (TvSeriesResultsPage) ((Results<TvSeries>) tvSeriesAPI.doSearch(query).get(2)).getResults();
-        
-        // fazer doSearch retornar um objeto TypeReference em vez de um numero 
-        
-        List<Optional<MediaModel>> medias = new ArrayList<>();
-        
-        for (TvSeries serie : result) {
-            var media = new MediaModel(null, serie.getName(), null, null, serie.getOverview(), null, null, null, null, null, null);
-            this.mediaService.save(media);
-            medias.add(Optional.of(media));
-        }
-        
-        return medias;
-    }
 }
