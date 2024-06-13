@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,13 +53,14 @@ public class TvSeriesAPI {
         this.tmdbApi = new TmdbApi(this.apiKeyService.findById(1).get().getKey());
     }
 
+    @SuppressWarnings("unchecked")
     public JSONArray updateTitles() throws IOException, ParseException {
         var now = LocalDateTime.now();
 
         // formatting the date to do request as tmdb pattern
-        var month = new String().valueOf(now.getMonth().getValue()).length() == 1 ? 0 + new String().valueOf(now.getMonth().getValue()) : now.getMonth().getValue();
-        var day = new String().valueOf(now.getDayOfMonth()).length() == 1 ? 0+now.getDayOfMonth() : now.getDayOfMonth();
-        var year = new String().valueOf(now.getYear()).replace(".", "");
+        var month = String.valueOf(now.getMonth().getValue()).length() == 1 ? 0 + String.valueOf(now.getMonth().getValue()) : now.getMonth().getValue();
+        var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? 0+now.getDayOfMonth() : now.getDayOfMonth();
+        var year = String.valueOf(now.getYear()).replace(".", "");
 
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
@@ -67,10 +70,16 @@ public class TvSeriesAPI {
             .build();
         Response response = client.newCall(request).execute();
         
-        InputStream inputSteam = new GZIPInputStream(new ByteArrayInputStream(response.body().bytes()));
-        var stringJsonArray = IOUtils.toString(inputSteam);
-        var jsonParse = new JSONParser();
-        return (JSONArray) jsonParse.parse(stringJsonArray);
+        var inputStream = new GZIPInputStream(new ByteArrayInputStream(response.body().bytes()));
+        var json = new String(inputStream.readAllBytes()).split("\n");
+
+        JSONArray jsonArray = new JSONArray();
+        for (var item : json) {
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parser.parse(item);
+            jsonArray.add(jsonObject);
+        }
+        return jsonArray;
     }
 
     public TvSeriesDb getDetails(Integer id) throws TmdbException {

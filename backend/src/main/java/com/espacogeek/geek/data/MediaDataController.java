@@ -1,6 +1,8 @@
 package com.espacogeek.geek.data;
 
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +13,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.api.TvSeriesAPI;
+import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.TypeReferenceModel;
+import com.espacogeek.geek.services.ExternalReferenceService;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
@@ -37,31 +42,49 @@ public class MediaDataController {
     @Autowired
     private TypeReferenceService typeReferenceService;
 
-    @Scheduled(fixedRate = 3600000)
+    @Autowired
+    private ExternalReferenceService externalReferenceService;
+
+    @Scheduled(cron = "* 16 14 * * *")
     public void updateTvSeries() {
         try {
             var jsonArrayDailyExport = tvSeriesAPI.updateTitles();
-            List<MediaModel> medias = new ArrayList<>();
-
-            var category = mediaCategoryService.findById(1).get();
-            var typeReference = typeReferenceService.findById(1).get();
+            var medias = new ArrayList<MediaModel>();
+            var externalReferencies = new ArrayList<ExternalReferenceModel>();
+            
+            MediaCategoryModel category = mediaCategoryService.findById(1).orElseThrow(() -> new GenericException("Category not found"));
+            TypeReferenceModel typeReference = typeReferenceService.findById(1).orElseThrow(() -> new GenericException("TypeReference not found"));
 
             for (int i = 0; i < jsonArrayDailyExport.size(); i++) {
                 var json = (JSONObject) jsonArrayDailyExport.get(i);
+                var externalReferenceList = new ArrayList<ExternalReferenceModel>();
 
+                var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, category, null, null, null, null);
                 var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, typeReference);
-                var media = new MediaModel(null, json.get("original_title").toString(), null, null, null, null, category, null, null, null, null);
-                               
-                externalReference.setMediaModal(media);
 
+                var findReference = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
+                if (findReference.isPresent()) {
+                    media.setId(findReference.get().getMediaModal().getId());
+                    externalReference.setId(findReference.get().getId());
+                }
+
+                externalReferenceList.add(externalReference);
+                media.setExternalReferenceModel(externalReferenceList);
+                externalReference.setMediaModal(media);
+                
+                externalReferencies.add(externalReference);
                 medias.add(media);
             }
             
             mediaService.saveAll(medias);
+            externalReferenceService.saveAll(externalReferencies);
+            
+            System.out.println("SUCCESS TO UPDATE TV SERIES, AT "+LocalDateTime.now());
 
         } catch (Exception e) {
-            System.out.println("FAILED TO UPDATE TVSERIES");
-            System.out.println(e);
+            System.out.println(MessageFormat.format("*# ------- FAILED TO UPDATE TV SERIES, AT {0} ------- *#", LocalDateTime.now()));
+            e.printStackTrace();
+            System.out.println("*# ----------------------------------------- *#");
         }
     }
 
