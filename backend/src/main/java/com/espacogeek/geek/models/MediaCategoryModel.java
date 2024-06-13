@@ -19,6 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "media_categories")
 public class MediaCategoryModel implements Serializable {
