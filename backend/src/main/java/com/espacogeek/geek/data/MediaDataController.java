@@ -45,7 +45,7 @@ public class MediaDataController {
     @Autowired
     private ExternalReferenceService externalReferenceService;
 
-    @Scheduled(cron = "* 16 14 * * *")
+    @Scheduled(cron = "* * 9 * * *")
     public void updateTvSeries() {
         try {
             var jsonArrayDailyExport = tvSeriesAPI.updateTitles();
