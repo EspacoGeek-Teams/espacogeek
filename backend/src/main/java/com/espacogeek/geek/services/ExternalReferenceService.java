@@ -7,6 +7,7 @@ import org.springframework.data.domain.Example;
 
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.TypeReferenceModel;
 
 /**
  * Interface for the ExternalReferenceService, which provides methods for retrieving ExternalReferenceModel objects.
@@ -28,4 +29,29 @@ public interface ExternalReferenceService {
      * @return A list of ExternalReferenceModel objects that match the provided MediaModel.
      */
     List<ExternalReferenceModel> findAll(MediaModel media);
+
+    /**
+     * Save external reference provied.
+     * 
+     * @param externalReference The ExternalReference to save.
+     * @return ExternalReferenceModel object saved.
+     */
+    ExternalReferenceModel save(ExternalReferenceModel externalReference);
+
+    /**
+     * Save all external reference provied.
+     * 
+     * @param externalReferencies The ExternalReferencies to save.
+     * @return List of ExternalReferenceModel object saved.
+     */
+    List<ExternalReferenceModel> saveAll(List<ExternalReferenceModel> externalReferencies);
+
+    /**
+     * Find by reference and Type Reference
+     * 
+     * @param reference value of ExternalReference.
+     * @param typeReference the Type Reference to find.
+     * @return ExternalReferenceModel optional object found.
+     */
+    Optional<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference);
 }
