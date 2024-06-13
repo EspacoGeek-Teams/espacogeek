@@ -2,6 +2,7 @@ package com.espacogeek.geek.data.api;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -52,17 +54,23 @@ public class TvSeriesAPI {
     public JSONArray updateTitles() throws IOException, ParseException {
         var now = LocalDateTime.now();
 
+        // formatting the date to do request as tmdb pattern
+        var month = new String().valueOf(now.getMonth().getValue()).length() == 1 ? 0 + new String().valueOf(now.getMonth().getValue()) : now.getMonth().getValue();
+        var day = new String().valueOf(now.getDayOfMonth()).length() == 1 ? 0+now.getDayOfMonth() : now.getDayOfMonth();
+        var year = new String().valueOf(now.getYear()).replace(".", "");
+
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
-            .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", now.getMonth().getValue(), now.getDayOfMonth(), now.getYear()))
+            .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", month, day, year))
             .method("GET", null)
             .addHeader("Content-Type", "application/json")
             .build();
         Response response = client.newCall(request).execute();
         
-        var inputSteam = new GZIPInputStream(new ByteArrayInputStream(response.body().bytes()));
+        InputStream inputSteam = new GZIPInputStream(new ByteArrayInputStream(response.body().bytes()));
+        var stringJsonArray = IOUtils.toString(inputSteam);
         var jsonParse = new JSONParser();
-        return (JSONArray) jsonParse.parse(new InputStreamReader(inputSteam, "UTF-8"));
+        return (JSONArray) jsonParse.parse(stringJsonArray);
     }
 
     public TvSeriesDb getDetails(Integer id) throws TmdbException {
