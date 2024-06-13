@@ -25,7 +25,8 @@ public class MediaController {
     private MediaService mediaService;
 
     @QueryMapping
-    public List<Optional<MediaModel>> findSerie(@Argument(name = "filter") MediaInput mediaInput) throws IOException, TmdbException {
-        return this.mediaService.findSerieByIdOrName(mediaInput.getId(), mediaInput.getName());
+    public List<MediaModel> findSerie(@Argument(name = "filter") MediaInput mediaInput) throws IOException, TmdbException {
+        var medias = this.mediaService.findSerieByIdOrName(mediaInput.getId(), mediaInput.getName());
+        return medias;
     }
 }

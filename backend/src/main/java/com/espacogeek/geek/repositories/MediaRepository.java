@@ -10,5 +10,5 @@ import com.espacogeek.geek.models.MediaModel;
 
 @Repository
 public interface MediaRepository extends JpaRepository<MediaModel, Integer> {
-    List<Optional<MediaModel>> findMediaByIdOrName(Integer id, String name);
+    List<MediaModel> findMediaByIdOrName(Integer id, String name);
 }

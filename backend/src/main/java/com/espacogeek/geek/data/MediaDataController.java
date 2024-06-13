@@ -89,5 +89,7 @@ public class MediaDataController {
         }
     }
     
-
+    public void handleCoverImage() {
+        
+    }
 }

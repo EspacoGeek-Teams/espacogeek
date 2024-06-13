@@ -35,7 +35,7 @@ public class MediaServiceImpl implements MediaService {
      * @see MediaService#findSerieByIdOrName(Integer, String)
      */
     @Override
-    public List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String name) {
+    public List<MediaModel> findSerieByIdOrName(Integer id, String name) {
         return mediaRepository.findMediaByIdOrName(id, name);
     }
 }
