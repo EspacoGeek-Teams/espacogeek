@@ -19,16 +19,16 @@ public class MediaServiceImpl implements MediaService {
      * @see MediaService#save(MediaModel)
      */
     @Override
-    public void save(MediaModel media) {
-        this.mediaRepository.save(media);
+    public MediaModel save(MediaModel media) {
+        return this.mediaRepository.save(media);
     }
 
     /**
      * @see MediaService#saveAll(List<MediaModel>)
      */
     @Override
-    public void saveAll(List<MediaModel> medias) {
-        this.mediaRepository.saveAll(medias);
+    public List<MediaModel> saveAll(List<MediaModel> medias) {
+        return this.mediaRepository.saveAll(medias);
     }  
 
     /**

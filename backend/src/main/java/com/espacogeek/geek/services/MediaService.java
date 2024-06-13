@@ -8,7 +8,7 @@ import com.espacogeek.geek.models.MediaModel;
 public interface MediaService {
     List<Optional<MediaModel>> findSerieByIdOrName(Integer id, String name);
 
-    void save(MediaModel mediaModel);
+    MediaModel save(MediaModel mediaModel);
 
-    void saveAll(List<MediaModel> medias);
+    List<MediaModel> saveAll(List<MediaModel> medias);
 }
