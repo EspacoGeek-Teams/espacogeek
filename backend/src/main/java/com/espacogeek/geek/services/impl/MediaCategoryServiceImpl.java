@@ -10,7 +10,7 @@ import com.espacogeek.geek.repositories.MediaCategoryRepository;
 import com.espacogeek.geek.services.MediaCategoryService;
 
 @Service
-public class MediaCategoryImpl implements MediaCategoryService {
+public class MediaCategoryServiceImpl implements MediaCategoryService {
     
     @Autowired
     private MediaCategoryRepository mediaCategoryRepository;

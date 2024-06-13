@@ -10,7 +10,7 @@ import com.espacogeek.geek.repositories.TypeReferenceRepository;
 import com.espacogeek.geek.services.TypeReferenceService;
 
 @Service
-public class TypeReferenceImpl implements TypeReferenceService {
+public class TypeReferenceServiceImpl implements TypeReferenceService {
     
     @Autowired
     private TypeReferenceRepository typeReferenceRepository;
