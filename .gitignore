@@ -57,3 +57,4 @@ frontend/yarn-error.log*
 ### Others ###
 
 backend/src/main/resources/application.properties
+/imageDB
