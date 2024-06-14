@@ -37,8 +37,8 @@ public class MediaModel implements Serializable {
     @Column(name = "episode_count")
     private Integer episode;
 
-    @Column(name = "episode_lenght_in_minutes")
-    private Integer episodeLenght;
+    @Column(name = "episode_length_in_minutes")
+    private Integer episodeLength;
 
     @Column(name = "about")
     private String about;

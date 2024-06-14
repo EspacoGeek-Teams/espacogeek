@@ -2,10 +2,10 @@ type Media {
     id: ID
     name: String
     episode: Int
-    episodeLenght: Int
+    episodeLength: Int
     about: String
     pathCover: String
-    MediaCategory: MediaCategory
+    mediaCategory: MediaCategory
     company: [Company]
     people: [People]
     genre: [Genre]
