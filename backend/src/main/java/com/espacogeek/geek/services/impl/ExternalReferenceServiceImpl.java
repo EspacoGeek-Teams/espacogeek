@@ -16,12 +16,14 @@ import com.espacogeek.geek.services.ExternalReferenceService;
 @Service
 public class ExternalReferenceServiceImpl implements ExternalReferenceService {
 
+    @SuppressWarnings("rawtypes")
     @Autowired
     private ExternalReferenceRepository externalReferenceRepository;
 
     /**
      * @see ExternalReferenceService#findAll(MediaModel)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<ExternalReferenceModel> findAll(MediaModel media) {
         return this.externalReferenceRepository.findAll(Example.of(media));
@@ -30,6 +32,7 @@ public class ExternalReferenceServiceImpl implements ExternalReferenceService {
     /**
      * @see ExternalReferenceService#findById(Integer)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Optional<ExternalReferenceModel> findById(Integer id) {
         return this.externalReferenceRepository.findById(id);
@@ -38,6 +41,7 @@ public class ExternalReferenceServiceImpl implements ExternalReferenceService {
     /**
      * @see ExternalReferenceService#save(ExternalReferenceModel)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public ExternalReferenceModel save(ExternalReferenceModel externalReference) {
         return (ExternalReferenceModel) this.externalReferenceRepository.save(externalReference);
@@ -46,6 +50,7 @@ public class ExternalReferenceServiceImpl implements ExternalReferenceService {
     /**
      * @see ExternalReferenceService#saveAll(List<ExternalReferenceModel>)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<ExternalReferenceModel> saveAll(List<ExternalReferenceModel> externalReferencies) {
         return this.externalReferenceRepository.saveAll(externalReferencies);
@@ -54,6 +59,7 @@ public class ExternalReferenceServiceImpl implements ExternalReferenceService {
     /**
      * @see ExternalReferenceService#findByIdAndType(Integer, TypeReferenceModel)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Optional<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference) {
         return this.externalReferenceRepository.findByReferenceAndTypeReferenceModel(reference, typeReference);

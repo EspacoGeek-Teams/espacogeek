@@ -1,19 +1,13 @@
 package com.espacogeek.geek.data;
 
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
 
@@ -33,12 +27,6 @@ import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
-import info.movito.themoviedbapi.model.core.Results;
-import info.movito.themoviedbapi.model.core.TvSeries;
-import info.movito.themoviedbapi.model.core.TvSeriesResultsPage;
-import info.movito.themoviedbapi.model.core.image.Artwork;
-import info.movito.themoviedbapi.model.core.image.Image;
-import info.movito.themoviedbapi.model.tv.series.Images;
 import info.movito.themoviedbapi.tools.TmdbException;
 import jakarta.annotation.PostConstruct;
 

@@ -3,8 +3,6 @@ package com.espacogeek.geek.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Example;
-
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
@@ -31,7 +29,7 @@ public interface ExternalReferenceService {
     List<ExternalReferenceModel> findAll(MediaModel media);
 
     /**
-     * Save external reference provied.
+     * Save external reference provided.
      * 
      * @param externalReference The ExternalReference to save.
      * @return ExternalReferenceModel object saved.
@@ -39,7 +37,7 @@ public interface ExternalReferenceService {
     ExternalReferenceModel save(ExternalReferenceModel externalReference);
 
     /**
-     * Save all external reference provied.
+     * Save all external reference provided.
      * 
      * @param externalReferencies The ExternalReferencies to save.
      * @return List of ExternalReferenceModel object saved.
