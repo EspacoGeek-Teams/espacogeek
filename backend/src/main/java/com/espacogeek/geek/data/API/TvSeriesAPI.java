@@ -82,5 +82,6 @@ public class TvSeriesAPI {
     }
     
     public Images getImageBySerie(Integer id) throws TmdbException {
+        return tmdbApi.getTvSeries().getImages(id, "en");
     }
 }
