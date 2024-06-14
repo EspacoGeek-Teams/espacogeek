@@ -52,8 +52,8 @@ public class ExternalReferenceServiceImpl implements ExternalReferenceService {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<ExternalReferenceModel> saveAll(List<ExternalReferenceModel> externalReferencies) {
-        return this.externalReferenceRepository.saveAll(externalReferencies);
+    public List<ExternalReferenceModel> saveAll(List<ExternalReferenceModel> externalReferences) {
+        return this.externalReferenceRepository.saveAll(externalReferences);
     }
 
     /**

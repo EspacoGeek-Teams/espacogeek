@@ -39,10 +39,10 @@ public interface ExternalReferenceService {
     /**
      * Save all external reference provided.
      * 
-     * @param externalReferencies The ExternalReferencies to save.
+     * @param externalReferences The ExternalReferences to save.
      * @return List of ExternalReferenceModel object saved.
      */
-    List<ExternalReferenceModel> saveAll(List<ExternalReferenceModel> externalReferencies);
+    List<ExternalReferenceModel> saveAll(List<ExternalReferenceModel> externalReferences);
 
     /**
      * Find by reference and Type Reference

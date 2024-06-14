@@ -66,7 +66,7 @@ public class MediaDataController {
         try {
             var jsonArrayDailyExport = tvSeriesAPI.updateTitles();
             var medias = new ArrayList<MediaModel>();
-            var externalReferencies = new ArrayList<ExternalReferenceModel>();
+            var externalReferences = new ArrayList<ExternalReferenceModel>();
 
             MediaCategoryModel category = mediaCategoryService.findById(1)
                     .orElseThrow(() -> new GenericException("Category not found"));
@@ -93,12 +93,12 @@ public class MediaDataController {
                 media.setExternalReferenceModel(externalReferenceList);
                 externalReference.setMediaModal(media);
 
-                externalReferencies.add(externalReference);
+                externalReferences.add(externalReference);
                 medias.add(media);
             }
 
             mediaService.saveAll(medias);
-            externalReferenceService.saveAll(externalReferencies);
+            externalReferenceService.saveAll(externalReferences);
 
             System.out.println("SUCCESS TO UPDATE TV SERIES, AT " + LocalDateTime.now());
 
@@ -118,8 +118,8 @@ public class MediaDataController {
      * @throws TmdbException
      */
     public String handleCoverImage(MediaModel media) {
-        var externalReferencies = media.getExternalReferenceModel();
-        for (ExternalReferenceModel externalReference : externalReferencies) {
+        var externalReferences = media.getExternalReferenceModel();
+        for (ExternalReferenceModel externalReference : externalReferences) {
             if (externalReference.getTypeReferenceModel().getId().equals(typeReference.getId())) {
                 try {
                     var endpointImage = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference())).getPosters().getFirst().getFilePath();
