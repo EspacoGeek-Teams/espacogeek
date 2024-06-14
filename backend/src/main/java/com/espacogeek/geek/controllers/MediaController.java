@@ -1,5 +1,7 @@
 package com.espacogeek.geek.controllers;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -26,6 +28,9 @@ public class MediaController {
         medias.forEach((media) -> {
             if (media.getPathCover() == null) {
                 media.setPathCover(mediaDataController.handleCoverImage(media));
+                try {
+                    media.setPathCover(new File("imageDB\\TVSerie\\65565\\cover.jpg").toURI().toURL().toString());
+                } catch (MalformedURLException e) {}
             }
         });
         
