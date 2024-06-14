@@ -56,6 +56,8 @@ public class TvSeriesAPI {
     @Autowired
     private ApiKeyService apiKeyService;
 
+    public final static String URL_IMAGE = "https://image.tmdb.org/t/p/original";
+
     @PostConstruct
     @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod")
     private void init() {
@@ -100,8 +102,8 @@ public class TvSeriesAPI {
         return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES);
     }
     
-    public Images getCover(Integer id) throws TmdbException {
-        return tmdbApi.getTvSeries().getImages(id, null, null);
+    public Images getImageBySerie(Integer id) throws TmdbException {
+        return tmdbApi.getTvSeries().getImages(id, "en", null);
     }
 
     //TODO: get people (characters, staff, cast) function
