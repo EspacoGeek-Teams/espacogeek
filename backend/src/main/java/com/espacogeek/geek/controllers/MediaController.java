@@ -26,11 +26,8 @@ public class MediaController {
         var medias = this.mediaService.findSerieByIdOrName(mediaInput.getId(), mediaInput.getName());
 
         medias.forEach((media) -> {
-            if (media.getPathCover() == null) {
-                media.setPathCover(mediaDataController.handleCoverImage(media));
-                try {
-                    media.setPathCover(new File("imageDB\\TVSerie\\65565\\cover.jpg").toURI().toURL().toString());
-                } catch (MalformedURLException e) {}
+            if (media.getBanner() == null || media.getCover() == null) {
+                media = mediaDataController.handleArtworks(media);
             }
         });
         
