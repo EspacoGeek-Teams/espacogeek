@@ -46,6 +46,9 @@ public class MediaModel implements Serializable {
     @Column(name = "url_cover")
     private String cover;
 
+    @Column(name = "url_banner")
+    private String banner;
+
     @ManyToOne
     @JoinColumn(name = "category_id")
     private MediaCategoryModel mediaCategoryModel;
