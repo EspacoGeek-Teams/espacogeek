@@ -43,8 +43,8 @@ public class MediaModel implements Serializable {
     @Column(name = "about")
     private String about;
 
-    @Column(name = "path_cover")
-    private String pathCover;
+    @Column(name = "url_cover")
+    private String cover;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
