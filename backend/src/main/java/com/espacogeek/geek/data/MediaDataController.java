@@ -110,23 +110,26 @@ public class MediaDataController {
     }
     
     /**
-     * This method handle with cover image of tv serie provided.
+     * Save the image on disk on path "imageDB/TVSerie/{0}/cover.{1}", {0} is the serie code and {1} is ext of the file.
      * 
      * @param media that needs a id
      * @return a String containing URL of the tv serie cover 
      * @throws NumberFormatException
      * @throws TmdbException
      */
+    @Deprecated
     public String handleCoverImage(MediaModel media) {
         var externalReferences = media.getExternalReferenceModel();
         for (ExternalReferenceModel externalReference : externalReferences) {
             if (externalReference.getTypeReferenceModel().getId().equals(typeReference.getId())) {
                 try {
-                    var endpointImage = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference())).getPosters().getFirst().getFilePath();
+                    var endpointImage = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference()))
+                            .getPosters().getFirst().getFilePath();
                     var ext = endpointImage.split("\\.")[1];
-                    var url = new URI(TvSeriesAPI.URL_IMAGE+endpointImage).toURL();
+                    var url = new URI(TvSeriesAPI.URL_IMAGE + endpointImage).toURL();
                     var image = ImageIO.read(url);
-                    var file = new File(MessageFormat.format("imageDB/TVSerie/{0}/cover.{1}", media.getId().toString(), ext));
+                    var file = new File(
+                            MessageFormat.format("imageDB/TVSerie/{0}/cover.{1}", media.getId().toString(), ext));
                     try {
                         ImageIO.write(image, ext, file);
                     } catch (FileNotFoundException | IIOException e) {
