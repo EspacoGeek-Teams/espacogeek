@@ -54,7 +54,7 @@ public class MediaDataController {
     @PostConstruct
     private void init() {
         this.typeReference = typeReferenceService.findById(ID_TYPE_TVSERIE)
-                .orElseThrow(() -> new GenericException("Type Reference not found"));
+            .orElseThrow(() -> new GenericException("Type Reference not found"));
     }
     
     /**
