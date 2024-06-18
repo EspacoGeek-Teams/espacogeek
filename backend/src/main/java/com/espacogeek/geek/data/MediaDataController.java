@@ -140,4 +140,33 @@ public class MediaDataController {
         }
         return "";
     }
+
+    public MediaModel handleArtworks(MediaModel media) {
+        var externalReferences = media.getExternalReferenceModel();
+
+        for (ExternalReferenceModel externalReference : externalReferences) {
+            if (externalReference.getTypeReferenceModel().getId().equals(typeReference.getId())) {
+                String banner = "";
+                String cover = "";
+                
+                try {
+                    cover = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference())).getPosters().getFirst().getFilePath();
+                    
+                    banner = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference())).getBackdrops().getFirst().getFilePath();
+                
+                } catch (NumberFormatException | TmdbException e) {
+                    e.printStackTrace();
+                }
+
+                media.setCover(TvSeriesAPI.URL_IMAGE+cover);
+                media.setBanner(TvSeriesAPI.URL_IMAGE+banner);
+            
+                mediaService.save(media);
+
+                return media;
+            }
+        }
+
+        throw new GenericException("When trying to get images the External Reference couldn't be found!");
+    }
 }
