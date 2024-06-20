@@ -125,8 +125,7 @@ public class MediaDataController {
                     var ext = endpointImage.split("\\.")[1];
                     var url = new URI(TvSeriesAPI.URL_IMAGE + endpointImage).toURL();
                     var image = ImageIO.read(url);
-                    var file = new File(
-                            MessageFormat.format("imageDB/TVSerie/{0}/cover.{1}", media.getId().toString(), ext));
+                    var file = new File(MessageFormat.format("imageDB/TVSerie/{0}/cover.{1}", media.getId().toString(), ext));
                     try {
                         ImageIO.write(image, ext, file);
                     } catch (FileNotFoundException | IIOException e) {
