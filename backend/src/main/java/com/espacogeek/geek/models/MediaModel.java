@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -78,5 +79,6 @@ public class MediaModel implements Serializable {
     private List<GenreModel> genreModels;
 
     @OneToMany(mappedBy = "media")
+    @Transient
     private List<UserLibraryModel> userLibrary;
 }

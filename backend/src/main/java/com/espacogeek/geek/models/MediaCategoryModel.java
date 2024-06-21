@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +32,6 @@ public class MediaCategoryModel implements Serializable {
     private String typeCategory;
 
     @OneToMany(mappedBy = "mediaCategoryModel")
+    @Transient
     private List<MediaModel> mediaModels;
 }

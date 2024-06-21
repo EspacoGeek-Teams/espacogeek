@@ -10,10 +10,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "types_person")
 public class TypePersonModel implements Serializable {
     @Id
@@ -24,5 +32,6 @@ public class TypePersonModel implements Serializable {
     private String nameTypePerson;
 
     @OneToMany(mappedBy = "typePerson")
+    @Transient
     private List<PeopleModel> people;
 }

@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,5 +44,6 @@ public class UserModel implements Serializable {
     private byte[] password;
 
     @OneToMany(mappedBy = "user")
+    @Transient
     private List<UserLibraryModel> userLibrary;
 }
