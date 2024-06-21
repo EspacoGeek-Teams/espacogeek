@@ -77,7 +77,7 @@ public class MediaDataController {
                 var json = (JSONObject) jsonArrayDailyExport.get(i);
                 var externalReferenceList = new ArrayList<ExternalReferenceModel>();
 
-                var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, category, null, null, null, null, null);
+                var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, category, null, null, null, null, null, null);
                 var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, typeReference);
 
                 var findReference = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);

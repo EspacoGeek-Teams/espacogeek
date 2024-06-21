@@ -1,7 +1,10 @@
 package com.espacogeek.geek.models;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -81,4 +84,8 @@ public class MediaModel implements Serializable {
     @OneToMany(mappedBy = "media")
     @Transient
     private List<UserLibraryModel> userLibrary;
+
+    @UpdateTimestamp
+    @Column(name = "update_at")
+    private Date updateAt;
 }
