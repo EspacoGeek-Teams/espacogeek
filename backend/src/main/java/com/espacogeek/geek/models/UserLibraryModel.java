@@ -11,8 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
 import lombok.Data;
 
@@ -33,10 +33,14 @@ public class UserLibraryModel implements Serializable {
     @CreationTimestamp
     private Date addedAt;
 
+    @ManyToOne
     @JoinColumn(name = "id_user")
-    @Transient
-    private UserModel userModel;
+    private UserModel user;
 
     @JoinColumn(name = "status")
     private TypeStatusModel typeStatusModel;
+
+    @ManyToOne
+    @JoinColumn(name = "id_media")
+    private MediaModel media;
 }

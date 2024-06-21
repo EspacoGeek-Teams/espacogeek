@@ -76,4 +76,7 @@ public class MediaModel implements Serializable {
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
     private List<GenreModel> genreModels;
+
+    @OneToMany(mappedBy = "media")
+    private List<UserLibraryModel> userLibrary;
 }
