@@ -50,7 +50,7 @@ public class MediaModel implements Serializable {
     private String banner;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "id_category")
     private MediaCategoryModel mediaCategoryModel;
 
     @OneToMany(mappedBy = "mediaModal")
