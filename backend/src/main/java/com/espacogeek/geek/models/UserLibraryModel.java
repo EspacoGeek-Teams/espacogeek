@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import lombok.Data;
@@ -37,8 +38,9 @@ public class UserLibraryModel implements Serializable {
     @JoinColumn(name = "id_user")
     private UserModel user;
 
+    @ManyToOne
     @JoinColumn(name = "status")
-    private TypeStatusModel typeStatusModel;
+    private TypeStatusModel typeStatus;
 
     @ManyToOne
     @JoinColumn(name = "id_media")
