@@ -34,7 +34,7 @@ public class DecodeBasicAuth {
     }
 
     /**
-     * get User password from basic auth provied.
+     * get User password from basic auth provide.
      * 
      * @return an Optional containing the UserModal object if found, otherwise empty
      */
@@ -43,7 +43,7 @@ public class DecodeBasicAuth {
     }
 
     /**
-     * get User email from basic auth provied.
+     * get User email from basic auth provide.
      * 
      * @return an Optional containing the UserModal object if found, otherwise empty
      */
