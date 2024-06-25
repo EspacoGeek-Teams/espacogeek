@@ -9,7 +9,14 @@ public class DecodeBasicAuth {
     private String[] credentials;
 
     /**
-     * Constructor to initialize the DecodeBasicAuth object with a Basic Auth string.
+     * Constructor to initialize the DecodeBasicAuth Util with a Basic Auth string.
+     * <p>
+     * Exemple:
+     * <ul>
+     * <li> username: vitor@gmail.com
+     * <li> password: vitor1234
+     * </ul>
+     * BasicAuth with Base64 Encode will be something like <code> Basic dml0b3JAZ21haWwuY29tOnZpdG9yMTIzNA== </code>
      * 
      * @param basicAuth the Basic Auth string to decode
      */
@@ -17,6 +24,9 @@ public class DecodeBasicAuth {
         decode(basicAuth);
     }
 
+    /**
+     * Decode Basic Auth Encoded with Base 64 and split in username and password
+     */
     private void decode(String authorization) {
         var authEncoded = authorization.substring(5).trim();
         byte[] authDecoded = Base64.getDecoder().decode(authEncoded);
