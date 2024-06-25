@@ -32,9 +32,9 @@ public class ExternalReferenceModel implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "medias_id_media")
-    private MediaModel mediaModal;
+    private MediaModel media;
 
     @ManyToOne
     @JoinColumn(name = "type_reference")
-    private TypeReferenceModel typeReferenceModel;
+    private TypeReferenceModel typeReference;
 }

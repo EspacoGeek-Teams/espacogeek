@@ -32,6 +32,6 @@ public class GenreModel implements Serializable {
     @Column(name = "name_genre")
     private String name;
 
-    @ManyToMany(mappedBy = "genreModels")
-    private List<MediaModel> mediaModels;
+    @ManyToMany(mappedBy = "genre")
+    private List<MediaModel> media;
 }

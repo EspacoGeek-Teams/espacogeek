@@ -31,7 +31,7 @@ public class TypeReferenceModel implements Serializable {
     @Column(name = "name_reference")
     private String nameReference;
 
-    @OneToMany(mappedBy = "typeReferenceModel")
+    @OneToMany(mappedBy = "typeReference")
     @Transient
-    private List<ExternalReferenceModel> externalReferenceModels;
+    private List<ExternalReferenceModel> externalReference;
 }

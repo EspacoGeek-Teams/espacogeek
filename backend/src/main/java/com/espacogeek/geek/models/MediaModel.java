@@ -55,31 +55,31 @@ public class MediaModel implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_category")
-    private MediaCategoryModel mediaCategoryModel;
+    private MediaCategoryModel mediaCategory;
 
-    @OneToMany(mappedBy = "mediaModal")
-    private List<ExternalReferenceModel> externalReferenceModel;
+    @OneToMany(mappedBy = "media")
+    private List<ExternalReferenceModel> externalReference;
 
     @ManyToMany
     @JoinTable(
         name = "medias_has_companies",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
-    private List<CompanyModel> companyModels;
+    private List<CompanyModel> company;
     
     @ManyToMany
     @JoinTable(
         name = "medias_has_people",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
-    private List<PeopleModel> peopleModels;
+    private List<PeopleModel> people;
 
     @ManyToMany
     @JoinTable(
         name = "medias_has_genres",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
-    private List<GenreModel> genreModels;
+    private List<GenreModel> genre;
 
     @OneToMany(mappedBy = "media")
     @Transient

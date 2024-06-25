@@ -31,6 +31,6 @@ public class CompanyModel implements Serializable {
     @Column(name = "name_company")
     private String name;
 
-    @ManyToMany(mappedBy = "companyModels")
-    private List<MediaModel> mediaModels;
+    @ManyToMany(mappedBy = "company")
+    private List<MediaModel> media;
 }

@@ -10,7 +10,7 @@ import com.espacogeek.geek.models.TypeReferenceModel;
 
 @Repository
 public interface ExternalReferenceRepository<T> extends JpaRepository<ExternalReferenceModel, Integer> {
-    Optional<ExternalReferenceModel> findByReferenceAndTypeReferenceModel (String reference, TypeReferenceModel typeReferenceModel);
+    Optional<ExternalReferenceModel> findByReferenceAndTypeReference (String reference, TypeReferenceModel typeReference);
     
     // Optional<ExternalReferenceModel> findByReference (String reference);
 }
