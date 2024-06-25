@@ -61,7 +61,7 @@ public class MediaDataController {
      * This method update and add title of TV Series.
      * Every day at 9:00AM this function is executed.
      */
-    @Scheduled(cron = "* * 9 * * *")
+    // @Scheduled(cron = "* * 9 * * *")
     public void updateTvSeries() {
         try {
             var jsonArrayDailyExport = tvSeriesAPI.updateTitles();
@@ -75,23 +75,29 @@ public class MediaDataController {
 
             for (int i = 0; i < jsonArrayDailyExport.size(); i++) {
                 var json = (JSONObject) jsonArrayDailyExport.get(i);
-                var externalReferenceList = new ArrayList<ExternalReferenceModel>();
 
-                var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, category, null, null, null, null, null, null);
-                var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, typeReference);
-
-                var findReference = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
-                if (findReference.isPresent()) {
-                    media.setId(findReference.get().getMediaModal().getId());
-                    externalReference.setId(findReference.get().getId());
+                // TODO It will return a too many request error if execute more than twenty time a second, fixed it
+                if (tvSeriesAPI.getKeyword(Integer.valueOf(json.get("id").toString())).stream().anyMatch((keyword) -> {
+                    return keyword.getName().toLowerCase() == "anime" ? false : true;
+                })) {
+                    var externalReferenceList = new ArrayList<ExternalReferenceModel>();
+    
+                    var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, category, null, null, null, null, null, null);
+                    var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, typeReference);
+    
+                    var findReference = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
+                    if (findReference.isPresent()) {
+                        media.setId(findReference.get().getMedia().getId());
+                        externalReference.setId(findReference.get().getId());
+                    }
+    
+                    externalReferenceList.add(externalReference);
+                    media.setExternalReference(externalReferenceList);
+                    externalReference.setMedia(media);
+    
+                    externalReferences.add(externalReference);
+                    medias.add(media);
                 }
-
-                externalReferenceList.add(externalReference);
-                media.setExternalReferenceModel(externalReferenceList);
-                externalReference.setMediaModal(media);
-
-                externalReferences.add(externalReference);
-                medias.add(media);
             }
 
             mediaService.saveAll(medias);
@@ -116,9 +122,9 @@ public class MediaDataController {
      */
     @Deprecated
     public String handleCoverImage(MediaModel media) {
-        var externalReferences = media.getExternalReferenceModel();
+        var externalReferences = media.getExternalReference();
         for (ExternalReferenceModel externalReference : externalReferences) {
-            if (externalReference.getTypeReferenceModel().getId().equals(typeReference.getId())) {
+            if (externalReference.getTypeReference().getId().equals(typeReference.getId())) {
                 try {
                     var endpointImage = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference()))
                             .getPosters().getFirst().getFilePath();
@@ -141,10 +147,10 @@ public class MediaDataController {
     }
 
     public MediaModel handleArtworks(MediaModel media) {
-        var externalReferences = media.getExternalReferenceModel();
+        var externalReferences = media.getExternalReference();
 
         for (ExternalReferenceModel externalReference : externalReferences) {
-            if (externalReference.getTypeReferenceModel().getId().equals(typeReference.getId())) {
+            if (externalReference.getTypeReference().getId().equals(typeReference.getId())) {
                 String banner = "";
                 String cover = "";
                 
