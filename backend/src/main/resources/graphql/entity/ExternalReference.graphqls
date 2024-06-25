@@ -1,0 +1,5 @@
+type ExternalReference {
+    id: ID
+    reference: String
+    typeReference: TypeReference
+}
