@@ -8,6 +8,9 @@ import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.repositories.MediaRepository;
 import com.espacogeek.geek.services.MediaService;
 
+/**
+ * A Implementation class of @see MediaService
+ */
 @Service
 public class MediaServiceImpl implements MediaService {
     @Autowired

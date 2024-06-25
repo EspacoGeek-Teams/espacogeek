@@ -13,6 +13,9 @@ import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.repositories.ExternalReferenceRepository;
 import com.espacogeek.geek.services.ExternalReferenceService;
 
+/**
+ * A Implementation class of @see ExternalReferenceService
+ */
 @Service
 public class ExternalReferenceServiceImpl implements ExternalReferenceService {
 

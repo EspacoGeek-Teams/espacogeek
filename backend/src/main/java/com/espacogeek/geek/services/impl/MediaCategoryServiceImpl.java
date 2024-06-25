@@ -9,6 +9,9 @@ import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.repositories.MediaCategoryRepository;
 import com.espacogeek.geek.services.MediaCategoryService;
 
+/**
+ * A Implementation class of @see MediaCategoryService
+ */
 @Service
 public class MediaCategoryServiceImpl implements MediaCategoryService {
     

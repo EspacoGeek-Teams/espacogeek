@@ -1,3 +1,4 @@
+--Como ainda não tem seeder, script para rodar no SQL
 INSERT INTO ESPACOGEEKDB.MEDIA_CATEGORIES VALUES (
     1,
     "TVSerie"

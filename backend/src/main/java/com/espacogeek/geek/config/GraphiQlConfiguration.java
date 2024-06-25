@@ -11,7 +11,7 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 @Configuration
 public class GraphiQlConfiguration {
-    
+    // Interface GRAPHIQL -> tipo Swagger
     @Bean
 	@Order(0)
 	public RouterFunction<ServerResponse> graphiQlRouterFunction() {

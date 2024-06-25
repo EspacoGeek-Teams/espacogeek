@@ -15,6 +15,9 @@ import jakarta.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A Implementation class of @see UserService
+ */
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired

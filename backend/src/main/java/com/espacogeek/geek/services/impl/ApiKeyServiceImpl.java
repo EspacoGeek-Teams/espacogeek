@@ -9,6 +9,9 @@ import com.espacogeek.geek.models.ApiKeyModel;
 import com.espacogeek.geek.repositories.ApiKeyRepository;
 import com.espacogeek.geek.services.ApiKeyService;
 
+/**
+ * A Implementation class of @see ApiKeyService
+ */
 @Service
 public class ApiKeyServiceImpl implements ApiKeyService {
 
