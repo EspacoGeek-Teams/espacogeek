@@ -1,3 +1,4 @@
+# * @AbigailGeovana definindo o tipo Media para ser usado no findSerie. Os nomes dos campos tem que ser os mesmos nomes das propriedades da classes.
 type Media {
     id: ID
     name: String
