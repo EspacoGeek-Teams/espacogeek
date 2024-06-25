@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.zip.GZIPInputStream;
 
 import org.json.simple.JSONArray;
@@ -14,9 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import com.espacogeek.geek.exception.GenericException;
+import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.ApiKeyService;
 
 import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.model.keywords.Keyword;
 import info.movito.themoviedbapi.model.tv.series.Images;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
@@ -83,5 +86,9 @@ public class TvSeriesAPI {
     
     public Images getImageBySerie(Integer id) throws TmdbException {
         return tmdbApi.getTvSeries().getImages(id, "en");
+    }
+
+    public List<Keyword> getKeyword(Integer id) throws TmdbException {
+        return tmdbApi.getTvSeries().getKeywords(id).getResults();
     }
 }
