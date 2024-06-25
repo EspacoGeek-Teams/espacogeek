@@ -30,9 +30,9 @@ public class UserController {
 
     @MutationMapping(name = "editPassword")
     public String editPasswordUser(@Argument String actualPassword, @Argument String newPassword, @ContextValue String userId) {
-        var userLoged = userService.findById(Integer.valueOf(userId)).get();
+        var userLoged = userService.findById(Integer.valueOf(userId)).get();  // * @AbigailGeovana pega o usuario que foi definido no contexto e procura por ele 
         var resultPassword = BCrypt.verifyer().verify(actualPassword.toCharArray(), userLoged.getPassword()).verified;
-        if (resultPassword) {
+        if (resultPassword) { // * @AbigailGeovana checa a senha
             userLoged.setPassword(BCrypt.withDefaults().hash(12, newPassword.toCharArray()));
             userService.save(userLoged);
             return HttpStatus.OK.toString();
@@ -42,8 +42,8 @@ public class UserController {
 
     @MutationMapping()
     public String deleteUser(@Argument String password, @ContextValue String userId) {
-        var userLoged = userService.findById(Integer.valueOf(userId)).get();
-        var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLoged.getPassword()).verified;
+        var userLoged = userService.findById(Integer.valueOf(userId)).get(); // * @AbigailGeovana pega o usuario que foi definido no contexto e procura por ele 
+        var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLoged.getPassword()).verified; // * @AbigailGeovana checa a senha
         if (resultPassword) {
             userService.deleteById(Integer.valueOf(userId));
             return HttpStatus.OK.toString();

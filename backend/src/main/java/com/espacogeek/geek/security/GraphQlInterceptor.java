@@ -31,13 +31,13 @@ public class GraphQlInterceptor implements WebGraphQlInterceptor {
      */
     @Override
     public Mono<WebGraphQlResponse> intercept(WebGraphQlRequest request, Chain chain) {
-        var authorization = request.getHeaders().getFirst("Authorization"); // * Pega a autorização do usuário 
-        if (authorization == null) { // * Se nenhuma credenciais for inserida joga um erro
+        var authorization = request.getHeaders().getFirst("Authorization"); // * @AbigailGeovanaPega a autorização do usuário 
+        if (authorization == null) { // * @AbigailGeovanaSe nenhuma credenciais for inserida joga um erro
             throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
         }
-        var user = userService.findByIdOrUsernameContainsOrEmail(null, null, new DecodeBasicAuth(authorization).getEmail()); // * Encontra o usuário com credenciais passada
+        var user = userService.findByIdOrUsernameContainsOrEmail(null, null, new DecodeBasicAuth(authorization).getEmail()); // * @AbigailGeovanaEncontra o usuário com credenciais passada
 
-        request.configureExecutionInput((executionInput, builder) -> builder.graphQLContext(Collections.singletonMap("userId", Integer.toString(user.get(0).get().getId()))).build()); // * Builda o contexto junto a informação que quero colocar no contexto
-        return chain.next(request); // * retorna o contexto
+        request.configureExecutionInput((executionInput, builder) -> builder.graphQLContext(Collections.singletonMap("userId", Integer.toString(user.get(0).get().getId()))).build()); // * @AbigailGeovanaBuilda o contexto junto a informação que quero colocar no contexto
+        return chain.next(request); // * @AbigailGeovanaretorna o contexto
     }
 }

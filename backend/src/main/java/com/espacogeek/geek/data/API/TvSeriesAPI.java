@@ -41,7 +41,7 @@ public class TvSeriesAPI {
     public final static String URL_IMAGE = "https://image.tmdb.org/t/p/original";
 
     @PostConstruct
-    @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod")
+    @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
     private void init() {
         this.tmdbApi = new TmdbApi(this.apiKeyService.findById(1).get().getKey());
     }
@@ -52,6 +52,13 @@ public class TvSeriesAPI {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * This function get the daily datajump avaliable by tmdb
+     * 
+     * @return a JSON Array with all serie titles
+     * @throws IOException
+     * @throws ParseException
+     */
     public JSONArray updateTitles() throws IOException, ParseException {
         var now = LocalDateTime.now();
 
@@ -60,6 +67,7 @@ public class TvSeriesAPI {
         var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? 0+now.getDayOfMonth() : now.getDayOfMonth();
         var year = String.valueOf(now.getYear()).replace(".", "");
 
+        // * @AbigailGeovana faz o request
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
             .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", month, day, year))
@@ -68,9 +76,11 @@ public class TvSeriesAPI {
             .build();
         Response response = client.newCall(request).execute();
         
+        // * @AbigailGeovana Descompacta e transforma em uma string
         var inputStream = new GZIPInputStream(new ByteArrayInputStream(response.body().bytes()));
         var json = new String(inputStream.readAllBytes()).split("\n");
 
+        // * @AbigailGeovana tranforma em json
         JSONArray jsonArray = new JSONArray();
         for (var item : json) {
             JSONParser parser = new JSONParser();
@@ -81,7 +91,7 @@ public class TvSeriesAPI {
     }
 
     public TvSeriesDb getDetails(Integer id) throws TmdbException {
-        return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES);
+        return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
     }
     
     public Images getImageBySerie(Integer id) throws TmdbException {

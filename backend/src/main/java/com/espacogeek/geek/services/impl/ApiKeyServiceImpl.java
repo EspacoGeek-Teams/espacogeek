@@ -10,7 +10,7 @@ import com.espacogeek.geek.repositories.ApiKeyRepository;
 import com.espacogeek.geek.services.ApiKeyService;
 
 /**
- * A Implementation class of @see ApiKeyService
+ * A Implementation class of ApiKeyService @see ApiKeyService
  */
 @Service
 public class ApiKeyServiceImpl implements ApiKeyService {

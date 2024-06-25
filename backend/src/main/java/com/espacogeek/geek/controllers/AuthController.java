@@ -22,7 +22,7 @@ public class AuthController {
 
     @PostMapping("/")
     public UserModel addUser(@RequestBody NewUser newUser) {
-        var passwordCrypted = BCrypt.withDefaults().hash(12, newUser.password().toCharArray());
+        var passwordCrypted = BCrypt.withDefaults().hash(12, newUser.password().toCharArray()); // * @AbigailGeovana criptografa a senha
         UserModel user = new UserModel(null, newUser.username(), newUser.email(), passwordCrypted, null);
         return userService.save(user);
     }

@@ -25,7 +25,7 @@ public class MediaController {
     public List<MediaModel> findSerie(@Argument(name = "filter") MediaInput mediaInput) {
         var medias = this.mediaService.findSerieByIdOrName(mediaInput.getId(), mediaInput.getName());
 
-        medias.forEach((media) -> {
+        medias.forEach((media) -> { // * @AbigailGeovana se a serie não tiver imagem ele busca uma imagem
             if (media.getBanner() == null || media.getCover() == null) {
                 media = mediaDataController.handleArtworks(media);
             }

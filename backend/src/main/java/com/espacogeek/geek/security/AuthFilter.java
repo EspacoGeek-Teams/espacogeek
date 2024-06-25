@@ -33,28 +33,28 @@ public class AuthFilter extends OncePerRequestFilter {
     @Deprecated
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        var servletPath = request.getServletPath(); // * Pega a url
-        if (!servletPath.endsWith("/auth/")) { // * Só entra (filtra) as url que não teermina em /auth/. Todos os caminhos que não estão especificado aqui é filtrado se o usuário existe ou não
-            var authorization = request.getHeader("Authorization"); // * Pega o Basic Auth Base64
-            if (authorization == null) { // * Se não for inserido nenhuma credenciais
+        var servletPath = request.getServletPath(); // * @AbigailGeovanaPega a url
+        if (!servletPath.endsWith("/auth/")) { // * @AbigailGeovanaSó entra (filtra) as url que não teermina em /auth/. Todos os caminhos que não estão especificado aqui é filtrado se o usuário existe ou não
+            var authorization = request.getHeader("Authorization"); // * @AbigailGeovanaPega o Basic Auth Base64
+            if (authorization == null) { // * @AbigailGeovanaSe não for inserido nenhuma credenciais
                 throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
             }
 
-            var decodeBasicAuth = new DecodeBasicAuth(authorization); // * Desencripta a credencial
-            var user = userService.findByIdOrUsernameContainsOrEmail(null, null, decodeBasicAuth.getEmail()).getFirst(); // * Encontra o usuário
+            var decodeBasicAuth = new DecodeBasicAuth(authorization); // * @AbigailGeovanaDesencripta a credencial
+            var user = userService.findByIdOrUsernameContainsOrEmail(null, null, decodeBasicAuth.getEmail()).getFirst(); // * @AbigailGeovanaEncontra o usuário
 
-            if (!user.isPresent()) { // * Se o usuário for encontrado não da erro
+            if (!user.isPresent()) { // * @AbigailGeovanaSe o usuário for encontrado não da erro
                 throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
             } else {
-                var resultPassword = BCrypt.verifyer().verify(decodeBasicAuth.getPassword().toCharArray(),user.get().getPassword()).verified; // * Verifica se a senha é validada
+                var resultPassword = BCrypt.verifyer().verify(decodeBasicAuth.getPassword().toCharArray(),user.get().getPassword()).verified; // * @AbigailGeovanaVerifica se a senha é validada
                 if (resultPassword) {
-                    filterChain.doFilter(request, response); // * Se  valida permite requisição
+                    filterChain.doFilter(request, response); // * @AbigailGeovanaSe  valida permite requisição
                 } else {
                     throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
                 }
             }
         } else {
-            filterChain.doFilter(request, response); // * Se URL terminal em /auth/ permite sem filtrar
+            filterChain.doFilter(request, response); // * @AbigailGeovanaSe URL terminal em /auth/ permite sem filtrar
         }
     }
 }
