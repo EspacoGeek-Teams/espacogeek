@@ -4,11 +4,13 @@ type Media {
     episode: Int
     episodeLength: Int
     about: String
-    pathCover: String
+    cover: String
+    banner: String
     mediaCategory: MediaCategory
     company: [Company]
     people: [People]
     genre: [Genre]
+    externalReference: [ExternalReference]
 }
 
 input MediaInput {
