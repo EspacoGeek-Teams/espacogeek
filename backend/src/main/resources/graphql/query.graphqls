@@ -1,4 +1,6 @@
+# * @AbigailGeovana tipo query (são tipos de requisições que servem para fazer GET.
 type Query {
     findUser(filter: UserInput): [User]
+    # * @AbigailGeovana "findSerie" é o nome da função, mas também é possível colocar um nome personalizado na anotação da função. "filter" é o nome da classe que armazena as informações da busca que defini no parâmetros da função e "MediaInput" é o nome da função. "[Media]" é o tipo de retorno, você pode conferir em Media....graphqls. quando tem "[]" significa que o retorno da função é uma lista
     findSerie(filter: MediaInput): [Media]
 }
