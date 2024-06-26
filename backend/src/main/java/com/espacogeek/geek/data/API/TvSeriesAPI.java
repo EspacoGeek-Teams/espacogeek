@@ -91,7 +91,7 @@ public class TvSeriesAPI {
     }
 
     public TvSeriesDb getDetails(Integer id) throws TmdbException {
-        return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+        return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
     }
     
     public Images getImageBySerie(Integer id) throws TmdbException {

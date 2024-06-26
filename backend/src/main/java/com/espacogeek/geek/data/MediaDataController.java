@@ -159,19 +159,21 @@ public class MediaDataController {
             if (externalReference.getTypeReference().getId().equals(this.typeReference.getId())) { // * @AbigailGeovana procura pela ID de referencia dele do tmdb
                 String banner = "";
                 String cover = "";
-                
+
                 try {
-                    cover = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference())).getPosters().getFirst().getFilePath(); // * @AbigailGeovana Pega o endpoint da imagem
-                    
-                    banner = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference())).getBackdrops().getFirst().getFilePath(); // * @AbigailGeovana Pega o endpoint da imagem
-                
+                    cover = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference())).getPosters()
+                            .getFirst().getFilePath(); // * @AbigailGeovana Pega o endpoint da imagem
+
+                    banner = tvSeriesAPI.getImageBySerie(Integer.valueOf(externalReference.getReference()))
+                            .getBackdrops().getFirst().getFilePath(); // * @AbigailGeovana Pega o endpoint da imagem
+
                 } catch (NumberFormatException | TmdbException e) {
                     e.printStackTrace();
                 }
 
-                media.setCover(TvSeriesAPI.URL_IMAGE+cover); // * @AbigailGeovana junta o restante da URL com o endpoint
-                media.setBanner(TvSeriesAPI.URL_IMAGE+banner); // * @AbigailGeovana junta o restante da URL com o endpoint
-            
+                media.setCover(TvSeriesAPI.URL_IMAGE + cover); // * @AbigailGeovana junta o restante da URL com o endpoint
+                media.setBanner(TvSeriesAPI.URL_IMAGE + banner); // * @AbigailGeovana junta o restante da URL com o endpoint
+
                 mediaService.save(media);
 
                 return media;
@@ -179,5 +181,10 @@ public class MediaDataController {
         }
 
         throw new GenericException("When trying to get images the External Reference couldn't be found!");
+    }
+    
+    public void getAllInformation(MediaModel media) {
+        var allSerieInfo = tvSeriesAPI.getDetails(media.getExternalReference().stream().filter(
+                (externalReference) -> externalReference.getTypeReference().equals(this.typeReference.getId())).findFirst().get()));
     }
 }
