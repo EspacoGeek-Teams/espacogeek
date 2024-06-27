@@ -18,6 +18,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +40,7 @@ public class MediaModel implements Serializable {
     private String name;
 
     @Column(name = "episode_count")
-    private Integer episode;
+    private Integer totalEpisodes;
 
     @Column(name = "episode_length_in_minutes")
     private Integer episodeLength;

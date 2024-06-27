@@ -2,7 +2,7 @@
 type Media {
     id: ID
     name: String
-    episode: Int
+    totalEpisodes: Int
     episodeLength: Int
     about: String
     cover: String
