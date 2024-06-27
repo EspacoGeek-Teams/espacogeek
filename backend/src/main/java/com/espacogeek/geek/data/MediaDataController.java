@@ -27,6 +27,7 @@ import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
+import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
 import jakarta.annotation.PostConstruct;
 
@@ -51,11 +52,19 @@ public class MediaDataController {
 
     private MediaCategoryModel mediaCategory;
 
+    private static final Integer TMDB_ID = 1;
+
+    private static final Integer TVDB_ID = 2;
+
+    private static final Integer IMDB_ID = 3;
+
+    private static final Integer SERIE_ID = 1;
+
     @PostConstruct
     private void init() {
-        this.typeReference = typeReferenceService.findById(1)
+        this.typeReference = typeReferenceService.findById(TMDB_ID)
             .orElseThrow(() -> new GenericException("Type Reference not found"));
-        this.mediaCategory = mediaCategoryService.findById(1)
+        this.mediaCategory = mediaCategoryService.findById(SERIE_ID)
             .orElseThrow(() -> new GenericException("Category not found"));
     }
     
@@ -183,8 +192,50 @@ public class MediaDataController {
         throw new GenericException("When trying to get images the External Reference couldn't be found!");
     }
     
-    public void getAllInformation(MediaModel media) {
-        var allSerieInfo = tvSeriesAPI.getDetails(media.getExternalReference().stream().filter(
-                (externalReference) -> externalReference.getTypeReference().equals(this.typeReference.getId())).findFirst().get()));
+    public MediaModel getAllInformation(MediaModel media) {
+        TvSeriesDb serieInfo = null;
+
+        try {
+            serieInfo = tvSeriesAPI.getDetails(media.getExternalReference().stream()
+                .filter(
+                    (externalReference) -> externalReference.getTypeReference().getId().equals(this.typeReference.getId())
+                ).findFirst().get().getId());
+        } catch (TmdbException e) {
+            e.printStackTrace();
+        }
+
+        if(serieInfo == null) {
+            return media;
+        }
+
+        media.setAbout(serieInfo.getOverview());
+        media.setEpisodeLength(serieInfo.getEpisodeRunTime().getFirst());
+        media.setBanner(TvSeriesAPI.URL_IMAGE + serieInfo.getBackdropPath());
+        media.setCover(TvSeriesAPI.URL_IMAGE + serieInfo.getPosterPath());
+        media.setTotalEpisodes(serieInfo.getNumberOfEpisodes());
+        
+        var tvdbReference = typeReferenceService.findById(TVDB_ID)
+                .orElseThrow(() -> new GenericException("Type Reference not found"));
+        var imdbReference = typeReferenceService.findById(IMDB_ID)
+                .orElseThrow(() -> new GenericException("Type Reference not found"));
+            
+        var externalTvdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getTvdbId(), media, tvdbReference);    
+        var externalImdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getImdbId(), media, imdbReference);
+        
+        media.getExternalReference().forEach((external) -> {
+            if (external.getTypeReference().equals(tvdbReference)) {
+                externalTvdb.setId(external.getId());
+            }
+            if (external.getTypeReference().equals(imdbReference)) {
+                externalImdb.setId(external.getId());
+            }
+        });
+
+        externalReferenceService.save(externalTvdb);
+        externalReferenceService.save(externalImdb);
+
+        media = mediaService.save(media);
+
+        return media;
     }
 }
