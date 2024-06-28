@@ -35,15 +35,13 @@ public class MediaController {
 
         for (MediaModel media: medias) {
             // * @AbigailGeovana se a ultima atualizacão for dentro do estipulado pega do endpoint change do tmdb se não pega todos os dados completo
-            if (media.getUpdateAt() != null) {
-                var mediaUpdateAt = LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
+            LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
 
-                if (media.getUpdateAt() == null || ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 14) {
-                    media = mediaDataController.getAllInformation(media);
-                } else {
-                    // TODO funão pegar do endpoint change
-                }
+            if (ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 14 || mediaUpdateAt == null) {
+                media = mediaDataController.getAllInformation(media);
             } else {
+                // TODO a method to get only the fields updated
+                // ! by now we'll use getAllInformation
                 media = mediaDataController.getAllInformation(media);
             }
             newMedias.add(media);
