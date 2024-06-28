@@ -208,19 +208,19 @@ public class MediaDataController {
             return media;
         }
 
-        media.setAbout(serieInfo.getOverview());
-        media.setEpisodeLength(serieInfo.getEpisodeRunTime().getFirst());
-        media.setBanner(TvSeriesAPI.URL_IMAGE + serieInfo.getBackdropPath());
-        media.setCover(TvSeriesAPI.URL_IMAGE + serieInfo.getPosterPath());
-        media.setTotalEpisodes(serieInfo.getNumberOfEpisodes());
-        
+        media.setAbout(serieInfo.getOverview() == null ? null : serieInfo.getOverview());
+        media.setEpisodeLength(serieInfo.getEpisodeRunTime().isEmpty() ? null : serieInfo.getEpisodeRunTime().getFirst());
+        media.setBanner(serieInfo.getBackdropPath() == null ? null : TvSeriesAPI.URL_IMAGE + serieInfo.getBackdropPath());
+        media.setCover(serieInfo.getPosterPath() == null ? null : TvSeriesAPI.URL_IMAGE + serieInfo.getPosterPath());
+        media.setTotalEpisodes(serieInfo.getNumberOfEpisodes() == null ? null : serieInfo.getNumberOfEpisodes());
+
         var tvdbReference = typeReferenceService.findById(TVDB_ID)
                 .orElseThrow(() -> new GenericException("Type Reference not found"));
         var imdbReference = typeReferenceService.findById(IMDB_ID)
                 .orElseThrow(() -> new GenericException("Type Reference not found"));
             
-        var externalTvdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getTvdbId(), media, tvdbReference);    
-        var externalImdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getImdbId(), media, imdbReference);
+        var externalTvdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getTvdbId() == null ? null : serieInfo.getExternalIds().getTvdbId(), media, tvdbReference);    
+        var externalImdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getImdbId() == null ? null : serieInfo.getExternalIds().getImdbId(), media, imdbReference);
         
         media.getExternalReference().forEach((external) -> {
             if (external.getTypeReference().equals(tvdbReference)) {
