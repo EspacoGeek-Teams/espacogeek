@@ -196,10 +196,12 @@ public class MediaDataController {
         TvSeriesDb serieInfo = null;
 
         try {
-            serieInfo = tvSeriesAPI.getDetails(media.getExternalReference().stream()
-                .filter(
-                    (externalReference) -> externalReference.getTypeReference().getId().equals(this.typeReference.getId())
-                ).findFirst().get().getId());
+            var idSerie = media.getExternalReference().stream()
+            .filter(
+                    (externalReference) -> externalReference.getTypeReference().getId()
+                            .equals(this.typeReference.getId()))
+                    .findFirst().get().getReference();
+            serieInfo = tvSeriesAPI.getDetails(Integer.valueOf(idSerie));
         } catch (TmdbException e) {
             e.printStackTrace();
         }
