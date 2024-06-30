@@ -19,6 +19,7 @@ import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.ApiKeyService;
 
 import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.model.core.AlternativeTitle;
 import info.movito.themoviedbapi.model.keywords.Keyword;
 import info.movito.themoviedbapi.model.tv.series.Images;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
@@ -41,7 +42,6 @@ public class TvSeriesAPI {
     public final static String URL_IMAGE = "https://image.tmdb.org/t/p/original";
 
     @PostConstruct
-    @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
     private void init() {
         this.tmdbApi = new TmdbApi(this.apiKeyService.findById(1).get().getKey());
     }
@@ -63,19 +63,22 @@ public class TvSeriesAPI {
         var now = LocalDateTime.now();
 
         // formatting the date to do request as tmdb pattern
-        var month = String.valueOf(now.getMonth().getValue()).length() == 1 ? 0 + String.valueOf(now.getMonth().getValue()) : now.getMonth().getValue();
-        var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? 0+now.getDayOfMonth() : now.getDayOfMonth();
+        var month = String.valueOf(now.getMonth().getValue()).length() == 1
+                ? 0 + String.valueOf(now.getMonth().getValue())
+                : now.getMonth().getValue();
+        var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? 0 + now.getDayOfMonth() : now.getDayOfMonth();
         var year = String.valueOf(now.getYear()).replace(".", "");
 
         // * @AbigailGeovana faz o request
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
-            .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", month, day, year))
-            .method("GET", null)
-            .addHeader("Content-Type", "application/json")
-            .build();
+                .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", month,
+                        day, year))
+                .method("GET", null)
+                .addHeader("Content-Type", "application/json")
+                .build();
         Response response = client.newCall(request).execute();
-        
+
         // * @AbigailGeovana Descompacta e transforma em uma string
         var inputStream = new GZIPInputStream(new ByteArrayInputStream(response.body().bytes()));
         var json = new String(inputStream.readAllBytes()).split("\n");
@@ -90,15 +93,24 @@ public class TvSeriesAPI {
         return jsonArray;
     }
 
+    @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
     public TvSeriesDb getDetails(Integer id) throws TmdbException {
-        return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+        return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS,
+                TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
     }
     
+    @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
     public Images getImageBySerie(Integer id) throws TmdbException {
         return tmdbApi.getTvSeries().getImages(id, "en");
     }
 
+    @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
     public List<Keyword> getKeyword(Integer id) throws TmdbException {
         return tmdbApi.getTvSeries().getKeywords(id).getResults();
+    }
+
+    @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
+    public List<AlternativeTitle> getAlternativeTitles(Integer id) throws TmdbException {
+        return tmdbApi.getTvSeries().getAlternativeTitles(id).getResults();
     }
 }

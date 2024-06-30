@@ -1,0 +1,4 @@
+type AlternativeTitles {
+    id: ID
+    name: String
+}

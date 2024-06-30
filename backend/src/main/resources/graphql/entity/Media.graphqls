@@ -12,6 +12,7 @@ type Media {
     people: [People]
     genre: [Genre]
     externalReference: [ExternalReference]
+    alternativeTitles: [AlternativeTitles]
 }
 
 input MediaInput {

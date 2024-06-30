@@ -2,8 +2,8 @@ package com.espacogeek.geek.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.espacogeek.geek.models.PeopleModel;
+import com.espacogeek.geek.modals.PeopleModal;
 
-public interface PeopleRepository extends JpaRepository<PeopleModel, Integer> {
+public interface PeopleRepository extends JpaRepository<PeopleModal, Integer> {
 
 }

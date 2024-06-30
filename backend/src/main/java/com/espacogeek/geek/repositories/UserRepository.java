@@ -6,9 +6,9 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.espacogeek.geek.models.UserModel;
+import com.espacogeek.geek.modals.UserModal;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserModel, Integer>{
-    List<Optional<UserModel>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email);
+public interface UserRepository extends JpaRepository<UserModal, Integer>{
+    List<Optional<UserModal>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email);
 }

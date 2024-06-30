@@ -1,4 +1,4 @@
-package com.espacogeek.geek.models;
+package com.espacogeek.geek.modals;
 
 import java.io.Serializable;
 import java.util.List;
@@ -25,7 +25,7 @@ import lombok.Setter;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserModel implements Serializable {
+public class UserModal implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")

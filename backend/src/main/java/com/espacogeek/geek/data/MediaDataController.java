@@ -18,15 +18,18 @@ import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.api.TvSeriesAPI;
 import com.espacogeek.geek.exception.GenericException;
+import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
+import com.espacogeek.geek.services.AlternativeTitlesService;
 import com.espacogeek.geek.services.ExternalReferenceService;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
+import info.movito.themoviedbapi.model.core.AlternativeTitle;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
 import jakarta.annotation.PostConstruct;
@@ -47,6 +50,9 @@ public class MediaDataController {
 
     @Autowired
     private ExternalReferenceService externalReferenceService;
+
+    @Autowired
+    private AlternativeTitlesService alternativeTitleService;
 
     private TypeReferenceModel typeReference;
 
@@ -79,6 +85,7 @@ public class MediaDataController {
             var jsonArrayDailyExport = tvSeriesAPI.updateTitles(); // * @AbigailGeovana pega a lista de todos os titulos de serie
             var medias = new ArrayList<MediaModel>();
             var externalReferences = new ArrayList<ExternalReferenceModel>();
+            var alternativeTitles = new ArrayList<AlternativeTitleModel>();
 
             for (int i = 0; i < jsonArrayDailyExport.size(); i++) {
                 var json = (JSONObject) jsonArrayDailyExport.get(i);
@@ -90,7 +97,7 @@ public class MediaDataController {
                 })) {
                     var externalReferenceList = new ArrayList<ExternalReferenceModel>();
     
-                    var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, this.mediaCategory, null, null, null, null, null, null);
+                    var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, this.mediaCategory, null, null, null, null, null, null, null);
                     var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, this.typeReference);
     
                     var externalReferenceExisted = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
@@ -105,11 +112,19 @@ public class MediaDataController {
     
                     externalReferences.add(externalReference);
                     medias.add(media);
+
+                    var alternativeTitlesInfo = tvSeriesAPI.getAlternativeTitles(Integer.valueOf(externalReference.getReference()));
+
+                    alternativeTitlesInfo.forEach((title) -> {
+                        alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), media));
+                    });
+
                 }
             }
 
             mediaService.saveAll(medias);
             externalReferenceService.saveAll(externalReferences);
+            alternativeTitleService.saveAll(alternativeTitles);
 
             System.out.println("SUCCESS TO UPDATE TV SERIES, AT " + LocalDateTime.now());
 
@@ -233,8 +248,21 @@ public class MediaDataController {
             }
         });
 
+        var alternativeTitles = new ArrayList<AlternativeTitleModel>();
+
+        final MediaModel mediaFinal = media;
+        serieInfo.getAlternativeTitles().getResults().forEach((title) -> {
+            mediaFinal.getAlternativeTitles().forEach((mediaTitles) -> {
+                if (mediaTitles.getName() != title.getTitle()) {
+                    alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), mediaFinal));
+                }
+           });
+        });
+
         externalReferenceService.save(externalTvdb);
         externalReferenceService.save(externalImdb);
+        
+        alternativeTitleService.saveAll(alternativeTitles);
 
         media = mediaService.save(media);
 
