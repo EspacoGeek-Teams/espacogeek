@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.espacogeek.geek.exception.GenericException;
-import com.espacogeek.geek.models.UserModel;
+import com.espacogeek.geek.modals.UserModal;
 import com.espacogeek.geek.repositories.UserRepository;
 import com.espacogeek.geek.services.UserService;
 
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
      * @see UserService#findByIdOrUsernameContainsOrEmail(String, String, String)
      */
     @Override
-    public List<Optional<UserModel>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email) {
+    public List<Optional<UserModal>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email) {
         return userRepository.findByIdOrUsernameContainsOrEmail(id, username, email);
     }
 
@@ -35,15 +35,15 @@ public class UserServiceImpl implements UserService {
      * @see UserService#findById(Integer)
      */
     @Override
-    public Optional<UserModel> findById(Integer id) {
+    public Optional<UserModal> findById(Integer id) {
         return userRepository.findById(id);
     }
 
     /**
-     * @see UserService#save(UserModel)
+     * @see UserService#save(UserModal)
      */
     @Override
-    public UserModel save(UserModel user) {
+    public UserModal save(UserModal user) {
         try {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {

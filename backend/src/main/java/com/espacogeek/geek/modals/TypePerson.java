@@ -1,4 +1,4 @@
-package com.espacogeek.geek.models;
+package com.espacogeek.geek.modals;
 
 import java.io.Serializable;
 import java.util.List;
@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -17,21 +17,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Entity
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "genres")
-public class GenreModel implements Serializable {
+@Table(name = "types_person")
+public class TypePerson implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_genre")
     private Integer id;
 
-    @Column(name = "name_genre")
-    private String name;
+    @Column(name = "name_type_person")
+    private String nameTypePerson;
 
-    @ManyToMany(mappedBy = "genre")
-    private List<MediaModel> media;
+    @OneToMany(mappedBy = "typePerson")
+    @Transient
+    private List<PeopleModel> people;
 }

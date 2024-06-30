@@ -1,4 +1,4 @@
-package com.espacogeek.geek.models;
+package com.espacogeek.geek.modals;
 
 import java.io.Serializable;
 import java.util.List;
@@ -21,8 +21,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+<<<<<<<< HEAD:backend/src/main/java/com/espacogeek/geek/modals/MediaCategoryModel.java
 @Table(name = "media_categories")
 public class MediaCategoryModel implements Serializable {
+========
+@Table(name = "midia_categories")
+public class MidiaCategoryModal implements Serializable {
+>>>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia):backend/src/main/java/com/espacogeek/geek/modals/MidiaCategoryModal.java
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_media_category")
@@ -31,7 +36,12 @@ public class MediaCategoryModel implements Serializable {
     @Column(name = "type_category")
     private String typeCategory;
 
+<<<<<<<< HEAD:backend/src/main/java/com/espacogeek/geek/modals/MediaCategoryModel.java
     @OneToMany(mappedBy = "mediaCategoryModel")
     @Transient
     private List<MediaModel> mediaModels;
+========
+    @OneToMany(mappedBy = "midiaCategoryModal")
+    private List<MidiaModal> midiaModals;
+>>>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia):backend/src/main/java/com/espacogeek/geek/modals/MidiaCategoryModal.java
 }

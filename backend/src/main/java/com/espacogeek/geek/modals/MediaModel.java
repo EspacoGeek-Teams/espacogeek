@@ -90,4 +90,7 @@ public class MediaModel implements Serializable {
     @UpdateTimestamp
     @Column(name = "update_at")
     private Date updateAt;
+
+    @OneToMany(mappedBy = "media")
+    private List<AlternativeTitleModel> alternativeTitles;
 }

@@ -11,8 +11,17 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 import com.espacogeek.geek.models.UserModel;
 import com.espacogeek.geek.services.UserService;
+=======
+=======
+>>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia)
+import com.espacogeek.geek.exception.GenericException;
+import com.espacogeek.geek.modals.UserModal;
+import com.espacogeek.geek.services.User.UserService;
+>>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia)
 import com.espacogeek.geek.types.UserInput;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
@@ -24,7 +33,7 @@ public class UserController {
     private UserService userService;
 
     @QueryMapping
-    public List<Optional<UserModel>> findUser(@Argument(name = "filter") UserInput userInput) {
+    public List<Optional<UserModal>> findUser(@Argument(name = "filter") UserInput userInput) {
         return userService.findByIdOrUsernameContainsOrEmail(userInput.getId(), userInput.getUsername(), userInput.getEmail());
     }
 

@@ -1,55 +1,39 @@
 package com.espacogeek.geek.models;
 
 import java.io.Serializable;
-import java.util.Date;
-
-import org.hibernate.annotations.CreationTimestamp;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Max;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Table(name = "alternative_titles", indexes = { @Index(name = "idx_name_alternative_title",columnList = "name", unique = true) })
 @Entity
-@Table(name = "users_library")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserLibraryModel implements Serializable {
+public class AlternativeTitleModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_user_library")
+    @Column(name = "id_alternative_title")
     private Integer id;
 
-    @Column(name = "progress")
-    @Max(4)
-    private Integer progress;
-
-    @Column(name = "added_at")
-    @CreationTimestamp
-    private Date addedAt;
+    @Column(name = "name_title")
+    private String name;
 
     @ManyToOne
-    @JoinColumn(name = "id_user")
-    private UserModel user;
-
-    @ManyToOne
-    @JoinColumn(name = "status")
-    private TypeStatusModel typeStatus;
-
-    @ManyToOne
-    @JoinColumn(name = "id_media")
+    @JoinColumn(name = "id_midia")
     private MediaModel media;
 }
