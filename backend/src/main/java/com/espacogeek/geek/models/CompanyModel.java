@@ -1,4 +1,4 @@
-package com.espacogeek.geek.modals;
+package com.espacogeek.geek.models;
 
 import java.io.Serializable;
 import java.util.List;
@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-<<<<<<< HEAD
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -22,14 +21,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-=======
-import lombok.Data;
-
-@Entity
-@Data
->>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia)
 @Table(name = "companies")
-public class CompanyModal implements Serializable {
+public class CompanyModel implements Serializable {
     @Id
     @Column(name = "id_company")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,16 +31,6 @@ public class CompanyModal implements Serializable {
     @Column(name = "name_company")
     private String name;
 
-<<<<<<< HEAD
-<<<<<<< HEAD:backend/src/main/java/com/espacogeek/geek/models/CompanyModel.java
     @ManyToMany(mappedBy = "company")
     private List<MediaModel> media;
-=======
-    @ManyToMany(mappedBy = "companyModals")
-    private List<MidiaModal> midiaModals;
->>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia):backend/src/main/java/com/espacogeek/geek/modals/CompanyModal.java
-=======
-    @ManyToMany(mappedBy = "companyModals")
-    private List<MidiaModal> midiaModals;
->>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia)
 }

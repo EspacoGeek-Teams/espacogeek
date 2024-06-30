@@ -1,15 +1,6 @@
 package com.espacogeek.geek.utils;
 
 import java.util.Base64;
-<<<<<<< HEAD
-=======
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.espacogeek.geek.modals.UserModal;
-import com.espacogeek.geek.services.User.UserService;
->>>>>>> parent of a503368 (refractor and feat: fixed name modals to models and implementing midia)
 
 /**
  * Utility class to decode Basic Auth credentials and retrieve a UserModal object.

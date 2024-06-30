@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.espacogeek.geek.data.api.TvSeriesAPI;
+import com.espacogeek.geek.data.API.TvSeriesAPI;
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
@@ -96,10 +96,10 @@ public class MediaDataController {
                     return keyword.getName().toLowerCase() == "anime" ? false : true;
                 })) {
                     var externalReferenceList = new ArrayList<ExternalReferenceModel>();
-    
-                    var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, this.mediaCategory, null, null, null, null, null, null, null);
-                    var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, this.typeReference);
-    
+
+                    var media = new MediaModel(TMDB_ID, json.get("original_name").toString(), SERIE_ID, IMDB_ID, null, null, null, this.mediaCategory, null, null, null, null, null, null, null);    
+                    var externalReference = new ExternalReferenceModel(IMDB_ID, json.get("id").toString(), null, typeReference);
+
                     var externalReferenceExisted = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
                     if (externalReferenceExisted.isPresent()) {
                         media.setId(externalReferenceExisted.get().getMedia().getId()); // * @AbigailGeovana Se a media já existir ela vai ter uma exteralReference. Para não repetir adicionamos o mesmo id da media para não repetir, define o id aí em vez de criar um novo registro no banco vai só atualizar o já existente
@@ -238,7 +238,7 @@ public class MediaDataController {
             
         var externalTvdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getTvdbId() == null ? null : serieInfo.getExternalIds().getTvdbId(), media, tvdbReference);    
         var externalImdb = new ExternalReferenceModel(null, serieInfo.getExternalIds().getImdbId() == null ? null : serieInfo.getExternalIds().getImdbId(), media, imdbReference);
-        
+
         media.getExternalReference().forEach((external) -> {
             if (external.getTypeReference().equals(tvdbReference)) {
                 externalTvdb.setId(external.getId());

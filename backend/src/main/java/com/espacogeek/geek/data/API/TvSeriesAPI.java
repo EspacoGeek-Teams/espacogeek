@@ -1,4 +1,4 @@
-package com.espacogeek.geek.data.api;
+package com.espacogeek.geek.data.API;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import com.espacogeek.geek.exception.GenericException;
-import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.ApiKeyService;
 
 import info.movito.themoviedbapi.TmdbApi;
