@@ -1,4 +1,4 @@
-package com.espacogeek.geek.data.API;
+package com.espacogeek.geek.data.api;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
