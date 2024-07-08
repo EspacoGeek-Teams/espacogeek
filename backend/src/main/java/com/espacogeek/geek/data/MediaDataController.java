@@ -249,20 +249,25 @@ public class MediaDataController {
         });
 
         var alternativeTitles = new ArrayList<AlternativeTitleModel>();
-
         final MediaModel mediaFinal = media;
         serieInfo.getAlternativeTitles().getResults().forEach((title) -> {
-            mediaFinal.getAlternativeTitles().forEach((mediaTitles) -> {
-                if (mediaTitles.getName() != title.getTitle()) {
-                    alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), mediaFinal));
-                }
-           });
+            if (mediaFinal.getAlternativeTitles().isEmpty()) {
+                alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), mediaFinal));
+            } else {
+                mediaFinal.getAlternativeTitles().forEach((mediaTitles) -> {
+                    if (!title.getTitle().intern().equals(mediaTitles.getName().intern())) { // if (s.compareTo(t) > 0)
+                        alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), mediaFinal));
+                    }
+               });
+            }
         });
 
         externalReferenceService.save(externalTvdb);
         externalReferenceService.save(externalImdb);
         
-        alternativeTitleService.saveAll(alternativeTitles);
+        var newTitles = alternativeTitleService.saveAll(alternativeTitles);
+        newTitles.addAll(media.getAlternativeTitles());
+        media.setAlternativeTitles(newTitles);
 
         media = mediaService.save(media);
 
