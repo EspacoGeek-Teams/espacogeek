@@ -254,11 +254,9 @@ public class MediaDataController {
             if (mediaFinal.getAlternativeTitles().isEmpty()) {
                 alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), mediaFinal));
             } else {
-                mediaFinal.getAlternativeTitles().forEach((mediaTitles) -> {
-                    if (!title.getTitle().intern().equals(mediaTitles.getName().intern())) { // if (s.compareTo(t) > 0)
-                        alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), mediaFinal));
-                    }
-               });
+                if (mediaFinal.getAlternativeTitles().stream().anyMatch((mediaTitles) -> !mediaTitles.getName().equals(title.getTitle()))) {
+                    alternativeTitles.add(new AlternativeTitleModel(null, title.getTitle(), mediaFinal));
+                }
             }
         });
 
