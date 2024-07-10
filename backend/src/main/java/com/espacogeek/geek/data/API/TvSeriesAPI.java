@@ -4,7 +4,10 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import org.json.simple.JSONArray;
@@ -14,8 +17,15 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.exception.GenericException;
+import com.espacogeek.geek.models.AlternativeTitleModel;
+import com.espacogeek.geek.models.ExternalReferenceModel;
+import com.espacogeek.geek.models.MediaCategoryModel;
+import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.ApiKeyService;
+import com.espacogeek.geek.services.MediaCategoryService;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.core.AlternativeTitle;
@@ -38,6 +48,9 @@ public class TvSeriesAPI {
     @Autowired
     private ApiKeyService apiKeyService;
 
+    @Autowired
+    private MediaCategoryService mediaCategoryService;
+
     public final static String URL_IMAGE = "https://image.tmdb.org/t/p/original";
 
     @PostConstruct
@@ -50,7 +63,6 @@ public class TvSeriesAPI {
         throw new GenericException(HttpStatus.TOO_MANY_REQUESTS.toString());
     }
 
-    @SuppressWarnings("unchecked")
     /**
      * This function get the daily datajump avaliable by tmdb
      * 
@@ -58,6 +70,7 @@ public class TvSeriesAPI {
      * @throws IOException
      * @throws ParseException
      */
+    @SuppressWarnings("unchecked")
     public JSONArray updateTitles() throws IOException, ParseException {
         var now = LocalDateTime.now();
 
@@ -93,23 +106,57 @@ public class TvSeriesAPI {
     }
 
     // @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
-    public TvSeriesDb getDetails(Integer id) throws TmdbException {
-        return tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS,
-                TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+    public MediaModel getDetails(Integer id) throws TmdbException {
+        var rawSerieDetails = tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+
+        MediaModel serie = new MediaModel(
+            null, 
+            rawSerieDetails.getName(), 
+            rawSerieDetails.getNumberOfEpisodes(), 
+            rawSerieDetails.getEpisodeRunTime().isEmpty() ? null : rawSerieDetails.getEpisodeRunTime().getFirst(),
+            rawSerieDetails.getOverview(), 
+            rawSerieDetails.getPosterPath() == null ? null : URL_IMAGE + rawSerieDetails.getPosterPath(),
+            rawSerieDetails.getBackdropPath() == null ? null : URL_IMAGE + rawSerieDetails.getBackdropPath(),
+            mediaCategoryService.findById(MediaDataController.SERIE_ID).get(),
+            null, 
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+        );
+
+        return serie;
     }
     
-    // @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
     public Images getImageBySerie(Integer id) throws TmdbException {
         return tmdbApi.getTvSeries().getImages(id, "en");
     }
 
-    // @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
     public List<Keyword> getKeyword(Integer id) throws TmdbException {
         return tmdbApi.getTvSeries().getKeywords(id).getResults();
     }
 
-    // @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
-    public List<AlternativeTitle> getAlternativeTitles(Integer id) throws TmdbException {
-        return tmdbApi.getTvSeries().getAlternativeTitles(id).getResults();
+    public List<AlternativeTitleModel> getAlternativeTitles(Integer id) throws TmdbException {
+        var rawAlternativeTitles = tmdbApi.getTvSeries().getAlternativeTitles(id).getResults();
+        var alternativeTitles = new ArrayList<AlternativeTitleModel>();
+
+        for (AlternativeTitle title : rawAlternativeTitles) {
+            alternativeTitles.add(new AlternativeTitleModel(id, title.getTitle(), null));
+        }
+
+        return alternativeTitles;
+    }
+
+    public Map<Integer, ExternalReferenceModel> getExternalReference(Integer id) throws TmdbException {
+        var rawExternalReferences = tmdbApi.getTvSeries().getExternalIds(id);
+        var externalReferences = new HashMap<Integer, ExternalReferenceModel>();
+
+        externalReferences.put(MediaDataController.TMDB_ID, new ExternalReferenceModel(null, id.toString(), null, null));
+        externalReferences.put(MediaDataController.TVDB_ID, new ExternalReferenceModel(null, rawExternalReferences.getTvdbId(), null, null));
+        externalReferences.put(MediaDataController.IMDB_ID, new ExternalReferenceModel(null, rawExternalReferences.getImdbId(), null, null));
+
+        return externalReferences;
     }
 }

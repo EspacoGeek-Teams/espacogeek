@@ -16,6 +16,7 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.data.impl.SerieControllerImpl;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.types.MediaInput;
@@ -26,7 +27,7 @@ public class MediaController {
     private MediaService mediaService;
 
     @Autowired
-    private MediaDataController mediaDataController;
+    private MediaDataController serieController;
 
     @QueryMapping
     public List<MediaModel> findSerie(@Argument(name = "filter") MediaInput mediaInput) {
@@ -38,13 +39,13 @@ public class MediaController {
             LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
 
             if (mediaUpdateAt == null) {
-                media = mediaDataController.getAllInformation(media);
+                media = serieController.getAllInformation(media);
             } else if (ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) < 14 && ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1) {
                 // TODO a method to get only the fields updated
                 // ! by now we'll use getAllInformation
-                media = mediaDataController.getAllInformation(media);
+                media = serieController.getAllInformation(media);
             } else if (ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 14) {
-                media = mediaDataController.getAllInformation(media);
+                media = serieController.getAllInformation(media);
             }
             newMedias.add(media);
         }
