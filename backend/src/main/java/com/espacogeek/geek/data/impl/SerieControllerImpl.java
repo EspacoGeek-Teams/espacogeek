@@ -2,7 +2,9 @@ package com.espacogeek.geek.data.impl;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.json.simple.JSONObject;
@@ -261,6 +263,7 @@ public class SerieControllerImpl implements MediaDataController {
         updateExternalReferences(media, result);
         updateArtworks(media, result);
         
+        media.setUpdateAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
         media = mediaService.save(media);
 
         result = new MediaModel();
