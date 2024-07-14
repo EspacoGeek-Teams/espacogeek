@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
@@ -36,8 +37,9 @@ public class ExternalReferenceModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "medias_id_media")
     private MediaModel media;
-
+    
+    @NotNull
     @ManyToOne
-    @JoinColumn(name = "type_reference")
+    @JoinColumn(name = "type_reference", nullable = false)
     private TypeReferenceModel typeReference;
 }

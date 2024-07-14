@@ -16,18 +16,11 @@ public interface MediaDataController {
     // Media Type references 
     public static final Integer SERIE_ID = 1;
 
-    /**
-     * This method get the media and set cover and banner. It also persist to Database.
-     * 
-     * @param media media that doesn't have cover or banner
-     * @throws GenericException when ExternalReference couldn't be found
-     * @return Media object with cover and banner
-     */
-    public MediaModel handleArtworks(MediaModel media);
+    public MediaModel updateAllInformation(MediaModel media, MediaModel result);
 
-    public MediaModel getAllInformation(MediaModel media);
+    public MediaModel updateArtworks(MediaModel media, MediaModel result);
 
-    public List<AlternativeTitleModel> handleAlternativeTitles(MediaModel media, MediaModel results);
+    public List<AlternativeTitleModel> updateAlternativeTitles(MediaModel media, MediaModel result);
 
-    public List<ExternalReferenceModel> handleExternalReferences(MediaModel media, MediaModel results);
+    public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result);
 }
