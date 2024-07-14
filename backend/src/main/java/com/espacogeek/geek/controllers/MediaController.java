@@ -39,13 +39,13 @@ public class MediaController {
             LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
 
             if (mediaUpdateAt == null) {
-                media = serieController.getAllInformation(media);
+                media = serieController.updateAllInformation(media, null);
             } else if (ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) < 14 && ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1) {
                 // TODO a method to get only the fields updated
-                // ! by now we'll use getAllInformation
-                media = serieController.getAllInformation(media);
+                // ! by now we'll use updateAllInformation
+                media = serieController.updateAllInformation(media, null);
             } else if (ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 14) {
-                media = serieController.getAllInformation(media);
+                media = serieController.updateAllInformation(media, null);
             }
             newMedias.add(media);
         }
