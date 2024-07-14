@@ -1,24 +1,15 @@
 package com.espacogeek.geek.data.impl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.imageio.IIOException;
-import javax.imageio.ImageIO;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.MediaDataController;
-import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.data.api.impl.TvSeriesApiImpl;
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
@@ -32,7 +23,6 @@ import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
-import info.movito.themoviedbapi.tools.TmdbException;
 import jakarta.annotation.PostConstruct;
 
 @Component("serieController")

@@ -2,7 +2,6 @@ package com.espacogeek.geek.data;
 
 import java.util.List;
 
-import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;

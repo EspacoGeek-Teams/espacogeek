@@ -16,7 +16,6 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import com.espacogeek.geek.data.MediaDataController;
-import com.espacogeek.geek.data.impl.SerieControllerImpl;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.types.MediaInput;

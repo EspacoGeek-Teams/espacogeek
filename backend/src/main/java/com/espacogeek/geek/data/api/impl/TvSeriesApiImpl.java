@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import org.json.simple.JSONArray;
@@ -19,12 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.MediaDataController;
-import com.espacogeek.geek.data.api.MediaAPI;
 import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
-import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.ApiKeyService;
 import com.espacogeek.geek.services.MediaCategoryService;
@@ -39,7 +35,6 @@ import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
 import info.movito.themoviedbapi.tools.appendtoresponse.TvSeriesAppendToResponse;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import jakarta.annotation.PostConstruct;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -71,7 +66,7 @@ public class TvSeriesApiImpl implements MediaApi {
     /**
      * @see MediaApi#updateTitles()
      * 
-     * This function get the daily datajump avaliable by tmdb
+     * This function get the daily datajump available by tmdb
      * 
      * @return a JSON Array with all serie titles
      * @throws IOException
