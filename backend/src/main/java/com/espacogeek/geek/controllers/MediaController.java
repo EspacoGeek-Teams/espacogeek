@@ -28,8 +28,8 @@ public class MediaController {
     @Autowired
     private MediaDataController serieController;
 
-    @QueryMapping
-    public List<MediaModel> findSerie(@Argument(name = "filter") MediaInput mediaInput) {
+    @QueryMapping(name = "tvserie")
+    public List<MediaModel> getSerie(@Argument(name = "filter") MediaInput mediaInput) {
         var medias = this.mediaService.findSerieByIdOrName(mediaInput.getId(), mediaInput.getName());
         var newMedias = new ArrayList<MediaModel>();
 
