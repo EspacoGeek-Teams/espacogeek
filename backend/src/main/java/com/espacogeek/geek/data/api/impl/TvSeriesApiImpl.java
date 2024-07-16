@@ -21,13 +21,16 @@ import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
+import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.ApiKeyService;
+import com.espacogeek.geek.services.GenreService;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.core.AlternativeTitle;
+import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.keywords.Keyword;
 import info.movito.themoviedbapi.model.tv.series.ExternalIds;
 import info.movito.themoviedbapi.model.tv.series.Images;
@@ -52,6 +55,9 @@ public class TvSeriesApiImpl implements MediaApi {
 
     @Autowired
     private TypeReferenceService typeReferenceService;
+
+    @Autowired
+    private GenreService genreService;
 
     @PostConstruct
     private void init() {
@@ -150,11 +156,11 @@ public class TvSeriesApiImpl implements MediaApi {
                 formatExternalReference(rawSerieDetails.getExternalIds(), rawSerieDetails.getId()),
                 null,
                 null,
-                null,
+                formatGenre(rawSerieDetails.getGenres()),
                 null,
                 null,
                 formatAlternativeTitles(rawSerieDetails.getAlternativeTitles().getResults()));
-
+        
         return serie;
     }
     
@@ -177,6 +183,10 @@ public class TvSeriesApiImpl implements MediaApi {
         return media;
     }
 
+    /**
+     * @see MediaApi#getArtwork(Integer)
+     */
+    @Override
     public List<Keyword> getKeyword(Integer id) {
         try {
             return tmdbApi.getTvSeries().getKeywords(id).getResults();
@@ -186,6 +196,10 @@ public class TvSeriesApiImpl implements MediaApi {
         return new ArrayList<>();
     }
 
+    /**
+     * @see MediaApi#getAlternativeTitles(Integer)
+     */
+    @Override
     public List<AlternativeTitleModel> getAlternativeTitles(Integer id) {
         List<AlternativeTitle> rawAlternativeTitles = new ArrayList<>();
         try {
@@ -206,6 +220,10 @@ public class TvSeriesApiImpl implements MediaApi {
         return alternativeTitles;
     }
 
+    /**
+     * @see MediaApi#getExternalReference(Integer)
+     */
+    @Override
     public List<ExternalReferenceModel> getExternalReference(Integer id) {
         ExternalIds rawExternalReferences = new ExternalIds();
         try {
@@ -227,5 +245,28 @@ public class TvSeriesApiImpl implements MediaApi {
                 typeReferenceService.findById(MediaDataController.IMDB_ID).get()));
 
         return externalReferences;
+    }
+
+    /**
+     * @see MediaApi#getGenre(Integer)
+     */
+    @Override
+    public List<GenreModel> getGenre(Integer id) {
+        TvSeriesDb rawSerieDetails = new TvSeriesDb();
+        try {
+            rawSerieDetails = tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+        } catch (TmdbException e) {
+            e.printStackTrace();
+        }
+
+        return formatGenre(rawSerieDetails.getGenres());
+    }
+
+    private List<GenreModel> formatGenre(List<Genre> rawGenres) {
+        List<GenreModel> genres = new ArrayList<GenreModel>();
+
+        genres = genreService.findAllByNames(rawGenres.stream().map((rawGenre) -> rawGenre.getName()).toList());
+
+        return genres;
     }
 }

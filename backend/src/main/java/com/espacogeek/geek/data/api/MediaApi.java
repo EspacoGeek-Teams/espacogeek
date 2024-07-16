@@ -6,6 +6,7 @@ import org.json.simple.JSONArray;
 
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
+import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaModel;
 
 import info.movito.themoviedbapi.model.keywords.Keyword;
@@ -26,4 +27,6 @@ public interface MediaApi {
     public List<AlternativeTitleModel> getAlternativeTitles(Integer id);
 
     public List<ExternalReferenceModel> getExternalReference(Integer id);
+
+    public List<GenreModel> getGenre(Integer id);
 }

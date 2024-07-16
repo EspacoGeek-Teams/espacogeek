@@ -16,6 +16,7 @@ import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
+import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
@@ -143,7 +144,7 @@ public class SerieControllerImpl implements MediaDataController {
      */
     @Override
     public MediaModel updateArtworks(MediaModel media, MediaModel result) {
-        MediaModel rawArtwork = null;
+        MediaModel rawArtwork = new MediaModel();
 
         if (result == null) {
             var externalReferences = media.getExternalReference();
@@ -242,6 +243,34 @@ public class SerieControllerImpl implements MediaDataController {
         return newExternal;
     }
 
+    
+    /**
+     * @see MediaDataController#updateGenres(MediaModel, MediaModel)
+     */
+    @Override
+    public List<GenreModel> updateGenres(MediaModel media, MediaModel result) {
+        List<GenreModel> genres = new ArrayList<>();
+        
+        if (result == null) {
+            for (ExternalReferenceModel reference : media.getExternalReference()) {
+                if (reference.getTypeReference().equals(this.typeReference)) {
+                    try {
+                        genres = tvSeriesApi.getGenre(Integer.valueOf(reference.getReference()));
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            genres = result.getGenre();
+        }
+
+        
+
+
+        return null;
+    }
+
     /**
      * @see MediaDataController#getAllInformation(MediaModel)
      */
@@ -262,6 +291,7 @@ public class SerieControllerImpl implements MediaDataController {
         updateAlternativeTitles(media, result);
         updateExternalReferences(media, result);
         updateArtworks(media, result);
+        updateGenres(media, result);
         
         media.setUpdateAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
         media = mediaService.save(media);

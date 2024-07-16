@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
+import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaModel;
 
 public interface MediaDataController {
@@ -22,4 +23,6 @@ public interface MediaDataController {
     public List<AlternativeTitleModel> updateAlternativeTitles(MediaModel media, MediaModel result);
 
     public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result);
+
+    public List<GenreModel> updateGenres(MediaModel media, MediaModel result);
 }
