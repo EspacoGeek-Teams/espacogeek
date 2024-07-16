@@ -264,8 +264,21 @@ public class TvSeriesApiImpl implements MediaApi {
 
     private List<GenreModel> formatGenre(List<Genre> rawGenres) {
         List<GenreModel> genres = new ArrayList<GenreModel>();
+        List<String> rawStringGenres = rawGenres.stream().map((rawGenre) -> rawGenre.getName()).toList();
+        List<String> newRawGenres = new ArrayList<String>();
+        
+        for (int i = 0; i < rawStringGenres.size(); i++) {
+            var genre = rawStringGenres.get(i);
+            if (genre.contains("&")) {
+                for (String genreDivided : genre.split("&")) {
+                    genreDivided.replace("&", "");
+                    genreDivided = genreDivided.strip();
+                    newRawGenres.add(genreDivided);
+                }
+            }
+        }
 
-        genres = genreService.findAllByNames(rawGenres.stream().map((rawGenre) -> rawGenre.getName()).toList());
+        genres = genreService.findAllByNames(newRawGenres);
 
         return genres;
     }

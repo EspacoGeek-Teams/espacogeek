@@ -255,8 +255,8 @@ public class SerieControllerImpl implements MediaDataController {
     public List<GenreModel> updateGenres(MediaModel media, MediaModel result) {
         List<GenreModel> genres = new ArrayList<>();
         List<GenreModel> rawGenres = new ArrayList<>();
-        List<MediaModel> mediaList = new ArrayList<>();
-        mediaList.add(media);
+        var medias = new ArrayList<MediaModel>();
+        medias.add(media);
         
         if (result == null) {
             for (ExternalReferenceModel reference : media.getExternalReference()) {
@@ -274,11 +274,12 @@ public class SerieControllerImpl implements MediaDataController {
 
         rawGenres.forEach((rawGenre) -> {
             if (!media.getGenre().stream().anyMatch((genre) -> genre.getName().equals(rawGenre.getName()))) {
-                rawGenre.setMedias(mediaList);
+                rawGenre.setMedias(medias);
                 genres.add(rawGenre);                
             }
         });
 
+        media.setGenre(genres);
         var newGenres = genreService.saveAll(genres);
         newGenres.addAll(media.getGenre());
 
@@ -286,7 +287,7 @@ public class SerieControllerImpl implements MediaDataController {
     }
 
     /**
-     * @see MediaDataController#getAllInformation(MediaModel)
+     * @see MediaDataController#updateGenres(MediaModel, MediaModel)
      */
     @Override
     public MediaModel updateAllInformation(MediaModel media, MediaModel result) {
@@ -298,7 +299,7 @@ public class SerieControllerImpl implements MediaDataController {
             result = tvSeriesApi.getDetails(Integer.valueOf(idSerie));
         }
 
-        if(result.getId() == null) {
+        if(result == null) {
             return media;
         }
 

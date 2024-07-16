@@ -41,7 +41,7 @@ VALUES
     (12,'Musical'),
     (13,'Mystery'),
     (14,'Romance'),
-    (15,'Sci-Fi (Science Fiction)'),
+    (15,'Sci-Fi'),
     (16,'TV Movie'),
     (17,'Thriller'),
     (18,'War'),

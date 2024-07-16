@@ -20,7 +20,7 @@ public class GenreServiceImpl implements GenreService {
      */
     @Override
     public List<GenreModel> findAllByNames(List<String> names) {
-        return genreRepository.findAllByNameContainsIn(names);
+        return genreRepository.findAllByNameIn(names);
     }
 
     /**
