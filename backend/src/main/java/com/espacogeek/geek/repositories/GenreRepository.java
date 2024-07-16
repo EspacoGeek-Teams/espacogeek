@@ -9,5 +9,5 @@ import com.espacogeek.geek.models.GenreModel;
 
 @Repository
 public interface GenreRepository extends JpaRepository<GenreModel, Integer> {
-    public List<GenreModel> findAllByNames(List<String> names);
+    public List<GenreModel> findAllByNameContainsIn(List<String> names);
 }

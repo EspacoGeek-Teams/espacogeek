@@ -254,7 +254,7 @@ public class TvSeriesApiImpl implements MediaApi {
     public List<GenreModel> getGenre(Integer id) {
         TvSeriesDb rawSerieDetails = new TvSeriesDb();
         try {
-            rawSerieDetails = tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+            rawSerieDetails = tmdbApi.getTvSeries().getDetails(id, "en-US");
         } catch (TmdbException e) {
             e.printStackTrace();
         }

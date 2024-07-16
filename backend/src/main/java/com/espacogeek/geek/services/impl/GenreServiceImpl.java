@@ -16,10 +16,18 @@ public class GenreServiceImpl implements GenreService {
     private GenreRepository genreRepository;
 
     /**
-     * @see GenreService#findAllByName(String)
+     * @see GenreService#findAllByName(List<String>)
      */
     @Override
     public List<GenreModel> findAllByNames(List<String> names) {
-        return genreRepository.findAllByNames(names);
+        return genreRepository.findAllByNameContainsIn(names);
+    }
+
+    /**
+     * @see GenreService#saveAll(List<GenreModel>)
+     */
+    @Override
+    public List<GenreModel> saveAll (List<GenreModel> genres) {
+        return genreRepository.saveAll(genres);
     }
 }

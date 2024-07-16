@@ -22,6 +22,7 @@ import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.services.AlternativeTitlesService;
 import com.espacogeek.geek.services.ExternalReferenceService;
+import com.espacogeek.geek.services.GenreService;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
@@ -47,6 +48,9 @@ public class SerieControllerImpl implements MediaDataController {
 
     @Autowired
     private AlternativeTitlesService alternativeTitleService;
+
+    @Autowired
+    private GenreService genreService;
 
     private TypeReferenceModel typeReference;
 
@@ -250,25 +254,35 @@ public class SerieControllerImpl implements MediaDataController {
     @Override
     public List<GenreModel> updateGenres(MediaModel media, MediaModel result) {
         List<GenreModel> genres = new ArrayList<>();
+        List<GenreModel> rawGenres = new ArrayList<>();
+        List<MediaModel> mediaList = new ArrayList<>();
+        mediaList.add(media);
         
         if (result == null) {
             for (ExternalReferenceModel reference : media.getExternalReference()) {
                 if (reference.getTypeReference().equals(this.typeReference)) {
                     try {
-                        genres = tvSeriesApi.getGenre(Integer.valueOf(reference.getReference()));
+                        rawGenres = tvSeriesApi.getGenre(Integer.valueOf(reference.getReference()));
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
                 }
             }
         } else {
-            genres = result.getGenre();
+            rawGenres = result.getGenre();
         }
 
-        
+        rawGenres.forEach((rawGenre) -> {
+            if (!media.getGenre().stream().anyMatch((genre) -> genre.getName().equals(rawGenre.getName()))) {
+                rawGenre.setMedias(mediaList);
+                genres.add(rawGenre);                
+            }
+        });
 
+        var newGenres = genreService.saveAll(genres);
+        newGenres.addAll(media.getGenre());
 
-        return null;
+        return newGenres;
     }
 
     /**

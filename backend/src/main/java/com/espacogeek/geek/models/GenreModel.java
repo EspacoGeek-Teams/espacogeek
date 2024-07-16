@@ -33,5 +33,6 @@ public class GenreModel implements Serializable {
     private String name;
 
     @ManyToMany(mappedBy = "genre")
+    @Transient
     private List<MediaModel> medias;
 }
