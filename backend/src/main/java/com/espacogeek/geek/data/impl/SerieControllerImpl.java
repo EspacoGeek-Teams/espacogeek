@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.MediaDataController;
-import com.espacogeek.geek.data.api.impl.TvSeriesApiImpl;
+import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
@@ -33,7 +33,7 @@ public class SerieControllerImpl implements MediaDataController {
     private MediaService mediaService;
     
     @Autowired
-    private TvSeriesApiImpl tvSeriesAPI;
+    private MediaApi tvSeriesApi;
 
     @Autowired
     private MediaCategoryService mediaCategoryService;
@@ -68,7 +68,7 @@ public class SerieControllerImpl implements MediaDataController {
     @SuppressWarnings("unused")
     private void updateTvSeries() {
         try {
-            var jsonArrayDailyExport = tvSeriesAPI.updateTitles(); // * @AbigailGeovana pega a lista de todos os titulos de serie
+            var jsonArrayDailyExport = tvSeriesApi.updateTitles(); // * @AbigailGeovana pega a lista de todos os titulos de serie
             var medias = new ArrayList<MediaModel>();
             var externalReferences = new ArrayList<ExternalReferenceModel>();
 
@@ -77,7 +77,7 @@ public class SerieControllerImpl implements MediaDataController {
 
                 // TODO It will return a too many request error if execute more than twenty time a second, fixed it
                 // * @AbigailGeovana só vai entrar nesse if se a media não for anime
-                if (tvSeriesAPI.getKeyword(Integer.valueOf(json.get("id").toString())).stream().anyMatch((keyword) -> {
+                if (tvSeriesApi.getKeyword(Integer.valueOf(json.get("id").toString())).stream().anyMatch((keyword) -> {
                     return keyword.getName().toLowerCase() == "anime" ? false : true;
                 })) {
                     var externalReferenceList = new ArrayList<ExternalReferenceModel>();
@@ -118,7 +118,7 @@ public class SerieControllerImpl implements MediaDataController {
     //     for (ExternalReferenceModel externalReference : externalReferences) {
     //         if (externalReference.getTypeReference().getId().equals(typeReference.getId())) {
     //             try {
-    //                 var endpointImage = tvSeriesAPI.getArtwork(Integer.valueOf(externalReference.getReference())).getPosters().getFirst().getFilePath();
+    //                 var endpointImage = tvSeriesApi.getArtwork(Integer.valueOf(externalReference.getReference())).getPosters().getFirst().getFilePath();
     //                 var ext = endpointImage.split("\\.")[1];
     //                 var url = new URI(MediaApi.URL_IMAGE_TMDB + endpointImage).toURL();
     //                 var image = ImageIO.read(url);
@@ -149,7 +149,7 @@ public class SerieControllerImpl implements MediaDataController {
             var externalReferences = media.getExternalReference();
             for (ExternalReferenceModel externalReference : externalReferences) {
                 if (externalReference.getTypeReference().getId().equals(this.typeReference.getId())) { // * @AbigailGeovana procura pela ID de referencia dele do tmdb
-                    rawArtwork = tvSeriesAPI.getArtwork(Integer.valueOf(externalReference.getReference()));
+                    rawArtwork = tvSeriesApi.getArtwork(Integer.valueOf(externalReference.getReference()));
                 }
             }
         } else {
@@ -175,7 +175,7 @@ public class SerieControllerImpl implements MediaDataController {
             for (ExternalReferenceModel reference : media.getExternalReference()) {
                 if (reference.getTypeReference().equals(this.typeReference)) {
                     try {
-                        allAlternativeTitles = tvSeriesAPI.getAlternativeTitles(Integer.valueOf(reference.getReference()));
+                        allAlternativeTitles = tvSeriesApi.getAlternativeTitles(Integer.valueOf(reference.getReference()));
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -217,7 +217,7 @@ public class SerieControllerImpl implements MediaDataController {
             for (ExternalReferenceModel reference : media.getExternalReference()) {
                 if (reference.getTypeReference().equals(this.typeReference)) {
                     try {
-                        rawExternalReferences = tvSeriesAPI.getExternalReference(Integer.valueOf(reference.getReference()));
+                        rawExternalReferences = tvSeriesApi.getExternalReference(Integer.valueOf(reference.getReference()));
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -252,7 +252,7 @@ public class SerieControllerImpl implements MediaDataController {
                 .filter(
                     (externalReference) -> externalReference.getTypeReference().getId().equals(this.typeReference.getId()))
                 .findFirst().get().getReference();
-            result = tvSeriesAPI.getDetails(Integer.valueOf(idSerie));
+            result = tvSeriesApi.getDetails(Integer.valueOf(idSerie));
         }
 
         if(result.getId() == null) {

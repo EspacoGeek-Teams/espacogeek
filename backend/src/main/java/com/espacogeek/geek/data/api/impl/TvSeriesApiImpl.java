@@ -40,7 +40,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-@Component
+@Component("tvSeriesApi")
 public class TvSeriesApiImpl implements MediaApi {
     private TmdbApi tmdbApi;
 
