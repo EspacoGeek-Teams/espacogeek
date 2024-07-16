@@ -273,12 +273,15 @@ public class SerieControllerImpl implements MediaDataController {
         rawGenres.forEach((rawGenre) -> {
             if (!media.getGenre().stream().anyMatch((genre) -> genre.getName().equals(rawGenre.getName()))) {
                 rawGenre.setMedias(medias);
-                genres.add(rawGenre);                
+                genres.add(rawGenre);
             }
         });
 
-        media.setGenre(genres);
-        var newGenres = genreService.saveAll(genres);
+        var newGenres = new ArrayList<GenreModel>();
+        if (!genres.isEmpty()) {
+            media.setGenre(genres);
+            genreService.saveAll(genres);
+        }
         newGenres.addAll(media.getGenre());
 
         return newGenres;
