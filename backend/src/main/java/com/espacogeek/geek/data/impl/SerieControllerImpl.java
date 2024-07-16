@@ -234,11 +234,9 @@ public class SerieControllerImpl implements MediaDataController {
         
         for (ExternalReferenceModel reference : rawExternalReferences) {
             reference.setMedia(media);
-            reference.getMedia().getExternalReference().forEach((external) -> {
-                if (!external.equals(reference)) {
-                    externalReferences.add(reference);
-                }
-            });
+            if (!media.getExternalReference().stream().anyMatch((eReference) -> eReference.getReference().equals(reference.getReference()))) {
+                externalReferences.add(reference);
+            }
         }
 
         var newExternal = externalReferenceService.saveAll(externalReferences);
