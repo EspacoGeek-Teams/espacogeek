@@ -4,9 +4,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 
 @Repository
 public interface MediaRepository extends JpaRepository<MediaModel, Integer> {
-    List<MediaModel> findMediaByIdOrName(Integer id, String name);
+    List<MediaModel> findSerieByIdOrNameAndMediaCategory(Integer id, String name, MediaCategoryModel category);
 }

@@ -4,8 +4,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.repositories.MediaRepository;
+import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 
 /**
@@ -13,8 +15,12 @@ import com.espacogeek.geek.services.MediaService;
  */
 @Service
 public class MediaServiceImpl implements MediaService {
+    @SuppressWarnings("rawtypes")
     @Autowired
     private MediaRepository mediaRepository;
+
+    @Autowired
+    private MediaCategoryService mediaCategoryService;
 
     /**
      * @see MediaService#save(MediaModel)
@@ -37,6 +43,6 @@ public class MediaServiceImpl implements MediaService {
      */
     @Override
     public List<MediaModel> findSerieByIdOrName(Integer id, String name) {
-        return mediaRepository.findMediaByIdOrName(id, name);
+        return mediaRepository.findSerieByIdOrNameAndMediaCategory(id, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
     }
 }
