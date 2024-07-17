@@ -13,6 +13,7 @@ type Media {
     genre: [Genre]
     externalReference: [ExternalReference]
     alternativeTitles: [AlternativeTitles]
+    season: [Season]
 }
 
 input MediaInput {

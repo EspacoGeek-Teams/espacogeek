@@ -1,0 +1,11 @@
+type Season {
+    id: ID
+    name: String
+    # airDate: Date
+    # endAirDate: Date
+    about: String
+    cover: String
+    seasonNumber: Int
+    episodeCount: Int
+}
+ 
