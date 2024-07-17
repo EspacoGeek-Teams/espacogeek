@@ -6,6 +6,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -301,8 +302,8 @@ public class TvSeriesApiImpl implements MediaApi {
         rawSeasons.forEach((rawSeason) -> {
             try {
                 seasons.add(new SeasonModel(null, rawSeason.getName(),
-                        new SimpleDateFormat("yyyy-MM-dd").parse(rawSeason.getAirDate()), null,
-                        rawSeason.getOverview(), URL_IMAGE_TMDB + rawSeason.getPosterPath(), rawSeason.getSeasonNumber(),
+                        rawSeason.getAirDate() == null ? new Date() : new SimpleDateFormat("yyyy-MM-dd").parse(rawSeason.getAirDate()), null,
+                        rawSeason.getPosterPath() == null ? null : rawSeason.getOverview(), URL_IMAGE_TMDB + rawSeason.getPosterPath(), rawSeason.getSeasonNumber(),
                         rawSeason.getEpisodeCount(), null));
             } catch (java.text.ParseException e) {
                 e.printStackTrace();
