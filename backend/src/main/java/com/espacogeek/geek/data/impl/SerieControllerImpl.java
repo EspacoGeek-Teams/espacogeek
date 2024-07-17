@@ -324,7 +324,7 @@ public class SerieControllerImpl implements MediaDataController {
         
         result.getSeason().forEach((rawSeason) -> {
             if (!media.getSeason().stream().anyMatch((season) -> season.getName().equals(rawSeason.getName()))) {
-                seasons.add(new SeasonModel(null, rawSeason.getName(), rawSeason.getAirDate(), null, rawSeason.getAbout(), rawSeason.getPathCover(), rawSeason.getSeasonNumber(), rawSeason.getEpisodeCount(), media));
+                seasons.add(new SeasonModel(null, rawSeason.getName(), rawSeason.getAirDate(), null, rawSeason.getAbout(), rawSeason.getCover(), rawSeason.getSeasonNumber(), rawSeason.getEpisodeCount(), media));
             }
         });
 

@@ -41,7 +41,7 @@ public class SeasonModel implements Serializable {
     private String about;
 
     @Column(name = "path_cover")
-    private String pathCover;
+    private String cover;
 
     @Column(name = "season_number")
     private Integer seasonNumber;
