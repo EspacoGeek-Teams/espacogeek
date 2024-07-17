@@ -3,6 +3,7 @@ package com.espacogeek.geek.data.api.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.SeasonModel;
 import com.espacogeek.geek.services.ApiKeyService;
 import com.espacogeek.geek.services.GenreService;
 import com.espacogeek.geek.services.MediaCategoryService;
@@ -32,6 +34,7 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.model.core.AlternativeTitle;
 import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.keywords.Keyword;
+import info.movito.themoviedbapi.model.tv.core.TvSeason;
 import info.movito.themoviedbapi.model.tv.series.ExternalIds;
 import info.movito.themoviedbapi.model.tv.series.Images;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
@@ -159,7 +162,8 @@ public class TvSeriesApiImpl implements MediaApi {
                 formatGenre(rawSerieDetails.getGenres()),
                 null,
                 null,
-                formatAlternativeTitles(rawSerieDetails.getAlternativeTitles().getResults()));
+                formatAlternativeTitles(rawSerieDetails.getAlternativeTitles().getResults()),
+                formatSeason(rawSerieDetails.getSeasons()));
         
         return serie;
     }
@@ -266,7 +270,7 @@ public class TvSeriesApiImpl implements MediaApi {
         List<GenreModel> genres = new ArrayList<GenreModel>();
         List<String> rawStringGenres = rawGenres.stream().map((rawGenre) -> rawGenre.getName()).toList();
         List<String> newRawGenres = new ArrayList<String>();
-        
+
         for (int i = 0; i < rawStringGenres.size(); i++) {
             var genre = rawStringGenres.get(i);
             if (genre.contains("&")) {
@@ -281,5 +285,30 @@ public class TvSeriesApiImpl implements MediaApi {
         genres = genreService.findAllByNames(newRawGenres);
 
         return genres;
+    }
+
+    /**
+     * @see MediaApi#getSeason(Integer)
+     */
+    @Override
+    public List<SeasonModel> getSeason(Integer id) {
+        throw new UnsupportedOperationException("getKeyword() method as not implemented.");
+    }
+    
+    private List<SeasonModel> formatSeason(List<TvSeason> rawSeasons) {
+        List<SeasonModel> seasons = new ArrayList<>();
+
+        rawSeasons.forEach((rawSeason) -> {
+            try {
+                seasons.add(new SeasonModel(null, rawSeason.getName(),
+                        new SimpleDateFormat("yyyy-MM-dd").parse(rawSeason.getAirDate()), null,
+                        rawSeason.getOverview(), URL_IMAGE_TMDB + rawSeason.getPosterPath(), rawSeason.getSeasonNumber(),
+                        rawSeason.getEpisodeCount(), null));
+            } catch (java.text.ParseException e) {
+                e.printStackTrace();
+            }
+        });
+
+        return seasons;
     }
 }

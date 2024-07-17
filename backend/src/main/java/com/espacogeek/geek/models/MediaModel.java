@@ -19,7 +19,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -93,4 +92,7 @@ public class MediaModel implements Serializable {
 
     @OneToMany(mappedBy = "media")
     private List<AlternativeTitleModel> alternativeTitles;
+
+    @OneToMany(mappedBy = "media")
+    private List<SeasonModel> season;
 }

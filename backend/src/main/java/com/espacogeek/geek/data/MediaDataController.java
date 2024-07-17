@@ -6,6 +6,7 @@ import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.SeasonModel;
 
 public interface MediaDataController {
     // External references
@@ -25,4 +26,6 @@ public interface MediaDataController {
     public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result);
 
     public List<GenreModel> updateGenres(MediaModel media, MediaModel result);
+
+    public List<SeasonModel> updateSeason(MediaModel media, MediaModel result);
 }

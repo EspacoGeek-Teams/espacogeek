@@ -19,12 +19,14 @@ import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.SeasonModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.services.AlternativeTitlesService;
 import com.espacogeek.geek.services.ExternalReferenceService;
 import com.espacogeek.geek.services.GenreService;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
+import com.espacogeek.geek.services.SeasonService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
 import jakarta.annotation.PostConstruct;
@@ -33,27 +35,21 @@ import jakarta.annotation.PostConstruct;
 public class SerieControllerImpl implements MediaDataController {
     @Autowired
     private MediaService mediaService;
-    
     @Autowired
     private MediaApi tvSeriesApi;
-
     @Autowired
     private MediaCategoryService mediaCategoryService;
-
     @Autowired
     private TypeReferenceService typeReferenceService;
-
     @Autowired
     private ExternalReferenceService externalReferenceService;
-
     @Autowired
     private AlternativeTitlesService alternativeTitleService;
-
     @Autowired
     private GenreService genreService;
-
+    @Autowired
+    private SeasonService seasonService;
     private TypeReferenceModel typeReference;
-
     private MediaCategoryModel mediaCategory;
 
     @PostConstruct
@@ -87,7 +83,7 @@ public class SerieControllerImpl implements MediaDataController {
                 })) {
                     var externalReferenceList = new ArrayList<ExternalReferenceModel>();
 
-                    var media = new MediaModel(TMDB_ID, json.get("original_name").toString(), SERIE_ID, IMDB_ID, null, null, null, this.mediaCategory, null, null, null, null, null, null, null);    
+                    var media = new MediaModel(TMDB_ID, json.get("original_name").toString(), SERIE_ID, IMDB_ID, null, null, null, this.mediaCategory, null, null, null, null, null, null, null, null);    
                     var externalReference = new ExternalReferenceModel(IMDB_ID, json.get("id").toString(), null, typeReference);
 
                     var externalReferenceExisted = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
@@ -294,13 +290,14 @@ public class SerieControllerImpl implements MediaDataController {
     public MediaModel updateAllInformation(MediaModel media, MediaModel result) {
         if (result == null) {
             var idSerie = media.getExternalReference().stream()
-                .filter(
-                    (externalReference) -> externalReference.getTypeReference().getId().equals(this.typeReference.getId()))
-                .findFirst().get().getReference();
+                    .filter(
+                            (externalReference) -> externalReference.getTypeReference().getId()
+                                    .equals(this.typeReference.getId()))
+                    .findFirst().get().getReference();
             result = tvSeriesApi.getDetails(Integer.valueOf(idSerie));
         }
 
-        if(result == null) {
+        if (result == null) {
             return media;
         }
 
@@ -308,11 +305,33 @@ public class SerieControllerImpl implements MediaDataController {
         updateExternalReferences(media, result);
         updateArtworks(media, result);
         updateGenres(media, result);
-        
+        updateSeason(media, result);
+
         media.setUpdateAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
         media = mediaService.save(media);
 
         result = new MediaModel();
         return media;
+    }
+
+    /**
+     * @see MediaDataController#updateGenres(MediaModel, MediaModel)
+     * This method doesn't set seasons without result params (To be implemented)
+     */
+    @Override
+    public List<SeasonModel> updateSeason(MediaModel media, MediaModel result) {
+        List<SeasonModel> seasons = new ArrayList<>();
+        
+        result.getSeason().forEach((rawSeason) -> {
+            if (!media.getSeason().stream().anyMatch((season) -> season.getName().equals(rawSeason.getName()))) {
+                seasons.add(new SeasonModel(null, rawSeason.getName(), rawSeason.getAirDate(), null, rawSeason.getAbout(), rawSeason.getPathCover(), rawSeason.getSeasonNumber(), rawSeason.getEpisodeCount(), media));
+            }
+        });
+
+        var savedSeasons = seasonService.saveAll(seasons);
+        var newSeasons = media.getSeason();
+        newSeasons.addAll(savedSeasons);
+
+        return newSeasons;
     }
 }

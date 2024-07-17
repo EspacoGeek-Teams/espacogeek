@@ -8,6 +8,7 @@ import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.SeasonModel;
 
 import info.movito.themoviedbapi.model.keywords.Keyword;
 
@@ -29,4 +30,6 @@ public interface MediaApi {
     public List<ExternalReferenceModel> getExternalReference(Integer id);
 
     public List<GenreModel> getGenre(Integer id);
+
+    public List<SeasonModel> getSeason(Integer id);
 }
