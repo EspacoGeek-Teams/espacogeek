@@ -43,6 +43,6 @@ public class MediaServiceImpl implements MediaService {
      */
     @Override
     public List<MediaModel> findSerieByIdOrName(Integer id, String name) {
-        return mediaRepository.findSerieByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, "Coisas Estranhas", mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
+        return mediaRepository.findSerieByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
     }
 }
