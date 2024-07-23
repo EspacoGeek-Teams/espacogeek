@@ -30,6 +30,10 @@ public class MediaController {
 
     @QueryMapping(name = "tvserie")
     public List<MediaModel> getSerie(@Argument(name = "filter") MediaInput mediaInput) {
+        if (mediaInput.getName() == null & mediaInput.getId() == null) {
+            return new ArrayList<>();
+        }
+
         var medias = this.mediaService.findSerieByIdOrName(mediaInput.getId(), mediaInput.getName());
         var newMedias = new ArrayList<MediaModel>();
 
