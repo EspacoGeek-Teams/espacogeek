@@ -13,5 +13,5 @@ import com.espacogeek.geek.models.MediaModel;
 public interface MediaRepository extends JpaRepository<MediaModel, Integer> {
     
     @Query("SELECT m FROM MediaModel m LEFT JOIN AlternativeTitleModel a ON a MEMBER OF m.alternativeTitles WHERE m.mediaCategory = :category AND m.id = :id OR m.name LIKE CONCAT('%',:name,'%') OR a.name LIKE CONCAT('%',:alternativeTitle,'%')")
-    List<MediaModel> findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(@Param("id") Integer id, @Param("name") String name, @Param("alternativeTitle") String alternativeTitle, @Param("category") MediaCategoryModel category);
+    public List<MediaModel> findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(@Param("id") Integer id, @Param("name") String name, @Param("alternativeTitle") String alternativeTitle, @Param("category") MediaCategoryModel category);
 }
