@@ -66,7 +66,7 @@ public class TvSeriesApiImpl implements MediaApi {
 
     @PostConstruct
     private void init() {
-        this.api = new TmdbApi(this.apiKeyService.findById(TMDB_API_ID).get().getKey()).getTvSeries();
+        this.api = new TmdbApi(this.apiKeyService.findById(TMDB_API_KEY_ID).get().getKey()).getTvSeries();
     }
 
     @SuppressWarnings("unused")
