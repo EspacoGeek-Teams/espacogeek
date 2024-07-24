@@ -1,4 +1,4 @@
-package com.espacogeek.geek.mediaTest;
+package com.espacogeek.geek.utils;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,10 +9,8 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.espacogeek.geek.config.WebTestClientConfig;
 
-@SpringBootTest
 @DisplayName("Media Tests")
-@Import(WebTestClientConfig.class)
-public abstract class MediaTest {
+public abstract class RequestClient {
     protected HttpGraphQlTester tester;
 
     @BeforeEach

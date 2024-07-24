@@ -1,31 +1,46 @@
-package com.espacogeek.geek.mediaTest.tests;
+package com.espacogeek.geek.media;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import com.espacogeek.geek.data.MediaDataController;
-import com.espacogeek.geek.mediaTest.MediaTest;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaService;
+import com.espacogeek.geek.utils.RequestClient;
 
 @Nested
+@SpringBootTest
 @DisplayName("Serie Tests")
-public class SerieTests extends MediaTest {
-    // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
-    private final static Integer ID = 59191;
-    private final static String NAME = "Stranger Things";
-    private final static String ALTERNATIVE_TITLES = "Coisas Estranhas";
+public class SerieTests {
+    private final static String name = "Stranger Things"; // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
+    private Integer id;
+    private String alternativeTitle;
+
+    @Autowired
+    private MediaService mediaService;
+
+    @BeforeEach
+    void init() {
+        var media = mediaService.findSerieByIdOrName(null, name).getFirst();
+
+        this.id = media.getId();
+        this.alternativeTitle = media.getAlternativeTitles().getFirst().getName();
+    }
 
     @Nested
     @DisplayName("Methods")
     public class SerieMethodTest {
-        @Autowired
-        private MediaService mediaService;
 
         @Autowired
         private MediaDataController serieController;
@@ -34,7 +49,7 @@ public class SerieTests extends MediaTest {
 
         @BeforeEach
         void init(){
-            this.media = mediaService.findSerieByIdOrName(ID, NAME).getFirst();
+            this.media = mediaService.findSerieByIdOrName(id, name).getFirst();
         }
 
         @Test
@@ -62,9 +77,8 @@ public class SerieTests extends MediaTest {
         }
 
         @Test
-        void updateExternalReferences_shouldReturnMediaWithExternalReference() {
-            throw new UnsupportedOperationException("Test for updateExternalReferences not implemented");
-        }
+        @Disabled("Not implemented yet.")
+        void updateExternalReferences_shouldReturnMediaWithExternalReference() {}
 
         @Test
         void updateGenres_shouldReturnMediaWithGenre() {
@@ -91,12 +105,12 @@ public class SerieTests extends MediaTest {
 
     @Nested
     @DisplayName("Requests")
-    public class SerieRequestTest {
+    public class SerieRequestTest extends RequestClient {
 
         @Test
         void querySerieById_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("id", ID)
+                    .variable("id", id)
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
@@ -107,7 +121,7 @@ public class SerieTests extends MediaTest {
         @Test
         void querySerieByName_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("name", NAME)
+                    .variable("name", name)
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
@@ -118,7 +132,7 @@ public class SerieTests extends MediaTest {
         @Test
         void querySerieByAlternativeTitle_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("name", ALTERNATIVE_TITLES)
+                    .variable("name", alternativeTitle)
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
