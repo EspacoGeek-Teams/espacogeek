@@ -1,4 +1,4 @@
-package com.espacogeek.geek.media.tests;
+package com.espacogeek.geek.mediaTest.tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

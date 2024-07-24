@@ -1,4 +1,4 @@
-package com.espacogeek.geek.media.tests;
+package com.espacogeek.geek.mediaTest.tests;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.espacogeek.geek.data.MediaDataController;
-import com.espacogeek.geek.media.MediaTest;
+import com.espacogeek.geek.mediaTest.MediaTest;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaService;
 
