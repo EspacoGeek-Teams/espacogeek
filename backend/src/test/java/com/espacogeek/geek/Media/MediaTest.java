@@ -1,38 +1,27 @@
-package com.espacogeek.geek.Media;
+package com.espacogeek.geek.media;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@SpringBootTest
-@DisplayName("Tests for Media")
-public class MediaTest {
-    private HttpGraphQlTester tester;
+import com.espacogeek.geek.config.WebTestClientConfig;
 
-    // Setup
+@SpringBootTest
+@DisplayName("Media Tests")
+@Import(WebTestClientConfig.class)
+public abstract class MediaTest {
+    protected HttpGraphQlTester tester;
+
     @BeforeEach
     public void initClient() {
         var client = WebTestClient.bindToServer()
-                .baseUrl("http://localhost:8080/api")
+                .baseUrl("http://127.0.0.1:8080/api")
+                .defaultHeader("Authorization", "Basic dml0b3JAZ21haWwuY29tOnZpdG9yMTIzNA==")
                 .build();
             
         tester = HttpGraphQlTester.create(client);
-    }
-
-    // Test Cases
-    @DisplayName("Requests Tests for Serie")
-    public class serieRequestTest {
-
-        @Test
-        void querySerie_whenEntityExists_shouldReturnAMediaSerieCategory() {
-            // Arrange
-            
-            // Act
-
-            // Assert
-        }
     }
 }
