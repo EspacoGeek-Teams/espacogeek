@@ -1,14 +1,9 @@
 package com.espacogeek.geek.controllers;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -18,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaService;
-import com.espacogeek.geek.types.MediaInput;
 
 @Controller
 public class MediaController {
@@ -29,12 +23,12 @@ public class MediaController {
     private MediaDataController serieController;
 
     @QueryMapping(name = "tvserie")
-    public List<MediaModel> getSerie(@Argument(name = "filter") MediaInput mediaInput) {
-        if (mediaInput.getName() == null & mediaInput.getId() == null) {
+    public List<MediaModel> getSerie(@Argument Integer id, @Argument String name) {
+        if (name == null & id == null) {
             return new ArrayList<>();
         }
 
-        var medias = this.mediaService.findSerieByIdOrName(mediaInput.getId(), mediaInput.getName());
+        var medias = this.mediaService.findSerieByIdOrName(id, name);
         var newMedias = new ArrayList<MediaModel>();
 
         for (MediaModel media: medias) {

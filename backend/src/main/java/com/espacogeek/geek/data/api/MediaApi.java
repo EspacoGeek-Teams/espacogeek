@@ -14,6 +14,7 @@ import info.movito.themoviedbapi.model.keywords.Keyword;
 
 public interface MediaApi {
     public final static String URL_IMAGE_TMDB = "https://image.tmdb.org/t/p/original";
+    public final static Integer TMDB_API_ID = 1;
 
     public JSONArray updateTitles();
 

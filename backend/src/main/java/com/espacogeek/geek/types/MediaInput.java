@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
+@Deprecated(forRemoval = true)
 /**
  * Class used to GraphQL Input Type, used principally to search media
  */

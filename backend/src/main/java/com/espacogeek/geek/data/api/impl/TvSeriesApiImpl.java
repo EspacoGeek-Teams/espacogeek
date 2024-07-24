@@ -32,6 +32,7 @@ import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
 import info.movito.themoviedbapi.TmdbApi;
+import info.movito.themoviedbapi.TmdbTvSeries;
 import info.movito.themoviedbapi.model.core.AlternativeTitle;
 import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.keywords.Keyword;
@@ -49,7 +50,7 @@ import okhttp3.Response;
 
 @Component("tvSeriesApi")
 public class TvSeriesApiImpl implements MediaApi {
-    private TmdbApi tmdbApi;
+    private TmdbTvSeries api;
 
     @Autowired
     private ApiKeyService apiKeyService;
@@ -65,7 +66,7 @@ public class TvSeriesApiImpl implements MediaApi {
 
     @PostConstruct
     private void init() {
-        this.tmdbApi = new TmdbApi(this.apiKeyService.findById(1).get().getKey());
+        this.api = new TmdbApi(this.apiKeyService.findById(TMDB_API_ID).get().getKey()).getTvSeries();
     }
 
     @SuppressWarnings("unused")
@@ -143,7 +144,7 @@ public class TvSeriesApiImpl implements MediaApi {
     public MediaModel getDetails(Integer id) {
         TvSeriesDb rawSerieDetails = new TvSeriesDb();
         try {
-            rawSerieDetails = tmdbApi.getTvSeries().getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+            rawSerieDetails = api.getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
         } catch (TmdbException e) {
             e.printStackTrace();
         } 
@@ -176,7 +177,7 @@ public class TvSeriesApiImpl implements MediaApi {
     public MediaModel getArtwork(Integer id) {
         Images rawArtwork = new Images();
         try {
-            rawArtwork = tmdbApi.getTvSeries().getImages(id, "en");
+            rawArtwork = api.getImages(id, "en");
         } catch (TmdbException e) {
             e.printStackTrace();
         }
@@ -194,7 +195,7 @@ public class TvSeriesApiImpl implements MediaApi {
     @Override
     public List<Keyword> getKeyword(Integer id) {
         try {
-            return tmdbApi.getTvSeries().getKeywords(id).getResults();
+            return api.getKeywords(id).getResults();
         } catch (TmdbException e) {
             e.printStackTrace();
         }
@@ -208,7 +209,7 @@ public class TvSeriesApiImpl implements MediaApi {
     public List<AlternativeTitleModel> getAlternativeTitles(Integer id) {
         List<AlternativeTitle> rawAlternativeTitles = new ArrayList<>();
         try {
-            rawAlternativeTitles = tmdbApi.getTvSeries().getAlternativeTitles(id).getResults();
+            rawAlternativeTitles = api.getAlternativeTitles(id).getResults();
         } catch (TmdbException e) {
             e.printStackTrace();
         }
@@ -232,7 +233,7 @@ public class TvSeriesApiImpl implements MediaApi {
     public List<ExternalReferenceModel> getExternalReference(Integer id) {
         ExternalIds rawExternalReferences = new ExternalIds();
         try {
-            rawExternalReferences = tmdbApi.getTvSeries().getExternalIds(id);
+            rawExternalReferences = api.getExternalIds(id);
         } catch (TmdbException e) {
             e.printStackTrace();
         }
@@ -259,7 +260,7 @@ public class TvSeriesApiImpl implements MediaApi {
     public List<GenreModel> getGenre(Integer id) {
         TvSeriesDb rawSerieDetails = new TvSeriesDb();
         try {
-            rawSerieDetails = tmdbApi.getTvSeries().getDetails(id, "en-US");
+            rawSerieDetails = api.getDetails(id, "en-US");
         } catch (TmdbException e) {
             e.printStackTrace();
         }
