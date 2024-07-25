@@ -24,7 +24,7 @@ import com.espacogeek.geek.utils.RequestClient;
 @SpringBootTest
 @DisplayName("Serie Tests")
 public class SerieTests {
-    private final static String name = "Stranger Things"; // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
+    private final static String name = "The Boys"; // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
 
     @Autowired
     private MediaService mediaService;
