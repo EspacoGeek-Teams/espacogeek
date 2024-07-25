@@ -199,8 +199,9 @@ public class SerieControllerImpl implements MediaDataController {
             }
         }
 
-        var newTitles = media.getAlternativeTitles();
-        newTitles.addAll(alternativeTitleService.saveAll(alternativeTitles));
+        var newTitles = media.getAlternativeTitles() == null ? new ArrayList<AlternativeTitleModel>() : media.getAlternativeTitles();
+        var savedTitles = alternativeTitleService.saveAll(alternativeTitles);
+        newTitles.addAll(savedTitles == null ? new ArrayList<>() : savedTitles);
 
         return newTitles;
     }
@@ -279,7 +280,7 @@ public class SerieControllerImpl implements MediaDataController {
             media.setGenre(genres);
             genreService.saveAll(genres);
         }
-        newGenres.addAll(media.getGenre());
+        newGenres.addAll(media.getGenre() == null ? new ArrayList<>() : media.getGenre());
 
         return newGenres;
     }
@@ -317,21 +318,31 @@ public class SerieControllerImpl implements MediaDataController {
 
     /**
      * @see MediaDataController#updateGenres(MediaModel, MediaModel)
-     * This method doesn't set seasons without result params (To be implemented)
      */
     @Override
     public List<SeasonModel> updateSeason(MediaModel media, MediaModel result) {
         List<SeasonModel> seasons = new ArrayList<>();
-        
-        result.getSeason().forEach((rawSeason) -> {
+        List<SeasonModel> rawSeasons = new ArrayList<>();
+
+        if (result == null) {
+            for (ExternalReferenceModel reference : media.getExternalReference()) {
+                if (reference.getTypeReference().equals(typeReference)) {
+                    rawSeasons = tvSeriesApi.getSeason(Integer.valueOf(reference.getReference()));
+                }
+            }
+        } else {
+            rawSeasons = result.getSeason();
+        }
+
+        rawSeasons.forEach((rawSeason) -> {
             if (!media.getSeason().stream().anyMatch((season) -> season.getName().equals(rawSeason.getName()))) {
                 seasons.add(new SeasonModel(null, rawSeason.getName(), rawSeason.getAirDate(), null, rawSeason.getAbout(), rawSeason.getCover(), rawSeason.getSeasonNumber(), rawSeason.getEpisodeCount(), media));
             }
         });
 
         var savedSeasons = seasonService.saveAll(seasons);
-        var newSeasons = media.getSeason();
-        newSeasons.addAll(savedSeasons);
+        List<SeasonModel> newSeasons = media.getSeason() == null ? new ArrayList<>() : media.getSeason();
+        newSeasons.addAll(savedSeasons == null ? new ArrayList<>() : savedSeasons);
 
         return newSeasons;
     }

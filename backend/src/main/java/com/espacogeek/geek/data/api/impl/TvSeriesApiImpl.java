@@ -294,7 +294,15 @@ public class TvSeriesApiImpl implements MediaApi {
      */
     @Override
     public List<SeasonModel> getSeason(Integer id) {
-        throw new UnsupportedOperationException("getKeyword() method as not implemented.");
+        List<TvSeason> rawSession = new ArrayList<>();
+
+        try {
+            rawSession = api.getDetails(id, "en-US").getSeasons();
+        } catch (TmdbException e) {
+            e.printStackTrace();
+        }
+
+        return formatSeason(rawSession);
     }
     
     private List<SeasonModel> formatSeason(List<TvSeason> rawSeasons) {

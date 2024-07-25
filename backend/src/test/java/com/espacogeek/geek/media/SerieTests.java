@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.models.MediaModel;
@@ -24,18 +25,15 @@ import com.espacogeek.geek.utils.RequestClient;
 @DisplayName("Serie Tests")
 public class SerieTests {
     private final static String name = "Stranger Things"; // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
-    private Integer id;
-    private String alternativeTitle;
 
     @Autowired
     private MediaService mediaService;
 
+    private MediaModel mediaTest;
+
     @BeforeEach
     void init() {
-        var media = mediaService.findSerieByIdOrName(null, name).getFirst();
-
-        this.id = media.getId();
-        this.alternativeTitle = media.getAlternativeTitles().getFirst().getName();
+        this.mediaTest = mediaService.findSerieJoinFetchedByIdOrName(null, name).getFirst();
     }
 
     @Nested
@@ -45,16 +43,9 @@ public class SerieTests {
         @Autowired
         private MediaDataController serieController;
 
-        private MediaModel media;
-
-        @BeforeEach
-        void init(){
-            this.media = mediaService.findSerieByIdOrName(id, name).getFirst();
-        }
-
         @Test
         void updateSerieWithoutArtwork_shouldReturnMediaWithBannerAndCover() {
-            var media = this.media;
+            var media = mediaTest;
 
             media.setBanner(null);
             media.setCover(null);
@@ -67,7 +58,7 @@ public class SerieTests {
 
         @Test
         void updateAlternativeTitles_shouldReturnMediaWithAlternativeTitles() {
-            var media = this.media;
+            var media = mediaTest;
 
             media.setAlternativeTitles(null);
 
@@ -82,7 +73,7 @@ public class SerieTests {
 
         @Test
         void updateGenres_shouldReturnMediaWithGenre() {
-            var media = this.media;
+            var media = mediaTest;
 
             media.setGenre(null);
 
@@ -93,7 +84,7 @@ public class SerieTests {
 
         @Test
         void updateSeason_shouldReturnMediaWithSeason() {
-            var media = this.media;
+            var media = mediaTest;
 
             media.setSeason(null);
 
@@ -110,7 +101,7 @@ public class SerieTests {
         @Test
         void querySerieById_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("id", id)
+                    .variable("id", mediaTest.getId())
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
@@ -121,7 +112,7 @@ public class SerieTests {
         @Test
         void querySerieByName_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("name", name)
+                    .variable("name", mediaTest.getName())
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
@@ -132,7 +123,7 @@ public class SerieTests {
         @Test
         void querySerieByAlternativeTitle_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("name", alternativeTitle)
+                    .variable("name", mediaTest.getAlternativeTitles().getFirst())
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
