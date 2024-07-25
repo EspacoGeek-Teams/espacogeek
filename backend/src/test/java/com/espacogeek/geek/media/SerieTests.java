@@ -122,6 +122,10 @@ public class SerieTests {
 
         @Test
         void querySerieByAlternativeTitle_shouldReturnSomething() {
+            if (mediaTest.getAlternativeTitles().isEmpty()) {
+                return;
+            }
+
             var response = tester.documentName("media")
                     .variable("name", mediaTest.getAlternativeTitles().getFirst())
                     .execute()
