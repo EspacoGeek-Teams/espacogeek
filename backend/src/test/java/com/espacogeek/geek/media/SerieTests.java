@@ -136,7 +136,7 @@ public class SerieTests {
         }
 
         @Test
-        void querySerieByIdNull_shouldReturnEmpty() {
+        void querySerieBy_whenIdIsNull_shouldReturnEmpty() {
             var response = tester.documentName("media")
                     .variable("id", "")
                     .execute()
@@ -147,7 +147,7 @@ public class SerieTests {
         }
 
         @Test
-        void querySerieByNameNull_shouldReturnEmpty() {
+        void querySerieByName_wjenNameIsnull_shouldReturnEmpty() {
             var response = tester.documentName("media")
                     .variable("name", "")
                     .execute()
