@@ -138,7 +138,7 @@ public class SerieTests {
         @Test
         void querySerieBy_whenIdIsNull_shouldReturnEmpty() {
             var response = tester.documentName("media")
-                    .variable("id", "")
+                    .variable("id", null)
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
