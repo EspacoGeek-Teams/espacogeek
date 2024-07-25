@@ -2,7 +2,6 @@ package com.espacogeek.geek.services;
 
 import java.util.List;
 
-import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 
 /**
@@ -17,17 +16,6 @@ public interface MediaService {
      * @return A list of MediaModel objects that match the provided ID or name.
      */
     List<MediaModel> findSerieByIdOrName(Integer id, String name);
-
-    /**
-     * Finds MediaModel objects by their ID or name.
-     * <p>
-     * This query use <code>JOIN FETCH</code> for all proprieties of media, so <b>avoid at the most use this query</b>. For the most case use {@link #findSerieByIdOrName(Integer, String)}.
-     * 
-     * @param id   The ID of the MediaModel object to find.
-     * @param name The name of the MediaModel object to find.
-     * @return A list of MediaModel objects that match the provided ID or name.
-     */
-    List<MediaModel> findSerieJoinFetchedByIdOrName(Integer id, String name);
 
     /**
      * Saves a MediaModel object to the database.

@@ -33,7 +33,7 @@ public class SerieTests {
 
     @BeforeEach
     void init() {
-        this.mediaTest = mediaService.findSerieJoinFetchedByIdOrName(null, name).getFirst();
+        this.mediaTest = mediaService.findSerieByIdOrName(null, name).getFirst();
     }
 
     @Nested
