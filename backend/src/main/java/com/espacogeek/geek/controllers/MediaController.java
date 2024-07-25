@@ -24,8 +24,8 @@ public class MediaController {
 
     @QueryMapping(name = "tvserie")
     public List<MediaModel> getSerie(@Argument Integer id, @Argument String name) {
-        
-        name = name.trim();
+
+        name = name == null ? null : name.trim();
 
         if (name == null & id == null & name == "") {
             return new ArrayList<>();
