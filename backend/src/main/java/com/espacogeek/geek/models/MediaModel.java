@@ -8,6 +8,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -54,28 +55,27 @@ public class MediaModel implements Serializable {
     @Column(name = "url_banner")
     private String banner;
 
-    @ManyToOne
     @JoinColumn(name = "id_category")
     private MediaCategoryModel mediaCategory;
 
-    @OneToMany(mappedBy = "media")
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
     private List<ExternalReferenceModel> externalReference;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "medias_has_companies",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> company;
     
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "medias_has_people",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
     private List<PeopleModel> people;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "medias_has_genres",
         joinColumns = @JoinColumn(name = "medias_id_media"),
@@ -90,9 +90,9 @@ public class MediaModel implements Serializable {
     @Column(name = "update_at")
     private Date updateAt;
 
-    @OneToMany(mappedBy = "media")
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
     private List<AlternativeTitleModel> alternativeTitles;
 
-    @OneToMany(mappedBy = "media")
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
     private List<SeasonModel> season;
 }
