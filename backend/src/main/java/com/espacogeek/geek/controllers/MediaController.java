@@ -27,7 +27,7 @@ public class MediaController {
 
         name = name == null ? null : name.trim();
 
-        if (name == null & id == null & name == "") {
+        if (name == null & id == null || name == "" & id == null) {
             return new ArrayList<>();
         }
 
