@@ -1,11 +1,14 @@
 package com.espacogeek.geek.repositories;
 
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 
@@ -33,4 +36,10 @@ public interface MediaRepository extends JpaRepository<MediaModel, Integer> {
         @Param("alternativeTitle") String alternativeTitle,
         @Param("category") MediaCategoryModel category
     );
+
+    public Optional<MediaModel> findMediaByIdAndMediaCategory(Integer id, MediaCategoryModel category);
+
+    public List<MediaModel> findAllMediaByNameAndMediaCategory(String name, MediaCategoryModel category);
+
+    public List<MediaModel> findAllMediaByAlternativeTitlesAndMediaCategory(AlternativeTitleModel name, MediaCategoryModel category);
 }

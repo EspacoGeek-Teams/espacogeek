@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.repositories.MediaRepository;
 import com.espacogeek.geek.services.MediaCategoryService;
@@ -17,7 +18,7 @@ import com.espacogeek.geek.services.MediaService;
  */
 @Service
 public class MediaServiceImpl implements MediaService {
-    @SuppressWarnings("rawtypes")
+
     @Autowired
     private MediaRepository mediaRepository;
 
@@ -45,7 +46,20 @@ public class MediaServiceImpl implements MediaService {
      */
     @Override
     public List<MediaModel> findSerieByIdOrName(Integer id, String name) {
-        return this.mediaRepository.findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
+        List<MediaModel> medias = new ArrayList<>();
+        var category = mediaCategoryService.findById(MediaDataController.SERIE_ID).get();
+        
+        if (id != null) {
+            medias.add(mediaRepository.findMediaByIdAndMediaCategory(id, category).orElseGet(() -> new MediaModel()));
+            return medias;
+        } else if (name != null) {
+            medias.addAll(mediaRepository.findAllMediaByNameAndMediaCategory(name, category));
+            medias.addAll(mediaRepository.findAllMediaByAlternativeTitlesAndMediaCategory(new AlternativeTitleModel(null, name, null), category));
+            return medias;
+        }
+        
+        return medias;
+        // return this.mediaRepository.findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
     }
 
 }
