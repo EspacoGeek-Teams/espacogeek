@@ -183,8 +183,8 @@ public class TvSeriesApiImpl implements MediaApi {
         }
         var media = new MediaModel();
 
-        media.setCover(rawArtwork.getLogos() == null ? "" : URL_IMAGE_TMDB + rawArtwork.getLogos().getFirst());
-        media.setBanner(rawArtwork.getBackdrops() == null ? "" : URL_IMAGE_TMDB + rawArtwork.getBackdrops().getFirst());
+        media.setCover(rawArtwork.getPosters().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getPosters().getFirst());
+        media.setBanner(rawArtwork.getBackdrops().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getBackdrops().getFirst());
 
         return media;
     }
