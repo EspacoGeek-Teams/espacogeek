@@ -44,7 +44,7 @@ public class ExternalApiAvailability {
         } catch (TmdbResponseException e) {
             throw new ConnectException("Failed to connect The Movie Database servers.");
         }
-
+        
         assertEquals(status, true);
     }
 }
