@@ -20,9 +20,6 @@ public class SecurityConfig {
                     .authorizeHttpRequests(auth -> {
                         auth.anyRequest().authenticated();
                     })
-                    .sessionManagement(
-                            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                    .httpBasic(withDefaults())
                     .build();
     }
 }
