@@ -245,10 +245,15 @@ public class TvSeriesApiImpl implements MediaApi {
 
         externalReferences.add(new ExternalReferenceModel(null, id.toString(), null,
                 typeReferenceService.findById(MediaDataController.TMDB_ID).get()));
-        externalReferences.add(new ExternalReferenceModel(null, rawExternalReferences.getTvdbId(), null,
-                typeReferenceService.findById(MediaDataController.TVDB_ID).get()));
-        externalReferences.add(new ExternalReferenceModel(null, rawExternalReferences.getImdbId(), null,
-                typeReferenceService.findById(MediaDataController.IMDB_ID).get()));
+                
+        if (rawExternalReferences.getTvdbId() != null) {
+            externalReferences.add(new ExternalReferenceModel(null, rawExternalReferences.getTvdbId(), null,
+                    typeReferenceService.findById(MediaDataController.TVDB_ID).get()));
+        }
+        if (rawExternalReferences.getImdbId() != null) {
+            externalReferences.add(new ExternalReferenceModel(null, rawExternalReferences.getImdbId(), null,
+                    typeReferenceService.findById(MediaDataController.IMDB_ID).get()));
+        }
 
         return externalReferences;
     }
