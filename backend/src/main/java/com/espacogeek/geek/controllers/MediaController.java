@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.ContextValue;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaService;
 
+import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
 
 @Controller
@@ -29,10 +31,8 @@ public class MediaController {
     private MediaDataController serieController;
 
     @QueryMapping(name = "tvserie")
-    @PreAuthorize("permitAll()")
-    public List<MediaModel> getSerie(@Argument Integer id, @Argument String name) {
-
-        System.out.println("aa");
+    @PreAuthorize("#userId != 2")
+    public List<MediaModel> getSerie(@ContextValue String userId, @Argument Integer id, @Argument String name) {
 
         name = name == null ? null : name.trim();
 

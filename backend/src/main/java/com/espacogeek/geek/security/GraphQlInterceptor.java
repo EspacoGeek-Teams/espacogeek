@@ -33,7 +33,7 @@ public class GraphQlInterceptor implements WebGraphQlInterceptor {
     public Mono<WebGraphQlResponse> intercept(WebGraphQlRequest request, Chain chain) {
         var authorization = request.getHeaders().getFirst("Authorization"); // * @AbigailGeovanaPega a autorização do usuário 
         if (authorization == null) { // * @AbigailGeovanaSe nenhuma credenciais for inserida joga um erro
-            throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
+            return null;
         }
         var user = userService.findByIdOrUsernameContainsOrEmail(null, null, new DecodeBasicAuth(authorization).getEmail()); // * @AbigailGeovanaEncontra o usuário com credenciais passada
 

@@ -18,8 +18,10 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(auth -> {
-                        auth.anyRequest().authenticated();
+                        auth.anyRequest().permitAll();
                     })
+                    .sessionManagement(
+                            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .build();
     }
 }
