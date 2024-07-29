@@ -31,7 +31,7 @@ public class MediaController {
     private MediaDataController serieController;
 
     @QueryMapping(name = "tvserie")
-    @PreAuthorize("hasRole('user')")
+    // @PreAuthorize("hasRole('user')")
     public List<MediaModel> getSerie(@Argument Integer id, @Argument String name) {
 
         name = name == null ? null : name.trim();
