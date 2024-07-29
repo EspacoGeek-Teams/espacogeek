@@ -31,7 +31,7 @@ public class MediaController {
     private MediaDataController serieController;
 
     @QueryMapping(name = "tvserie")
-    @PreAuthorize("#userId != 2")
+    @PreAuthorize("permitAll()")
     public List<MediaModel> getSerie(@ContextValue String userId, @Argument Integer id, @Argument String name) {
 
         name = name == null ? null : name.trim();
