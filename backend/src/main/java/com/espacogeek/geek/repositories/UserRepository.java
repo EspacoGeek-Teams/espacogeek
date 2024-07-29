@@ -11,7 +11,7 @@ import com.espacogeek.geek.models.UserModel;
 @Repository
 public interface UserRepository extends JpaRepository<UserModel, Integer> {
     
-    List<Optional<UserModel>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email);
+    List<UserModel> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email);
 
     Optional<UserModel> findUserByEmail(String username);
 }

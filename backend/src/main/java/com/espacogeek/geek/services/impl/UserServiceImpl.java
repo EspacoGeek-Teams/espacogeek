@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
      * @see UserService#findByIdOrUsernameContainsOrEmail(String, String, String)
      */
     @Override
-    public List<Optional<UserModel>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email) {
+    public List<UserModel> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email) {
         return userRepository.findByIdOrUsernameContainsOrEmail(id, username, email);
     }
 

@@ -29,7 +29,7 @@ public interface UserService {
      * @param email The email of the UserModel object to be retrieved.
      * @return An Optional containing the UserModel object if found, otherwise an empty Optional.
      */
-    List<Optional<UserModel>> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email);
+    List<UserModel> findByIdOrUsernameContainsOrEmail(Integer id, String username, String email);
 
     /**
      * Retrieves a UserModel object by its ID.
