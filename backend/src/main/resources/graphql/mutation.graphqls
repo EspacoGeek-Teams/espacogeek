@@ -1,4 +1,5 @@
 type Mutation {
     editPassword(actualPassword: String, newPassword: String): String
-    deleteUser(password: String): String
+    delete(password: String): String
+    create(credentials: NewUser): String
 }
