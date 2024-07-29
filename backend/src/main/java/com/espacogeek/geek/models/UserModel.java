@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +38,7 @@ public class UserModel implements Serializable {
     
     @Size(max = 50, message = "email too long")
     @Column(name = "email", nullable = false, unique = true)
+    @Email(message = "Must provided a valid email")
     private String email;
 
     @Size(max = 70, message = "Password too long")
