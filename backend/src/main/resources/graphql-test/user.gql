@@ -1,7 +1,7 @@
-mutation create ($username: String, $email: String, $password: String) {
-    create (username: $username, email: $email, password: $password) {
-        id
-        username
-        email
-    }
+mutation create ($username: String!, $email: String!, $password: String!) {
+    create (credentials: {
+            username: $username, 
+            email: $email, 
+            password: $password
+    })
 }

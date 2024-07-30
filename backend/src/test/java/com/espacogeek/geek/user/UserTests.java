@@ -2,8 +2,10 @@ package com.espacogeek.geek.user;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -39,6 +41,7 @@ public class UserTests {
         
         // TODO CREATE USER
         @Test
+        @Order(1)
         void createUser_ifValidAllCredentials_shouldCreateUserSuccessfully() {
             var response = tester.documentName("user")
                     .variable("username", USERNAME_TEST)
@@ -48,18 +51,23 @@ public class UserTests {
                     .path("create")
                     .entity(String.class);
 
-            assertTrue(response.get() == "");
+            assertTrue(response.get() == new String("201 CREATED"));
         }
 
         @Test
         void createUser_ifValidUsernameAndPasswordAndNoValidEmail_shouldNotCreateUser() {
-            var response = tester.documentName("user")
-                    .variable("username", USERNAME_TEST)
-                    .variable("email", "test")
-                    .variable("password", PASSWORD_TEST)
-                    .execute()
-                    .errors();
-
+            tester.documentName("user")
+                .variable("username", USERNAME_TEST)
+                .variable("email", "test")
+                .variable("password", PASSWORD_TEST)
+                .execute()
+                .errors()
+                .satisfy(errors -> {
+                    assertTrue(errors.size() == 1);
+                    errors.forEach((error) -> {
+                        assertTrue(error.getMessage() == new String("400 BAD_REQUEST"));
+                    });
+                });
         }
 
         // TODO FIND USER
@@ -70,6 +78,6 @@ public class UserTests {
 
         // TODO EDIT USER EMAIL
 
-        // TODO DELETE USER
+        // TODO DELETE USER (@Order() and @AfterEach)
     }
 }
