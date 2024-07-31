@@ -14,12 +14,20 @@ public abstract class RequestClient {
     protected HttpGraphQlTester tester;
 
     @BeforeEach
-    public void initClient() {
+    public void initClientWithoutAuth() {
         var client = WebTestClient.bindToServer()
                 .baseUrl("http://127.0.0.1:8080/api")
-                .defaultHeader("Authorization", "Basic dml0b3JAZ21haWwuY29tOnZpdG9yMTIzNA==")
                 .build();
             
         tester = HttpGraphQlTester.create(client);
+    }
+
+    public HttpGraphQlTester initClientWithAuth(String basicAuth) {
+        var client = WebTestClient.bindToServer()
+                .baseUrl("http://127.0.0.1:8080/api")
+                .defaultHeader("Authorization", "Basic " + basicAuth)
+                .build();
+            
+        return HttpGraphQlTester.create(client);
     }
 }

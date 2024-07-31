@@ -1,21 +1,24 @@
 package com.espacogeek.geek.models;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +29,7 @@ import lombok.Setter;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserModel implements Serializable {
+public class UserModel implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
@@ -48,4 +51,14 @@ public class UserModel implements Serializable {
     @OneToMany(mappedBy = "user")
     @Transient
     private List<UserLibraryModel> userLibrary;
+
+    @Override
+    public String getPassword() {
+        return new String(this.password);
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
 }

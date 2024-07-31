@@ -1,0 +1,3 @@
+mutation findUser ($username: String, $email: String, $id: Int) {
+    findUser (username: $username, email: $email, id: $id)
+}

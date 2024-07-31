@@ -1,5 +1,6 @@
 package com.espacogeek.geek.controllers;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +10,9 @@ import org.springframework.graphql.data.method.annotation.ContextValue;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -25,11 +29,11 @@ public class UserController {
     private UserService userService;
 
     @QueryMapping
-    public List<UserModel> findUser(Integer id, String username, String email) {
+    public List<UserModel> findUser(@Argument Integer id, @Argument String username, @Argument String email) {
         return userService.findByIdOrUsernameContainsOrEmail(id, username, email);
     }
     
-    @MutationMapping(name = "create")
+    @MutationMapping(name = "createUser")
     public String createUser(@Argument(name = "credentials") NewUser newUser) {
         var passwordCrypt = BCrypt.withDefaults().hash(12, newUser.password().toCharArray()); 
         var user = new UserModel(null, newUser.username(), newUser.email(), passwordCrypt, null);
@@ -40,8 +44,11 @@ public class UserController {
     }
 
     @MutationMapping(name = "editPassword")
-    public String editPasswordUser(@Argument String actualPassword, @Argument String newPassword, @ContextValue String userId) {
-        var userLoged = userService.findById(Integer.valueOf(userId)).get();
+    @PreAuthorize("hasRole('user')")
+    public String editPasswordUserLogged(Authentication authentication, @Argument String actualPassword, @Argument String newPassword) {
+        var userAuthenticated = (UserModel) authentication.getPrincipal();
+
+        var userLoged = userService.findById(Integer.valueOf(userAuthenticated.getId())).get();
         var resultPassword = BCrypt.verifyer().verify(actualPassword.toCharArray(), userLoged.getPassword()).verified;
 
         if (resultPassword) {
@@ -49,13 +56,24 @@ public class UserController {
             userService.save(userLoged);
             return HttpStatus.OK.toString();
         }
+        
         return HttpStatus.UNAUTHORIZED.toString();
     }
 
-    @MutationMapping(name = "delete")
-    public String deleteUser(@Argument String password, @ContextValue String userId) {
-        var userLoged = userService.findById(Integer.valueOf(userId)).get(); 
-        var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLoged.getPassword()).verified;
+    @MutationMapping(name = "deleteUser")
+    @PreAuthorize("hasRole('user')")
+    public String deleteUserLogged(Authentication authentication, @Argument String password) {
+        var userAuthenticated = (UserModel) authentication.getPrincipal();
+
+        var userLogged = userService.findById(userAuthenticated.getId()).get(); 
+        var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
+        
+        if (resultPassword) {
+            userService.deleteById(Integer.valueOf(userAuthenticated.getId()));
+            return HttpStatus.OK.toString();
+        }
+        return HttpStatus.UNAUTHORIZED.toString();
+    }
         
         if (resultPassword) {
             userService.deleteById(Integer.valueOf(userId));

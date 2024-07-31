@@ -1,7 +1,0 @@
-mutation create ($username: String!, $email: String!, $password: String!) {
-    create (credentials: {
-            username: $username, 
-            email: $email, 
-            password: $password
-    })
-}
