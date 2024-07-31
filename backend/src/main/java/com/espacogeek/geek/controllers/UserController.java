@@ -74,11 +74,40 @@ public class UserController {
         }
         return HttpStatus.UNAUTHORIZED.toString();
     }
+
+    // TODO EDIT USER USERNAME
+    @MutationMapping(name = "editUsername")
+    @PreAuthorize("hasRole('user')")
+    public String editUsernameUserLogged(Authentication authentication, @Argument String password, @Argument String NewUsername) {
+        var userAuthenticated = (UserModel) authentication.getPrincipal();
+
+        var userLogged = userService.findById(userAuthenticated.getId()).get(); 
+        var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
         
         if (resultPassword) {
-            userService.deleteById(Integer.valueOf(userId));
+            userLogged.setUsername(NewUsername);
+            userService.save(userLogged);
             return HttpStatus.OK.toString();
         }
+
+        return HttpStatus.UNAUTHORIZED.toString();
+    }
+
+    // TODO EDIT USER EMAIL
+    @MutationMapping(name = "editEmail")
+    @PreAuthorize("hasRole('user')")
+    public String editEmailUserLogged(Authentication authentication, @Argument String password, @Argument String NewEmail) {
+        var userAuthenticated = (UserModel) authentication.getPrincipal();
+
+        var userLogged = userService.findById(userAuthenticated.getId()).get(); 
+        var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
+        
+        if (resultPassword) {
+            userLogged.setEmail(NewEmail);
+            userService.save(userLogged);
+            return HttpStatus.OK.toString();
+        }
+
         return HttpStatus.UNAUTHORIZED.toString();
     }
 }
