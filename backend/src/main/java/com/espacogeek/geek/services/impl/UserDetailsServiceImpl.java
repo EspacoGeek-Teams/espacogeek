@@ -21,6 +21,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserModel loadUserByUsername(String email) throws UsernameNotFoundException {
         UserModel user = userRepository.findUserByEmail(email).orElseThrow(() -> new GenericException(HttpStatus.UNAUTHORIZED.toString()));
+        
+        user.roles("user");
 
         // return User.builder()
         //         .username(user.getEmail())
