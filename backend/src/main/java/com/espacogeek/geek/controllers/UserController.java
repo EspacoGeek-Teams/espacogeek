@@ -41,7 +41,7 @@ public class UserController {
     public String createUser(@Argument(name = "credentials") NewUser newUser) {
 
         if (!new PasswordValidator(newUser.password()).check()) {
-            throw new GenericException(HttpStatus.BAD_GATEWAY.toString());
+            throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
 
         var passwordCrypt = BCrypt.withDefaults().hash(12, newUser.password().toCharArray()); 
@@ -57,7 +57,7 @@ public class UserController {
     public String editPasswordUserLogged(Authentication authentication, @Argument String actualPassword, @Argument String newPassword) {
 
         if (!new PasswordValidator(newPassword).check()) {
-            throw new GenericException(HttpStatus.BAD_GATEWAY.toString());
+            throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
 
         var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
@@ -93,7 +93,7 @@ public class UserController {
     // TODO EDIT USER USERNAME
     @MutationMapping(name = "editUsername")
     @PreAuthorize("hasRole('user')")
-    public String editUsernameUserLogged(Authentication authentication, @Argument String password, @Argument String NewUsername) {
+    public String editUsernameUserLogged(Authentication authentication, @Argument String password, @Argument String newUsername) {
         
         var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
 
@@ -101,7 +101,7 @@ public class UserController {
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
         
         if (resultPassword) {
-            userLogged.setUsername(NewUsername);
+            userLogged.setUsername(newUsername);
             userService.save(userLogged);
             return HttpStatus.OK.toString();
         }
@@ -112,7 +112,7 @@ public class UserController {
     // TODO EDIT USER EMAIL
     @MutationMapping(name = "editEmail")
     @PreAuthorize("hasRole('user')")
-    public String editEmailUserLogged(Authentication authentication, @Argument String password, @Argument String NewEmail) {
+    public String editEmailUserLogged(Authentication authentication, @Argument String password, @Argument String newEmail) {
 
         var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
 
@@ -120,7 +120,7 @@ public class UserController {
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
         
         if (resultPassword) {
-            userLogged.setEmail(NewEmail);
+            userLogged.setEmail(newEmail);
             userService.save(userLogged);
             return HttpStatus.OK.toString();
         }
