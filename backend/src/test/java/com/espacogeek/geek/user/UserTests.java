@@ -28,8 +28,8 @@ import com.espacogeek.geek.utils.RequestClient;
 public class UserTests {
     private final static String USERNAME_TEST = "UserTester";
     private final static String NEW_USERNAME_TEST = "UserTester2";
-    private final static String PASSWORD_TEST = "123";
-    private final static String NEW_PASSWORD_TEST = "1234";
+    private final static String PASSWORD_TEST = "tester!123";
+    private final static String NEW_PASSWORD_TEST = "tester!1234";
     private final static String EMAIL_TEST = "userTest@gmail.com";
 
     @Autowired
@@ -37,6 +37,9 @@ public class UserTests {
     
     @Nested
     @DisplayName("Requests")
+    /**
+     * ! This test has to be executed in order.
+     */
     public class UserRequestTest extends RequestClient {
 
         @Test
@@ -63,8 +66,6 @@ public class UserTests {
                 .path("deleteUser")
                 .entity(String.class);
             
-            System.out.println("Response: " + response.get());
-            
             assertEquals(new String("200 OK"), response.get());
         }
 
@@ -84,8 +85,9 @@ public class UserTests {
                     });
                 });
         }
+        
+        // TODO TRY CREATE USER WITH INVALD PASSWORD
 
-        // TODO FIND USER
         @Test
         @Order(3)
         void findUserById_shouldNotCreateUser() {
@@ -100,9 +102,30 @@ public class UserTests {
         }
 
         // TODO EDIT USER PASSWORD
+        @Test
+        @Order(4)
+        void editUserPasswordByUser_shouldNotCreateUser() {
+            var response = tester.documentName("editPasswordUser")
+                .variable("actualPassword", PASSWORD_TEST)
+                .variable("newPassword", NEW_PASSWORD_TEST)
+                .execute()
+                .path("editPassword")
+                .entityList(String.class);
+        
+            assertEquals(new String("200 OK"), response.get());
+        }
+
+        // TODO TRY EDIT USER PASSWORD WITH INVALD PASSWORD
 
         // TODO EDIT USER USERNAME
 
         // TODO EDIT USER EMAIL
+
+        // TODO TRY EDIT USER EMAIL WITH INVALID EMAIL
+
+
+
+
+        // TODO CHECK THE TEST ORDER
     }
 }
