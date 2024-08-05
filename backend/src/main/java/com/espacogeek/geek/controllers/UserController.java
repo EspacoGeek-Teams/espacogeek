@@ -36,7 +36,7 @@ public class UserController {
     public List<UserModel> findUser(@Argument Integer id, @Argument String username, @Argument String email) {
         return userService.findByIdOrUsernameContainsOrEmail(id, username, email);
     }
-    
+
     @MutationMapping(name = "createUser")
     public String createUser(@Argument(name = "credentials") NewUser newUser) {
 
@@ -44,7 +44,7 @@ public class UserController {
             throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
 
-        var passwordCrypt = BCrypt.withDefaults().hash(12, newUser.password().toCharArray()); 
+        var passwordCrypt = BCrypt.withDefaults().hash(12, newUser.password().toCharArray());
         var user = new UserModel(null, newUser.username(), newUser.email().toLowerCase(), passwordCrypt, null);
 
         userService.save(user);
@@ -70,8 +70,8 @@ public class UserController {
             userService.save(userLogged);
             return HttpStatus.OK.toString();
         }
-        
-        return HttpStatus.UNAUTHORIZED.toString();
+
+        throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
     }
 
     @MutationMapping(name = "deleteUser")
@@ -80,33 +80,34 @@ public class UserController {
 
         var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
 
-        var userLogged = userService.findById(userId).get(); 
+        var userLogged = userService.findById(userId).get();
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
-        
+
         if (resultPassword) {
             userService.deleteById(Integer.valueOf(userId));
             return HttpStatus.OK.toString();
         }
-        return HttpStatus.UNAUTHORIZED.toString();
+
+        throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
     }
 
     // TODO EDIT USER USERNAME
     @MutationMapping(name = "editUsername")
     @PreAuthorize("hasRole('user')")
     public String editUsernameUserLogged(Authentication authentication, @Argument String password, @Argument String newUsername) {
-        
+
         var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
 
-        var userLogged = userService.findById(userId).get(); 
+        var userLogged = userService.findById(userId).get();
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
-        
+
         if (resultPassword) {
             userLogged.setUsername(newUsername);
             userService.save(userLogged);
             return HttpStatus.OK.toString();
         }
 
-        return HttpStatus.UNAUTHORIZED.toString();
+        throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
     }
 
     // TODO EDIT USER EMAIL
@@ -116,15 +117,15 @@ public class UserController {
 
         var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
 
-        var userLogged = userService.findById(userId).get(); 
+        var userLogged = userService.findById(userId).get();
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
-        
+
         if (resultPassword) {
             userLogged.setEmail(newEmail);
             userService.save(userLogged);
             return HttpStatus.OK.toString();
         }
 
-        return HttpStatus.UNAUTHORIZED.toString();
+        throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
     }
 }

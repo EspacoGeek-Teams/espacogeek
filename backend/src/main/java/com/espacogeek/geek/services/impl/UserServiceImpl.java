@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
 
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.UserModel;
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
             return userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             throw new GenericException(HttpStatus.CONFLICT.toString());
-        } catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException | TransactionSystemException e) {
             throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
     }
