@@ -38,14 +38,20 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public List<MediaModel> saveAll(List<MediaModel> medias) {
         return this.mediaRepository.saveAll(medias);
-    }  
+    }
 
     /**
      * @see MediaService#findSerieByIdOrName(Integer, String)
      */
     @Override
     public List<MediaModel> findSerieByIdOrName(Integer id, String name) {
+        var medias = new ArrayList<MediaModel>();
+
+        if (id != null) {
+            medias.add(this.mediaRepository.findById(id).orElseGet(null));
+            return medias;
+        }
+
         return this.mediaRepository.findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
     }
-
 }
