@@ -61,21 +61,21 @@ public class MediaModel implements Serializable {
     @OneToMany(mappedBy = "media")
     private List<ExternalReferenceModel> externalReference;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(
         name = "medias_has_companies",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> company;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(
         name = "medias_has_people",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
     private List<PeopleModel> people;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(
         name = "medias_has_genres",
         joinColumns = @JoinColumn(name = "medias_id_media"),
