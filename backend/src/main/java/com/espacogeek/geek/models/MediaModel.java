@@ -58,24 +58,24 @@ public class MediaModel implements Serializable {
     @JoinColumn(name = "id_category")
     private MediaCategoryModel mediaCategory;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "media")
     private List<ExternalReferenceModel> externalReference;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany()
     @JoinTable(
         name = "medias_has_companies",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> company;
-    
-    @ManyToMany(fetch = FetchType.EAGER)
+
+    @ManyToMany()
     @JoinTable(
         name = "medias_has_people",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
     private List<PeopleModel> people;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany()
     @JoinTable(
         name = "medias_has_genres",
         joinColumns = @JoinColumn(name = "medias_id_media"),
@@ -90,9 +90,9 @@ public class MediaModel implements Serializable {
     @Column(name = "update_at")
     private Date updateAt;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "media")
     private List<AlternativeTitleModel> alternativeTitles;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "media")
     private List<SeasonModel> season;
 }
