@@ -34,6 +34,6 @@ public class AlternativeTitleModel implements Serializable {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "id_midia")
+    @JoinColumn(name = "id_media")
     private MediaModel media;
 }
