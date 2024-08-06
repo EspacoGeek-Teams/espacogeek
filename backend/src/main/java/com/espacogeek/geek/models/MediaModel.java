@@ -37,7 +37,7 @@ public class MediaModel implements Serializable {
     @Column(name = "id_media")
     private Integer id;
 
-    @Column(name = "name_media")
+    @Column(name = "name_media", length = 1000)
     private String name;
 
     @Column(name = "episode_count")
@@ -67,7 +67,7 @@ public class MediaModel implements Serializable {
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> company;
-    
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "medias_has_people",
