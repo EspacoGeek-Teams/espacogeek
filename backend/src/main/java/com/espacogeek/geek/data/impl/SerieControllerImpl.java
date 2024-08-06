@@ -1,5 +1,6 @@
 package com.espacogeek.geek.data.impl;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -9,6 +10,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -60,51 +62,47 @@ public class SerieControllerImpl implements MediaDataController {
         this.mediaCategory = mediaCategoryService.findById(SERIE_ID)
             .orElseThrow(() -> new GenericException("Category not found"));
     }
-    
+
     /**
      * This method update and add title of TV Series.
      * <p>
      * Every day at 9:00AM this function is executed.
      */
     // @Scheduled(cron = "* * 9 * * *")
+    @Scheduled(initialDelay = 1)
     @SuppressWarnings("unused")
     private void updateTvSeries() {
         try {
-            var jsonArrayDailyExport = tvSeriesApi.updateTitles(); // * @AbigailGeovana pega a lista de todos os titulos de serie
-            var medias = new ArrayList<MediaModel>();
-            var externalReferences = new ArrayList<ExternalReferenceModel>();
+            var jsonArrayDailyExport = tvSeriesApi.updateTitles();
 
             for (int i = 0; i < jsonArrayDailyExport.size(); i++) {
                 var json = (JSONObject) jsonArrayDailyExport.get(i);
 
-                // TODO It will return a too many request error if execute more than twenty time a second, fixed it
-                // * @AbigailGeovana só vai entrar nesse if se a media não for anime
-                if (tvSeriesApi.getKeyword(Integer.valueOf(json.get("id").toString())).stream().anyMatch((keyword) -> {
-                    return keyword.getName().toLowerCase() == "anime" ? false : true;
-                })) {
-                    var externalReferenceList = new ArrayList<ExternalReferenceModel>();
+                var externalReferenceExisted = externalReferenceService.findByReferenceAndType(json.get("id").toString(), typeReference);
 
-                    var media = new MediaModel(TMDB_ID, json.get("original_name").toString(), SERIE_ID, IMDB_ID, null, null, null, this.mediaCategory, null, null, null, null, null, null, null, null);    
-                    var externalReference = new ExternalReferenceModel(IMDB_ID, json.get("id").toString(), null, typeReference);
+                if (!externalReferenceExisted.isPresent()) {
+                    // TODO It can return a too many request error if execute more than twenty time a second, fixed it
+                    if (tvSeriesApi.getKeyword(Integer.valueOf(json.get("id").toString())).stream().anyMatch((keyword) -> {
+                        return keyword.getName().toLowerCase() == "anime" ? false : true;
+                    })) {
+                        var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, this.mediaCategory, null, null, null, null, null, null, null, null);
+                        var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, typeReference);
 
-                    var externalReferenceExisted = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
-                    if (externalReferenceExisted.isPresent()) {
-                        media.setId(externalReferenceExisted.get().getMedia().getId()); 
+                        media.setId(externalReferenceExisted.get().getMedia().getId());
                         externalReference.setId(externalReferenceExisted.get().getId());
+
+                        var mediaSaved = mediaService.save(media);
+                        externalReference.setMedia(mediaSaved);
+
+                        var referenceSaved = externalReferenceService.save(externalReference);
+                        List<ExternalReferenceModel> referenceListSaved = new ArrayList<>();
+                        referenceListSaved.add(referenceSaved);
+                        mediaSaved.setExternalReference(referenceListSaved);
+
+                        media.setAlternativeTitles(updateAlternativeTitles(mediaSaved, null));
                     }
-    
-                    externalReferenceList.add(externalReference);
-                    media.setExternalReference(externalReferenceList);
-                    externalReference.setMedia(media);
-                    media.setAlternativeTitles(updateAlternativeTitles(media, null));
-    
-                    externalReferences.add(externalReference);
-                    medias.add(media);
                 }
             }
-
-            mediaService.saveAll(medias);
-            externalReferenceService.saveAll(externalReferences);
 
             System.out.println("SUCCESS TO UPDATE TV SERIES, AT " + LocalDateTime.now());
 
@@ -114,7 +112,7 @@ public class SerieControllerImpl implements MediaDataController {
             System.out.println("*# ----------------------------------------- *#");
         }
     }
-    
+
     // public String updateCoverImage(MediaModel media, MediaModel result) {
     //     var externalReferences = media.getExternalReference();
     //     for (ExternalReferenceModel externalReference : externalReferences) {
@@ -165,7 +163,7 @@ public class SerieControllerImpl implements MediaDataController {
 
         return media;
     }
-    
+
     /**
      * @see MediaDataController#updateAlternativeTitles(MediaModel, MediaModel)
      */
@@ -190,7 +188,7 @@ public class SerieControllerImpl implements MediaDataController {
         var alternativeTitles = new ArrayList<AlternativeTitleModel>();
 
         for (AlternativeTitleModel title : allAlternativeTitles) {
-            if (media.getAlternativeTitles().isEmpty()) {
+            if (media.getAlternativeTitles() == null) {
                 alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
             } else {
                 if (!media.getAlternativeTitles().stream().anyMatch((alternativeTitle) -> alternativeTitle.getName().equals(title.getName()))) {
@@ -205,7 +203,7 @@ public class SerieControllerImpl implements MediaDataController {
 
         return newTitles;
     }
-    
+
     /**
      * @see MediaDataController#updateExternalReferences(MediaModel, MediaModel)
      * @param result must have <code>typeReference</code>
@@ -229,7 +227,7 @@ public class SerieControllerImpl implements MediaDataController {
         } else {
             rawExternalReferences = result.getExternalReference();
         }
-        
+
         for (ExternalReferenceModel reference : rawExternalReferences) {
             reference.setMedia(media);
             if (!media.getExternalReference().stream().anyMatch((eReference) -> eReference.getReference().equals(reference.getReference()))) {
@@ -243,7 +241,7 @@ public class SerieControllerImpl implements MediaDataController {
         return newExternal;
     }
 
-    
+
     /**
      * @see MediaDataController#updateGenres(MediaModel, MediaModel)
      */
@@ -253,7 +251,7 @@ public class SerieControllerImpl implements MediaDataController {
         List<GenreModel> rawGenres = new ArrayList<>();
         var medias = new ArrayList<MediaModel>();
         medias.add(media);
-        
+
         if (result == null) {
             for (ExternalReferenceModel reference : media.getExternalReference()) {
                 if (reference.getTypeReference().equals(this.typeReference)) {

@@ -76,9 +76,9 @@ public class TvSeriesApiImpl implements MediaApi {
 
     /**
      * @see MediaApi#updateTitles()
-     * 
+     *
      * This function get the daily datajump available by tmdb
-     * 
+     *
      * @return a JSON Array with all serie titles
      * @throws IOException
      * @throws ParseException
@@ -89,21 +89,19 @@ public class TvSeriesApiImpl implements MediaApi {
         var now = LocalDateTime.now();
 
         // formatting the date to do request as tmdb pattern
-        var month = String.valueOf(now.getMonth().getValue()).length() == 1
-                ? 0 + String.valueOf(now.getMonth().getValue())
-                : now.getMonth().getValue();
-        var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? 0 + now.getDayOfMonth() : now.getDayOfMonth();
+        var month = String.valueOf(now.getMonth().getValue()).length() == 1 ? "0".concat(String.valueOf(now.getMonth().getValue())) : now.getMonth().getValue();
+        var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? "0".concat(String.valueOf(now.getDayOfMonth())) : now.getDayOfMonth();
         var year = String.valueOf(now.getYear()).replace(".", "");
 
         // * @AbigailGeovana faz o request
         OkHttpClient client = new OkHttpClient().newBuilder().build();
         Request request = new Request.Builder()
-                .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", month,
+                .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_05_{2}.json.gz", month,
                         day, year))
                 .method("GET", null)
                 .addHeader("Content-Type", "application/json")
                 .build();
-        
+
         Response response = null;
         try {
             response = client.newCall(request).execute();
@@ -147,7 +145,7 @@ public class TvSeriesApiImpl implements MediaApi {
             rawSerieDetails = api.getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
         } catch (TmdbException e) {
             e.printStackTrace();
-        } 
+        }
 
         MediaModel serie = new MediaModel(
                 null,
@@ -166,10 +164,10 @@ public class TvSeriesApiImpl implements MediaApi {
                 null,
                 formatAlternativeTitles(rawSerieDetails.getAlternativeTitles().getResults()),
                 formatSeason(rawSerieDetails.getSeasons()));
-        
+
         return serie;
     }
-    
+
     /**
      * @see MediaApi#getArtwork(Integer)
      */
@@ -245,7 +243,7 @@ public class TvSeriesApiImpl implements MediaApi {
 
         externalReferences.add(new ExternalReferenceModel(null, id.toString(), null,
                 typeReferenceService.findById(MediaDataController.TMDB_ID).get()));
-                
+
         if (rawExternalReferences.getTvdbId() != null) {
             externalReferences.add(new ExternalReferenceModel(null, rawExternalReferences.getTvdbId(), null,
                     typeReferenceService.findById(MediaDataController.TVDB_ID).get()));
@@ -309,7 +307,7 @@ public class TvSeriesApiImpl implements MediaApi {
 
         return formatSeason(rawSession);
     }
-    
+
     private List<SeasonModel> formatSeason(List<TvSeason> rawSeasons) {
         List<SeasonModel> seasons = new ArrayList<>();
 
