@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 
 function TopBar() {
     return (
-        <Navbar className="backdrop-filter backdrop-blur-lg bg-opacity-30 border-b border-gray-200 firefox:bg-opacity-90">
+        <Navbar bg="dark" data-bs-theme="dark" className="bs-border-color-translucent">
             <Container>
                 <Navbar.Brand href="#home" className="pr-28">
                     <img
