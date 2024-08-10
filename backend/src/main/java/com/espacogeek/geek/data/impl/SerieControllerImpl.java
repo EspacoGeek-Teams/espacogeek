@@ -78,29 +78,29 @@ public class SerieControllerImpl implements MediaDataController {
             for (int i = 0; i < jsonArrayDailyExport.size(); i++) {
                 var json = (JSONObject) jsonArrayDailyExport.get(i);
 
-                var externalReferenceExisted = externalReferenceService.findByReferenceAndType(json.get("id").toString(), typeReference);
+                // TODO It can return a too many request error if execute more than twenty time a second, fixed it
+                if (tvSeriesApi.getKeyword(Integer.valueOf(json.get("id").toString())).stream().anyMatch((keyword) -> {
+                    return keyword.getName().toLowerCase() == "anime" ? false : true;
+                })) {
 
-                if (!externalReferenceExisted.isPresent()) {
-                    // TODO It can return a too many request error if execute more than twenty time a second, fixed it
-                    if (tvSeriesApi.getKeyword(Integer.valueOf(json.get("id").toString())).stream().anyMatch((keyword) -> {
-                        return keyword.getName().toLowerCase() == "anime" ? false : true;
-                    })) {
-                        var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, this.mediaCategory, null, null, null, null, null, null, null, null);
-                        var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, typeReference);
+                    var media = new MediaModel(null, json.get("original_name").toString(), null, null, null, null, null, this.mediaCategory, null, null, null, null, null, null, null, null);
+                    var externalReference = new ExternalReferenceModel(null, json.get("id").toString(), null, typeReference);
 
+                    var externalReferenceExisted = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
+                    if (externalReferenceExisted.isPresent()) {
                         media.setId(externalReferenceExisted.get().getMedia().getId());
                         externalReference.setId(externalReferenceExisted.get().getId());
-
-                        var mediaSaved = mediaService.save(media);
-                        externalReference.setMedia(mediaSaved);
-
-                        var referenceSaved = externalReferenceService.save(externalReference);
-                        List<ExternalReferenceModel> referenceListSaved = new ArrayList<>();
-                        referenceListSaved.add(referenceSaved);
-                        mediaSaved.setExternalReference(referenceListSaved);
-
-                        media.setAlternativeTitles(updateAlternativeTitles(mediaSaved, null));
                     }
+
+                    var mediaSaved = mediaService.save(media);
+                    externalReference.setMedia(mediaSaved);
+
+                    var referenceSaved = externalReferenceService.save(externalReference);
+                    List<ExternalReferenceModel> referenceListSaved = new ArrayList<>();
+                    referenceListSaved.add(referenceSaved);
+                    mediaSaved.setExternalReference(referenceListSaved);
+
+                    media.setAlternativeTitles(updateAlternativeTitles(mediaSaved, null));
                 }
             }
 
