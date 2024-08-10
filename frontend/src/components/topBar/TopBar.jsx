@@ -9,7 +9,7 @@ import Col from "react-bootstrap/Col";
 
 function TopBar() {
     return (
-        <Navbar bg="dark" data-bs-theme="dark" className="bs-border-color-translucent">
+        <Navbar bg="dark" data-bs-theme="dark" className="bg-slate-600">
             <Container>
                 <Navbar.Brand href="#home" className="pr-28">
                     <img
@@ -27,7 +27,7 @@ function TopBar() {
                             <Form.Control
                                 type="text"
                                 placeholder="Search"
-                                className=" mr-sm-2"
+                                className="mr-sm-2 w-3/4"
                             />
                         </Col>
                     </Row>
