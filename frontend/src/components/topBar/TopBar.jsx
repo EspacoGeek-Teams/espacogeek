@@ -1,57 +1,47 @@
-import React from "react";
-import Container from "react-bootstrap/Container";
+import React, { useState } from "react";
 import Navbar from "react-bootstrap/Navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
-import InputGroup from "react-bootstrap/InputGroup";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import Button from "react-bootstrap/Button";
+import { Search } from "react-bootstrap-icons";
+import SearchBar from "./SearchBar";
 
 function TopBar() {
+    const [SearchComponent, setSearchComponent] = useState(false);
+
     return (
-        <Navbar bg="dark" data-bs-theme="dark" className="bg-slate-600">
-            <Container>
-                <Navbar.Brand href="#home" className="pr-28">
-                    <img
-                        alt=""
-                        src=""
-                        width="30"
-                        height="30"
-                        className="d-inline-block align-top"
-                    />{" "}
-                    Espaço Geek
-                </Navbar.Brand>
-                <Form inline>
-                    <Row>
-                        <Col xs="auto">
-                            <Form.Control
-                                type="text"
-                                placeholder="Search"
-                                className="mr-sm-2 w-3/4"
+        <>
+            <Navbar
+                bg="dark"
+                data-bs-theme="dark"
+                className="bg-slate-600 z-30"
+            >
+                <div className="container">
+                    <Navbar.Brand href="/" className="pr-28">
+                        <img
+                            alt=""
+                            src=""
+                            width="30"
+                            height="30"
+                            className="d-inline-block align-top"
+                        />{" "}
+                        Espaço Geek
+                    </Navbar.Brand>
+                    <div className="d-flex align-items-center">
+                        <Button variant="link" className="group" onClick={() => setSearchComponent(true)}>
+                            <Search
+                                color="white"
+                                className="group-hover:fill-blue-500 me-6 size-6"
                             />
-                        </Col>
-                    </Row>
-                </Form>
-                <Form inline name="login" className="pl-96">
-                    <InputGroup>
-                        <InputGroup.Text id="basic-addon1">👤</InputGroup.Text>
-                        <Form.Control
-                            placeholder="Email"
-                            aria-label="Email"
-                            id="email"
-                            aria-describedby="basic-addon1"
-                        />
-                        <InputGroup.Text id="basic-addon1">🔑</InputGroup.Text>
-                        <Form.Control
-                            type="password"
-                            placeholder="Password"
-                            id="inputPassword5"
-                            aria-describedby="passwordHelpBlock"
-                        />
-                    </InputGroup>
-                </Form>
-            </Container>
-        </Navbar>
+                        </Button>
+                        <Button variant="primary" className="me-1">
+                            Log in
+                        </Button>
+                        <Button variant="outline-primary">Sign in</Button>
+                    </div>
+                </div>
+            </Navbar>
+            {SearchComponent&&<SearchBar/>}
+        </>
     );
 }
 

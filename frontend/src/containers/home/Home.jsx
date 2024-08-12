@@ -1,8 +1,13 @@
 import React from "react";
-import TopBar from "../components/topBar/TopBar";
-import './star.css';
+import TopBar from "../../components/topBar/TopBar";
+import "./star.css";
+import { useEffect } from "react";
 
 function Home() {
+    useEffect(() => {
+        document.title = "Home - Espaço Geek";
+    }, []);
+
     return (
         <>
             <TopBar />
