@@ -37,6 +37,12 @@ public class UserController {
         return userService.findByIdOrUsernameContainsOrEmail(id, username, email);
     }
 
+    @QueryMapping(name = "login")
+    @PreAuthorize("hasRole('user')")
+    public String doLoginUser() {
+        return HttpStatus.ACCEPTED.toString();
+    }
+
     @MutationMapping(name = "createUser")
     public String createUser(@Argument(name = "credentials") NewUser newUser) {
 

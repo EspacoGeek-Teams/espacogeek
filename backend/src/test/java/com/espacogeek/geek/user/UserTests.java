@@ -242,18 +242,47 @@ public class UserTests {
         @Test
         @Order(13)
         void queryUserByUsername_shouldReturnUser() {
-            tester = initClientWithAuth(Base64.getEncoder().encodeToString(new String(NEW_EMAIL_TEST+":"+NEW_PASSWORD_TEST).getBytes()));
+            tester = initClientWithAuth(Base64.getEncoder()
+                    .encodeToString(new String(NEW_EMAIL_TEST + ":" + NEW_PASSWORD_TEST).getBytes()));
 
             tester.documentName("findUser")
-                .variable("username", NEW_USERNAME_TEST)
-                .execute()
-                .path("findUser")
-                .entityList(UserModel.class)
-                .hasSizeGreaterThan(0);
+                    .variable("username", NEW_USERNAME_TEST)
+                    .execute()
+                    .path("findUser")
+                    .entityList(UserModel.class)
+                    .hasSizeGreaterThan(0);
         }
 
         @Test
         @Order(14)
+        void queryLogin_whenAuthenticated_shouldReturnAccepted() {
+            tester = initClientWithAuth(Base64.getEncoder().encodeToString(new String(NEW_EMAIL_TEST+":"+NEW_PASSWORD_TEST).getBytes()));
+
+            var response = tester.documentName("loginUser")
+                .execute()
+                .path("login")
+                .entity(String.class);
+
+
+            assertEquals(new String("202 ACCEPTED"), response.get());
+        }
+
+        @Test
+        @Order(15)
+        void queryLogin_whenNotAuthenticated_shouldNotReturnAccepted() {
+            tester.documentName("loginUser")
+            .execute()
+            .errors()
+            .satisfy(errors -> {
+                assertTrue(errors.size() == 1);
+                errors.forEach((error) -> {
+                    assertEquals(new String("Unauthorized"), error.getMessage());
+                });
+            });
+        }
+
+        @Test
+        @Order(16)
         void deleteUser_ifValidUsernameAndPasswordAndNoValidEmail_shouldDeleteUser() {
             tester = initClientWithAuth(Base64.getEncoder().encodeToString(new String(NEW_EMAIL_TEST+":"+NEW_PASSWORD_TEST).getBytes()));
 
