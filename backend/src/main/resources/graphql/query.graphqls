@@ -1,5 +1,5 @@
-# * @AbigailGeovana tipo query (são tipos de requisições que servem para fazer GET.
 type Query {
     findUser(id: ID, username: String, email: String): [User]
     tvserie(id: ID, name: String): [Media]
+    login: String
 }
