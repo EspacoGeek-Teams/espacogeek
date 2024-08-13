@@ -16,7 +16,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -37,7 +36,7 @@ public class MediaModel implements Serializable {
     @Column(name = "id_media")
     private Integer id;
 
-    @Column(name = "name_media", length = 1000)
+    @Column(name = "name_media")
     private String name;
 
     @Column(name = "episode_count")
@@ -58,24 +57,24 @@ public class MediaModel implements Serializable {
     @JoinColumn(name = "id_category")
     private MediaCategoryModel mediaCategory;
 
-    @OneToMany(mappedBy = "media")
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
     private List<ExternalReferenceModel> externalReference;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "medias_has_companies",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> company;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "medias_has_people",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
     private List<PeopleModel> people;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "medias_has_genres",
         joinColumns = @JoinColumn(name = "medias_id_media"),
@@ -90,9 +89,9 @@ public class MediaModel implements Serializable {
     @Column(name = "update_at")
     private Date updateAt;
 
-    @OneToMany(mappedBy = "media")
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
     private List<AlternativeTitleModel> alternativeTitles;
 
-    @OneToMany(mappedBy = "media")
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
     private List<SeasonModel> season;
 }

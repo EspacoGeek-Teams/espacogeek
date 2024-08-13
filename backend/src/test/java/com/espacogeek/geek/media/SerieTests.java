@@ -22,7 +22,6 @@ import com.espacogeek.geek.utils.RequestClient;
 
 @Nested
 @SpringBootTest
-@Transactional
 @DisplayName("Serie Tests")
 public class SerieTests {
     private final static String name = "The Boys"; // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
