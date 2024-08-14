@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CloseButton from 'react-bootstrap/CloseButton';
+import { useQuery, gql } from '@apollo/client';
+import searchQuery from '../Apollo/schemas/query/tvserieSearch';
 
 function SearchBar() {
+    const { loading, error, data } = useQuery(searchQuery, {variables: {name: "Stranger Things"}});
+
+    // Test of GraphQL, doc: https://www.apollographql.com/docs/react/get-started#step-5-fetch-data-with-usequery
+    useEffect(() => {
+        console.log(data);
+    }, [data])
+
     return (
         <>
             <div className="container absolute z-50">
@@ -15,5 +24,5 @@ function SearchBar() {
     );
 }
 
-export default SearchBar;
 
+export default SearchBar;
