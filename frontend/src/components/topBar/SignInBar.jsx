@@ -2,8 +2,19 @@ import React from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
+import { useMutation } from '@apollo/client';
+import singInMutation from '../Apollo/schemas/mutations/signInUser';
 
-function SigIn({show, handleClose}) {
+
+function SigIn({ show, handleClose }) {
+    const [newUser, { data, loading, error }] = useMutation(singInMutation);
+    let username;
+    let email;
+    let password;
+
+    if (loading) return 'Submitting...';
+    if (error) return `Submission error! ${error.message}`;
+
     return (
         <>
             <Modal show={show} onHide={handleClose} centered>
@@ -15,11 +26,19 @@ function SigIn({show, handleClose}) {
                 </Modal.Header>
 
                 <Modal.Body>
-                    <Form>
+                    <Form onSubmit={e => {
+                        e.preventDefault();
+                        newUser({ variables: { username: username, email: email, password: password } });
+                        username.value = null;
+                        email.value = null;
+                        password.value = null;
+                    }}>
 
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                             <Form.Label>User Name</Form.Label>
-                                <Form.Control
+                            <Form.Control ref={node => {
+                                username = node;
+                                }}
                                     type="name"
                                     placeholder="name example"
                                 />
@@ -27,7 +46,9 @@ function SigIn({show, handleClose}) {
 
                         <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
                             <Form.Label>Email Address</Form.Label>
-                                <Form.Control
+                                <Form.Control ref={node => {
+                                email = node;
+                                }}
                                     type="email"
                                     placeholder="name@example.com"
                                 />
@@ -35,7 +56,9 @@ function SigIn({show, handleClose}) {
 
                         <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control
+                            <Form.Control ref={node => {
+                                password = node;
+                                }}
                                 type="password"
                                 placeholder="123password"
                             />
