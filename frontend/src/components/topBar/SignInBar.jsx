@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { useMutation } from '@apollo/client';
-import singInMutation from '../Apollo/schemas/mutations/signInUser';
+import singInMutation from '../apollo/schemas/mutations/signInUser';
 
 
 function SigIn({ show, handleClose }) {
@@ -11,6 +11,10 @@ function SigIn({ show, handleClose }) {
     let username;
     let email;
     let password;
+
+    useEffect(() => {
+        
+    }, [])
 
     if (loading) return 'Submitting...';
     if (error) return `Submission error! ${error.message}`;

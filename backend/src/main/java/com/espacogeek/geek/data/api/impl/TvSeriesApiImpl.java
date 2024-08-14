@@ -151,7 +151,7 @@ public class TvSeriesApiImpl implements MediaApi {
                 null,
                 rawSerieDetails.getName(),
                 rawSerieDetails.getNumberOfEpisodes(),
-                rawSerieDetails.getEpisodeRunTime().isEmpty() ? null : rawSerieDetails.getEpisodeRunTime().getFirst(),
+                rawSerieDetails.getEpisodeRunTime() == null ? null : rawSerieDetails.getEpisodeRunTime().getFirst(),
                 rawSerieDetails.getOverview(),
                 rawSerieDetails.getPosterPath() == null ? null : URL_IMAGE_TMDB + rawSerieDetails.getPosterPath(),
                 rawSerieDetails.getBackdropPath() == null ? null : URL_IMAGE_TMDB + rawSerieDetails.getBackdropPath(),

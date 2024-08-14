@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import CloseButton from 'react-bootstrap/CloseButton';
 import { useQuery } from '@apollo/client';
-import searchQuery from '../Apollo/schemas/query/tvserieSearch';
+import searchQuery from '../apollo/schemas/queries/tvserieSearch';
 
 function SearchBar() {
     const { loading, error, data } = useQuery(searchQuery, { variables: { name: "Stranger Things" } });
