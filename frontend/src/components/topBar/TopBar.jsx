@@ -4,9 +4,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "react-bootstrap/Button";
 import { Search } from "react-bootstrap-icons";
 import SearchBar from "./SearchBar";
+import SignInBar from "./SignInBar";
 
 function TopBar() {
     const [SearchComponent, setSearchComponent] = useState(false);
+    const [SignInComponent, setSignInComponent] = useState(false);
+
+    const handleSignInClose = () => setSignInComponent(false);
+    const handleSignInShow = () => setSignInComponent(true);
 
     return (
         <>
@@ -36,11 +41,14 @@ function TopBar() {
                         <Button variant="primary" className="me-1">
                             Log in
                         </Button>
-                        <Button variant="outline-primary">Sign in</Button>
+                        <Button variant="outline-primary" className="group" onClick={handleSignInShow}>
+                            Sign in
+                        </Button>
                     </div>
                 </div>
             </Navbar>
             {SearchComponent&&<SearchBar/>}
+            {SignInComponent&&<SignInBar show={SignInComponent} handleClose={handleSignInClose} />}
         </>
     );
 }
