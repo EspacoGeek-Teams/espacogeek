@@ -5,13 +5,18 @@ import Button from "react-bootstrap/Button";
 import { Search } from "react-bootstrap-icons";
 import SearchBar from "./SearchBar";
 import SignInBar from "./SignInBar";
+import LogInBar from "./LogInBar";
 
 function TopBar() {
     const [SearchComponent, setSearchComponent] = useState(false);
     const [SignInComponent, setSignInComponent] = useState(false);
+    const [LogInComponent, setLogInComponent] = useState(false);
 
     const handleSignInClose = () => setSignInComponent(false);
     const handleSignInShow = () => setSignInComponent(true);
+
+    const handleLogInClose = () => setLogInComponent(false);
+    const handleLogInShow = () => setLogInComponent(true);
 
     return (
         <>
@@ -38,7 +43,7 @@ function TopBar() {
                                 className="group-hover:fill-blue-500 me-6 size-6"
                             />
                         </Button>
-                        <Button variant="primary" className="me-1">
+                        <Button variant="primary" className="me-1" onClick={handleLogInShow}>
                             Log in
                         </Button>
                         <Button variant="outline-primary" className="group" onClick={handleSignInShow}>
@@ -49,6 +54,7 @@ function TopBar() {
             </Navbar>
             {SearchComponent&&<SearchBar/>}
             {SignInComponent&&<SignInBar show={SignInComponent} handleClose={handleSignInClose} />}
+            {LogInComponent&&<LogInBar show={LogInComponent} handleClose={handleLogInClose} />}
         </>
     );
 }
