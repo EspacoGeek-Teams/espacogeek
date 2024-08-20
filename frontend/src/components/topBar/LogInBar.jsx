@@ -2,6 +2,7 @@ import Form from 'react-bootstrap/Form';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { Link } from 'react-router-dom';
 
 function LogIn({show, handleClose}){
 
@@ -30,6 +31,9 @@ function LogIn({show, handleClose}){
                                     placeholder='password'
                                 />
                         </Form.Group>
+                        <div className="flex justify-end pb-2">
+                            <Link to="recoverPassword">Forgot your Password?</Link>
+                        </div>
                     </Form>
                 </Modal.Body>
 
@@ -38,7 +42,7 @@ function LogIn({show, handleClose}){
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleClose}>
-                        Log In
+                        Sign In
                     </Button>
                 </Modal.Footer>
 
