@@ -30,9 +30,13 @@ function SignIn({ show, handleClose }) {
                 },
             }).then((data) => {
                 console.log(data.data.createUser);
+                //mensagem ou 'icon'/imagem de OK, maybe um certinho
             }).catch((error) => {
                 setErrorMessage(error.graphQLErrors[0].message);
+                //mensagem ou 'icon'/imagem de FAIL, maybe um erradinho
             })
+        } else {
+            setErrorMessage('Incorret Password');
         }
 
         if (!loading) handleClose();
