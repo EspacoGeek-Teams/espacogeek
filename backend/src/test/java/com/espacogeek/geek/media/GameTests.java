@@ -25,7 +25,7 @@ public class GameTests {
         @Test
         void searchGame_shouldReturnMediaModelWithGameData() {
             var game = gamesAndVNsAPI.doSearch(NAME);
-            System.out.println(game.get(0).getName());
+            System.out.print(game.get(0).getName());
         }
     }
 

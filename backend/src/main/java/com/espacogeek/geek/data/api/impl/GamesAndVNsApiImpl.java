@@ -32,8 +32,9 @@ public class GamesAndVNsApiImpl implements MediaApi {
     private void init() {
         var tAuth = TwitchAuthenticator.INSTANCE;
         var clientId = apiKeyService.findById(IGDB_CLIENT_ID).orElseThrow().getKey();
+        var clientSecrete = apiKeyService.findById(IGDB_CLIENT_SECRET).orElseThrow().getKey();
         var tokenId = apiKeyService.findById(IGDB_TOKEN).orElseThrow();
-        var token = tAuth.requestTwitchToken(clientId, tokenId.getKey());
+        var token = tAuth.requestTwitchToken(clientId, clientSecrete);
 
         if (!token.getAccess_token().equals(tokenId.getKey())) {
             tokenId.setKey(token.getAccess_token());
@@ -53,7 +54,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
             var searchGames = ProtoRequestKt.search(wrapper, apicalypse);
 
             searchGames.forEach((game) -> {
-                medias.add(new MediaModel(null, game.getName(), null, null, null, null, null, null, null, null, null, null, null, null, null, null));
+                medias.add(new MediaModel(null, game.getGame().getName(), null, null, null, null, null, null, null, null, null, null, null, null, null, null));
             });
 
         } catch (RequestException e) {

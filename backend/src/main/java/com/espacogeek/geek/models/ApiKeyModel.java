@@ -22,7 +22,6 @@ public class ApiKeyModel implements Serializable {
     private String name;
 
     @Column(name = "api_key")
-    @Size(min = 250)
     @Setter
     private String key;
 }
