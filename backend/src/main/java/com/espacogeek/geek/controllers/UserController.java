@@ -1,29 +1,21 @@
 package com.espacogeek.geek.controllers;
 
-import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.ContextValue;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.UserModel;
 import com.espacogeek.geek.services.UserService;
 import com.espacogeek.geek.types.NewUser;
-import com.espacogeek.geek.types.UserInput;
-import com.espacogeek.geek.utils.GetIdInUserDetailsAuthority;
-import com.espacogeek.geek.utils.PasswordValidator;
+import com.espacogeek.geek.utils.Utils;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
@@ -46,7 +38,7 @@ public class UserController {
     @MutationMapping(name = "createUser")
     public String createUser(@Argument(name = "credentials") NewUser newUser) {
 
-        if (!new PasswordValidator(newUser.password()).check()) {
+        if (!Utils.isValidPassword(newUser.password())) {
             throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
 
@@ -62,11 +54,11 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     public String editPasswordUserLogged(Authentication authentication, @Argument String actualPassword, @Argument String newPassword) {
 
-        if (!new PasswordValidator(newPassword).check()) {
+        if (!Utils.isValidPassword(newPassword)) {
             throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
 
-        var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
+        var userId = Utils.getUserID(authentication);
 
         var userLogged = userService.findById(Integer.valueOf(userId)).get();
         var resultPassword = BCrypt.verifyer().verify(actualPassword.toCharArray(), userLogged.getPassword()).verified;
@@ -84,7 +76,7 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     public String deleteUserLogged(Authentication authentication, @Argument String password) {
 
-        var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
+        var userId = Utils.getUserID(authentication);
 
         var userLogged = userService.findById(userId).get();
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
@@ -102,7 +94,7 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     public String editUsernameUserLogged(Authentication authentication, @Argument String password, @Argument String newUsername) {
 
-        var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
+        var userId = Utils.getUserID(authentication);
 
         var userLogged = userService.findById(userId).get();
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
@@ -121,7 +113,7 @@ public class UserController {
     @PreAuthorize("hasRole('user')")
     public String editEmailUserLogged(Authentication authentication, @Argument String password, @Argument String newEmail) {
 
-        var userId = new GetIdInUserDetailsAuthority(authentication).getUserID();
+        var userId = Utils.getUserID(authentication);
 
         var userLogged = userService.findById(userId).get();
         var resultPassword = BCrypt.verifyer().verify(password.toCharArray(), userLogged.getPassword()).verified;
