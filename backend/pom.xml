@@ -20,11 +20,17 @@
 	</properties>
 	<dependencies>
 
-        <dependency>
-            <groupId>io.github.husnjak</groupId>
-            <artifactId>igdb-api-jvm</artifactId>
-            <version>1.2.0</version>
-          </dependency>
+	    <dependency>
+	        <groupId>io.github.husnjak</groupId>
+	        <artifactId>igdb-api-jvm</artifactId>
+	        <version>4-test</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.kittinunf.fuel</groupId>
+                    <artifactId>fuel-android</artifactId>
+                </exclusion>
+            </exclusions>
+	    </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -49,13 +55,6 @@
 	        <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
 	        <version>3.1.1</version>
 	    </dependency>
-
-
-	    <dependency>
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-starter-actuator</artifactId>
-	    </dependency>
-
 
         <!-- * Serve para limitar o número de calls a um método por segundo -->
         <dependency>
