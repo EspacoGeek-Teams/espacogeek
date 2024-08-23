@@ -15,22 +15,42 @@ import info.movito.themoviedbapi.model.keywords.Keyword;
 public interface MediaApi {
     public final static String URL_IMAGE_TMDB = "https://image.tmdb.org/t/p/original";
     public final static Integer TMDB_API_KEY_ID = 1;
+    public final static Integer IGDB_CLIENT_ID = 2;
+    public final static Integer IGDB_TOKEN = 3;
 
-    public JSONArray updateTitles();
-
-    public MediaModel getDetails(Integer id);
-
-    public MediaModel getArtwork(Integer id);
-
-    default public List<Keyword> getKeyword(Integer id) {
-        throw new UnsupportedOperationException("getKeyword() method as not implemented.");
+    default public JSONArray updateTitles() {
+        throw new UnsupportedOperationException();
     }
 
-    public List<AlternativeTitleModel> getAlternativeTitles(Integer id);
+    default public MediaModel getDetails(Integer id) {
+        throw new UnsupportedOperationException();
+    }
 
-    public List<ExternalReferenceModel> getExternalReference(Integer id);
+    default public MediaModel getArtwork(Integer id) {
+        throw new UnsupportedOperationException();
+    }
 
-    public List<GenreModel> getGenre(Integer id);
+    default public List<Keyword> getKeyword(Integer id) {
+        throw new UnsupportedOperationException();
+    }
 
-    public List<SeasonModel> getSeason(Integer id);
+    default public List<AlternativeTitleModel> getAlternativeTitles(Integer id) {
+        throw new UnsupportedOperationException();
+    }
+
+    default public List<ExternalReferenceModel> getExternalReference(Integer id) {
+        throw new UnsupportedOperationException();
+    }
+
+    default public List<GenreModel> getGenre(Integer id) {
+        throw new UnsupportedOperationException();
+    }
+
+    default public List<SeasonModel> getSeason(Integer id) {
+        throw new UnsupportedOperationException();
+    }
+
+    default public List<MediaModel> doSearch(String search) {
+        throw new UnsupportedOperationException();
+    }
 }

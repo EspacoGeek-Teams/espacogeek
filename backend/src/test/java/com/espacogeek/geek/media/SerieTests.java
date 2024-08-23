@@ -7,13 +7,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.models.MediaModel;
@@ -24,7 +20,7 @@ import com.espacogeek.geek.utils.RequestClient;
 @SpringBootTest
 @DisplayName("Serie Tests")
 public class SerieTests {
-    private final static String name = "The Boys"; // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
+    private final static String NAME = "The Boys"; // Utilize a serie that have seasons, alternative titles, artwork, genre and external reference
 
     @Autowired
     private MediaService mediaService;
@@ -33,7 +29,7 @@ public class SerieTests {
 
     @BeforeEach
     void init() {
-        this.mediaTest = mediaService.findSerieByIdOrName(null, name).getFirst();
+        this.mediaTest = mediaService.findSerieByIdOrName(null, NAME).getFirst();
     }
 
     @Nested

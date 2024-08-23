@@ -14,18 +14,30 @@ public interface MediaDataController {
     public static final Integer TVDB_ID = 2;
     public static final Integer IMDB_ID = 3;
 
-    // Media Type references 
+    // Media Type references
     public static final Integer SERIE_ID = 1;
 
-    public MediaModel updateAllInformation(MediaModel media, MediaModel result);
+    default public MediaModel updateAllInformation(MediaModel media, MediaModel result) {
+        throw new UnsupportedOperationException();
+    }
 
-    public MediaModel updateArtworks(MediaModel media, MediaModel result);
+    default public MediaModel updateArtworks(MediaModel media, MediaModel result) {
+        throw new UnsupportedOperationException();
+    }
 
-    public List<AlternativeTitleModel> updateAlternativeTitles(MediaModel media, MediaModel result);
+    default public List<AlternativeTitleModel> updateAlternativeTitles(MediaModel media, MediaModel result) {
+        throw new UnsupportedOperationException();
+    }
 
-    public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result);
+    default public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result) {
+        throw new UnsupportedOperationException();
+    }
 
-    public List<GenreModel> updateGenres(MediaModel media, MediaModel result);
+    default public List<GenreModel> updateGenres(MediaModel media, MediaModel result) {
+        throw new UnsupportedOperationException();
+    }
 
-    public List<SeasonModel> updateSeason(MediaModel media, MediaModel result);
+    default public List<SeasonModel> updateSeason(MediaModel media, MediaModel result) {
+        throw new UnsupportedOperationException();
+    }
 }

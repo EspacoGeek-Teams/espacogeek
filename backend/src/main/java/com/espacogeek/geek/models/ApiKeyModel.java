@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "api_keys")
@@ -22,5 +23,6 @@ public class ApiKeyModel implements Serializable {
 
     @Column(name = "api_key")
     @Size(min = 250)
+    @Setter
     private String key;
 }

@@ -4,13 +4,15 @@ import java.util.Optional;
 
 import com.espacogeek.geek.models.ApiKeyModel;
 
-/** 
- * Interface for ApiKeyService 
+/**
+ * Interface for ApiKeyService
  */
 public interface ApiKeyService {
-    /** 
+    /**
      * Get api key by id provided.
-     * @param id apikey 
+     * @param id apikey
      */
     Optional<ApiKeyModel> findById(Integer id);
+
+    Optional<ApiKeyModel> save(ApiKeyModel apiKeyModel);
 }

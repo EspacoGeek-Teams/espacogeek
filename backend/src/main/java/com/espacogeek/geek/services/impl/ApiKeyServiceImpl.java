@@ -25,4 +25,12 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     public Optional<ApiKeyModel> findById(Integer id) {
         return apiKeyRepository.findById(id);
     }
+
+    /**
+     * @see ApiKeyService#save(ApiKeyModel)
+     */
+    @Override
+    public Optional<ApiKeyModel> save(ApiKeyModel apiKeyModel) {
+        return Optional.ofNullable(apiKeyRepository.save(apiKeyModel));
+    }
 }
