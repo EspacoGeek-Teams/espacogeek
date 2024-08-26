@@ -13,6 +13,7 @@ public interface MediaDataController {
     public static final Integer TMDB_ID = 1;
     public static final Integer TVDB_ID = 2;
     public static final Integer IMDB_ID = 3;
+    public static final Integer IGDB_ID = 4;
 
     // Media Type references
     public static final Integer SERIE_ID = 1;

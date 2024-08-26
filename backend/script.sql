@@ -69,7 +69,7 @@ espacogeekdb.api_keys
 VALUE
 ('2',
 '',
-'IGDB Client-ID'
+'IGDB Client ID'
 );
 
 INSERT INTO
@@ -79,3 +79,15 @@ VALUE
 '',
 'IGDB Token'
 );
+
+INSERT INTO
+espacogeekdb.api_keys
+VALUE
+('4',
+'',
+'IGDB Client Secret'
+);
+
+INSERT INTO espacogeekdb.type_reference VALUES ('4', 'IGDB');
+
+INSERT INTO espacogeekdb.media_categories  VALUES ('2', 'Game');
