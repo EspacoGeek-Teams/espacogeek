@@ -12,8 +12,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.services.MediaService;
+import com.espacogeek.geek.services.TypeReferenceService;
 import com.espacogeek.geek.utils.RequestClient;
 
 @Nested
@@ -39,6 +42,19 @@ public class SerieTests {
         @Autowired
         private MediaDataController serieController;
 
+        @Autowired
+        private MediaApi tvSeriesApi;
+
+        @Autowired
+        private TypeReferenceService typeReferenceService;
+
+        private TypeReferenceModel typeReference;
+
+        @BeforeEach
+        void init() {
+            typeReference = typeReferenceService.findById(MediaDataController.TMDB_ID).orElseThrow();
+        }
+
         @Test
         void updateSerieWithoutArtwork_shouldReturnMediaWithBannerAndCover() {
             var media = mediaTest;
@@ -46,7 +62,7 @@ public class SerieTests {
             media.setBanner(null);
             media.setCover(null);
 
-            media = serieController.updateArtworks(media, null);
+            media = serieController.updateArtworks(media, null, typeReference, tvSeriesApi);
 
             assertNotNull(media.getCover());
             assertNotNull(media.getBanner());
@@ -58,7 +74,7 @@ public class SerieTests {
 
             media.setAlternativeTitles(null);
 
-            media.setAlternativeTitles(serieController.updateAlternativeTitles(media, null));
+            media.setAlternativeTitles(serieController.updateAlternativeTitles(media, null, typeReference, tvSeriesApi));
 
             assertNotNull(media.getAlternativeTitles());
         }
@@ -73,7 +89,7 @@ public class SerieTests {
 
             media.setGenre(null);
 
-            media.setGenre(serieController.updateGenres(media, null));
+            media.setGenre(serieController.updateGenres(media, null, typeReference, tvSeriesApi));
 
             assertNotNull(media.getGenre());
         }
@@ -84,7 +100,7 @@ public class SerieTests {
 
             media.setSeason(null);
 
-            media.setSeason(serieController.updateSeason(media, null));
+            media.setSeason(serieController.updateSeason(media, null, typeReference, tvSeriesApi));
 
             assertNotNull(media);
         }

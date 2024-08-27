@@ -2,11 +2,13 @@ package com.espacogeek.geek.data;
 
 import java.util.List;
 
+import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.SeasonModel;
+import com.espacogeek.geek.models.TypeReferenceModel;
 
 public interface MediaDataController {
     // External references
@@ -18,27 +20,31 @@ public interface MediaDataController {
     // Media Type references
     public static final Integer SERIE_ID = 1;
 
+    default public MediaModel updateAllInformation(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
+        throw new UnsupportedOperationException();
+    }
+
     default public MediaModel updateAllInformation(MediaModel media, MediaModel result) {
         throw new UnsupportedOperationException();
     }
 
-    default public MediaModel updateArtworks(MediaModel media, MediaModel result) {
+    default public MediaModel updateArtworks(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         throw new UnsupportedOperationException();
     }
 
-    default public List<AlternativeTitleModel> updateAlternativeTitles(MediaModel media, MediaModel result) {
+    default public List<AlternativeTitleModel> updateAlternativeTitles(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         throw new UnsupportedOperationException();
     }
 
-    default public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result) {
+    default public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         throw new UnsupportedOperationException();
     }
 
-    default public List<GenreModel> updateGenres(MediaModel media, MediaModel result) {
+    default public List<GenreModel> updateGenres(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         throw new UnsupportedOperationException();
     }
 
-    default public List<SeasonModel> updateSeason(MediaModel media, MediaModel result) {
+    default public List<SeasonModel> updateSeason(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         throw new UnsupportedOperationException();
     }
 }
