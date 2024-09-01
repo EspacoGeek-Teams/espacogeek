@@ -64,9 +64,9 @@ public class ExternalReferenceServiceImpl implements ExternalReferenceService {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Optional<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference) {
+    public List<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference) {
         return this.externalReferenceRepository.findByReferenceAndTypeReference(reference, typeReference);
     }
 
-    
+
 }

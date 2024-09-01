@@ -3,6 +3,8 @@ package com.espacogeek.geek.services.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +55,28 @@ public class MediaServiceImpl implements MediaService {
         }
 
         return this.mediaRepository.findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
+    }
+
+    /**
+     * @see MediaService#findGameByIdOrName(Integer, String)
+     */
+    @Override
+    public List<MediaModel> findGameByIdOrName(Integer id, String name) {
+        var medias = new ArrayList<MediaModel>();
+
+        if (id != null) {
+            medias.add(this.mediaRepository.findById(id).orElseGet(null));
+            return medias;
+        }
+
+        return this.mediaRepository.findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.GAME_ID).get());
+    }
+
+    /**
+     * @see MediaService#findById(Integer)
+     */
+    @Override
+    public Optional<MediaModel> findById(Integer idMedia) {
+        return this.mediaRepository.findById(idMedia);
     }
 }

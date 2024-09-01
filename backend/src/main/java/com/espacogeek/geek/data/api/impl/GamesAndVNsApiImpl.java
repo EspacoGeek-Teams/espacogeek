@@ -1,6 +1,7 @@
 package com.espacogeek.geek.data.api.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
 
     @Override
     public List<MediaModel> doSearch(String search) {
-        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names, game.artworks, game.cover, game.name");
+        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks, game.cover, game.name");
         List<MediaModel> medias = new ArrayList<>();
 
         try {
@@ -68,15 +69,20 @@ public class GamesAndVNsApiImpl implements MediaApi {
                 reference.setReference(String.valueOf(result.getGame().getId()));
 
                 var media = new MediaModel();
+
                 media.setName(result.getGame().getName());
                 media.setCover(ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(), ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
-                media.setBanner(result.getGame().getArtworksList() != null ? ImageBuilderKt.imageBuilder(result.getGame().getArtworksList().getFirst().getImageId() , ImageSize.SCREENSHOT_HUGE, ImageType.PNG) : null);
+                media.setBanner(result.getGame().getArtworksList().isEmpty() ? null : ImageBuilderKt.imageBuilder(result.getGame().getArtworksList().getFirst().getImageId() , ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
 
-                var alternativeTitles = new AlternativeTitleModel();
-                for (String titles : result.getAlternativeName().split(":")) {
-                    alternativeTitles.setName(titles.trim());
+                var alternativeTitles = new ArrayList<AlternativeTitleModel>();
+                for (proto.AlternativeName title : result.getGame().getAlternativeNamesList()) {
+                    alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
                 }
-            });
+                media.setAlternativeTitles(alternativeTitles);
+                media.setExternalReference(Arrays.asList(reference));
+
+                medias.add(media);
+        });
 
         } catch (RequestException e) {
             e.printStackTrace();

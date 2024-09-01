@@ -6,14 +6,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
+import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.SeasonModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
@@ -37,6 +40,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
     @Autowired
     private SeasonService seasonService;
 
+    /**
+     * @see MediaDataController#updateAllInformation(MediaModel, MediaModel, TypeReferenceModel, MediaApi)
+     */
+    @Override
     public MediaModel updateAllInformation(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         if (result == null) {
             var id = media.getExternalReference().stream()
@@ -46,10 +53,11 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
                     .findFirst().get().getReference();
             result = mediaApi.getDetails(Integer.valueOf(id));
         }
-
         if (result == null) {
             return media;
         }
+
+        createMediaIfNotExist(media, mediaService, externalReferenceService, typeReference);
 
         updateAlternativeTitles(media, result, typeReference, mediaApi);
         updateExternalReferences(media, result, typeReference, mediaApi);
@@ -64,7 +72,9 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         return media;
     }
 
-    public MediaModel updateArtworks(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
+    @Override
+    public MediaModel updateArtworks(MediaModel media, MediaModel result, TypeReferenceModel typeReference,
+            MediaApi mediaApi) {
         MediaModel rawArtwork = new MediaModel();
 
         if (result == null) {
@@ -86,6 +96,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         return media;
     }
 
+    @Override
     public List<AlternativeTitleModel> updateAlternativeTitles(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         List<AlternativeTitleModel> allAlternativeTitles = new ArrayList<>();
 
@@ -109,7 +120,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             if (media.getAlternativeTitles() == null) {
                 alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
             } else {
-                if (!media.getAlternativeTitles().stream().anyMatch((alternativeTitle) -> alternativeTitle.getName().equals(title.getName()))) {
+                if (media.getAlternativeTitles().stream().noneMatch((alternativeTitle) -> alternativeTitle.getName().equals(title.getName()))) {
                     alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
                 }
             }
@@ -117,13 +128,13 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
         var newTitles = media.getAlternativeTitles() == null ? new ArrayList<AlternativeTitleModel>() : media.getAlternativeTitles();
         var savedTitles = alternativeTitlesService.saveAll(alternativeTitles);
-        newTitles.addAll(savedTitles == null ? new ArrayList<>() : savedTitles);
+        newTitles.addAll(savedTitles == null || savedTitles.isEmpty() ? new ArrayList<>() : savedTitles);
 
         return newTitles;
     }
 
+    @Override
     public List<ExternalReferenceModel> updateExternalReferences(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
-        List<ExternalReferenceModel> externalReferences = new ArrayList<ExternalReferenceModel>();
         List<ExternalReferenceModel> rawExternalReferences = new ArrayList<ExternalReferenceModel>();
 
         if (result == null) {
@@ -141,18 +152,17 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         }
 
         for (ExternalReferenceModel reference : rawExternalReferences) {
-            reference.setMedia(media);
-            if (!media.getExternalReference().stream().anyMatch((eReference) -> eReference.getReference().equals(reference.getReference()))) {
-                externalReferences.add(reference);
+            if (CollectionUtils.isEmpty(media.getExternalReference()) || media.getExternalReference().stream().noneMatch((eReference) -> eReference.equals(reference))) {
+                reference.setMedia(media);
+                if (media.getExternalReference() == null) media.setExternalReference(new ArrayList<>());
+                media.getExternalReference().add(reference);
             }
         }
 
-        var newExternal = externalReferenceService.saveAll(externalReferences);
-        newExternal.addAll(media.getExternalReference());
-
-        return newExternal;
+        return externalReferenceService.saveAll(media.getExternalReference());
     }
 
+    @Override
     public List<GenreModel> updateGenres(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         List<GenreModel> genres = new ArrayList<>();
         List<GenreModel> rawGenres = new ArrayList<>();
@@ -173,6 +183,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             rawGenres = result.getGenre();
         }
 
+        if (CollectionUtils.isEmpty(rawGenres)) {
+            return new ArrayList<>();
+        }
+
         rawGenres.forEach((rawGenre) -> {
             if (!media.getGenre().stream().anyMatch((genre) -> genre.getName().equals(rawGenre.getName()))) {
                 rawGenre.setMedias(medias);
@@ -190,6 +204,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         return newGenres;
     }
 
+    @Override
     public List<SeasonModel> updateSeason(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         List<SeasonModel> seasons = new ArrayList<>();
         List<SeasonModel> rawSeasons = new ArrayList<>();
@@ -204,6 +219,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             rawSeasons = result.getSeason();
         }
 
+        if (CollectionUtils.isEmpty(rawSeasons)) {
+            return new ArrayList<>();
+        }
+
         rawSeasons.forEach((rawSeason) -> {
             if (!media.getSeason().stream().anyMatch((season) -> season.getName().equals(rawSeason.getName()))) {
                 seasons.add(new SeasonModel(null, rawSeason.getName(), rawSeason.getAirDate(), null, rawSeason.getAbout(), rawSeason.getCover(), rawSeason.getSeasonNumber(), rawSeason.getEpisodeCount(), media));
@@ -216,4 +235,38 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
         return newSeasons;
     }
+
+    @Override
+    public List<MediaModel> searchMedia(String search, MediaApi mediaApi, TypeReferenceModel typeReference, MediaCategoryModel mediaCategory) {
+        var rawMediaSearchList = mediaApi.doSearch(search);
+        var result = new ArrayList<MediaModel>();
+        var media = new MediaModel();
+        media.setMediaCategory(mediaCategory);
+
+        rawMediaSearchList.forEach((mediaSearch) -> {
+            mediaSearch.getExternalReference().forEach((ereference) -> {
+
+                media = createMediaIfNotExist(mediaSearch, mediaService, externalReferenceService, typeReference);
+
+                if (media.getId() != null) {
+                    updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
+                    updateArtworks(media, mediaSearch, typeReference, mediaApi);
+                    updateExternalReferences(media, mediaSearch, typeReference, mediaApi);
+                    updateAlternativeTitles(media, mediaSearch, typeReference, mediaApi);
+                } else {
+                    result.add();
+                }
+            });
+        });
+
+        return result;
+    }
+
+    @Override
+    public List<MediaModel> updateBasicAttributes(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
+        // TODO Auto-generated method stub
+        return MediaDataController.super.updateBasicAttributes(media, result, typeReference, mediaApi);
+    }
+
+
 }

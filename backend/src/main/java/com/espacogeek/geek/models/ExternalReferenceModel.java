@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "externals_References")
@@ -25,19 +26,20 @@ import lombok.Data;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class ExternalReferenceModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_external_reference")
     private Integer id;
-    
+
     @Column(name = "reference")
     private String reference;
 
     @ManyToOne
     @JoinColumn(name = "medias_id_media")
     private MediaModel media;
-    
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "type_reference", nullable = false)

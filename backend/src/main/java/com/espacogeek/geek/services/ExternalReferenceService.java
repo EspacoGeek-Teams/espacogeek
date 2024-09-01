@@ -14,7 +14,7 @@ public interface ExternalReferenceService {
 
     /**
      * Retrieves an ExternalReferenceModel object by its ID.
-     * 
+     *
      * @param id The ID of the ExternalReferenceModel object to retrieve.
      * @return An Optional containing the ExternalReferenceModel object if found, or an empty Optional if not found.
      */
@@ -22,7 +22,7 @@ public interface ExternalReferenceService {
 
     /**
      * Retrieves a list of ExternalReferenceModel objects that match the provided MediaModel.
-     * 
+     *
      * @param media The MediaModel to use for searching.
      * @return A list of ExternalReferenceModel objects that match the provided MediaModel.
      */
@@ -30,7 +30,7 @@ public interface ExternalReferenceService {
 
     /**
      * Save external reference provided.
-     * 
+     *
      * @param externalReference The ExternalReference to save.
      * @return ExternalReferenceModel object saved.
      */
@@ -38,7 +38,7 @@ public interface ExternalReferenceService {
 
     /**
      * Save all external reference provided.
-     * 
+     *
      * @param externalReferences The ExternalReferences to save.
      * @return List of ExternalReferenceModel object saved.
      */
@@ -46,10 +46,10 @@ public interface ExternalReferenceService {
 
     /**
      * Find by reference and Type Reference
-     * 
+     *
      * @param reference value of ExternalReference.
      * @param typeReference the Type Reference to find.
-     * @return ExternalReferenceModel optional object found.
+     * @return ExternalReferenceModel list of <code>ExternalReferenceModel</code> found.
      */
-    Optional<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference);
+    List<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference);
 }
