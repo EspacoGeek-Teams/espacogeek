@@ -12,7 +12,6 @@ import com.espacogeek.geek.models.SeasonModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.services.ExternalReferenceService;
 import com.espacogeek.geek.services.MediaService;
-import com.espacogeek.geek.services.TypeReferenceService;
 
 public interface MediaDataController {
     // External references
@@ -67,20 +66,21 @@ public interface MediaDataController {
         throw new UnsupportedOperationException();
     }
 
-    default public List<MediaModel> updateBasicAttributes(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
+    default public MediaModel updateBasicAttributes(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         throw new UnsupportedOperationException();
     }
 
-    default public MediaModel createMediaIfNotExist(MediaModel media, MediaService mediaService, ExternalReferenceService externalReferenceService, TypeReferenceModel typeReference) {
-        MediaModel mediaResult = new MediaModel();
+    default public MediaModel createMediaIfNotExistAndIfExistReturnIt(MediaModel media, MediaService mediaService, ExternalReferenceService externalReferenceService, TypeReferenceModel typeReference) throws Exception {
 
         for (ExternalReferenceModel ereference : media.getExternalReference()) {
             var external = externalReferenceService.findByReferenceAndType(ereference.getReference(), typeReference);
             if (external == null || external.isEmpty()) {
                 return mediaService.save(media);
+            } else {
+                return external.orElseThrow().getMedia();
             }
         }
 
-        return media;
+        throw new java.lang.Exception("Unexpected Error at MediaDataController.java in createMediaIfNotExistAndIfExistReturnIt default method.");
     }
 }

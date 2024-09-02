@@ -1,6 +1,5 @@
 package com.espacogeek.geek.repositories;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +10,7 @@ import com.espacogeek.geek.models.TypeReferenceModel;
 
 @Repository
 public interface ExternalReferenceRepository<T> extends JpaRepository<ExternalReferenceModel, Integer> {
-    List<ExternalReferenceModel> findByReferenceAndTypeReference (String reference, TypeReferenceModel typeReference);
+    Optional<ExternalReferenceModel> findByReferenceAndTypeReference (String reference, TypeReferenceModel typeReference);
 
     // Optional<ExternalReferenceModel> findByReference (String reference);
 }

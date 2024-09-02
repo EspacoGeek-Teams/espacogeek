@@ -51,5 +51,5 @@ public interface ExternalReferenceService {
      * @param typeReference the Type Reference to find.
      * @return ExternalReferenceModel list of <code>ExternalReferenceModel</code> found.
      */
-    List<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference);
+    Optional<ExternalReferenceModel> findByReferenceAndType(String reference, TypeReferenceModel typeReference);
 }

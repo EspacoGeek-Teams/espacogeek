@@ -57,7 +57,11 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             return media;
         }
 
-        createMediaIfNotExist(media, mediaService, externalReferenceService, typeReference);
+        try {
+            createMediaIfNotExistAndIfExistReturnIt(media, mediaService, externalReferenceService, typeReference);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         updateAlternativeTitles(media, result, typeReference, mediaApi);
         updateExternalReferences(media, result, typeReference, mediaApi);
@@ -73,8 +77,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
     }
 
     @Override
-    public MediaModel updateArtworks(MediaModel media, MediaModel result, TypeReferenceModel typeReference,
-            MediaApi mediaApi) {
+    public MediaModel updateArtworks(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         MediaModel rawArtwork = new MediaModel();
 
         if (result == null) {
@@ -243,30 +246,44 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         var media = new MediaModel();
         media.setMediaCategory(mediaCategory);
 
-        rawMediaSearchList.forEach((mediaSearch) -> {
-            mediaSearch.getExternalReference().forEach((ereference) -> {
+        for (MediaModel mediaSearch : rawMediaSearchList) {
+            try {
+                media = createMediaIfNotExistAndIfExistReturnIt(mediaSearch, mediaService, externalReferenceService, typeReference);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-                media = createMediaIfNotExist(mediaSearch, mediaService, externalReferenceService, typeReference);
-
-                if (media.getId() != null) {
-                    updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
-                    updateArtworks(media, mediaSearch, typeReference, mediaApi);
-                    updateExternalReferences(media, mediaSearch, typeReference, mediaApi);
-                    updateAlternativeTitles(media, mediaSearch, typeReference, mediaApi);
-                } else {
-                    result.add();
-                }
-            });
-        });
+            if (media.getId() != null) {
+                updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
+                updateArtworks(media, mediaSearch, typeReference, mediaApi);
+                updateExternalReferences(media, mediaSearch, typeReference, mediaApi);
+                updateAlternativeTitles(media, mediaSearch, typeReference, mediaApi);
+            }
+        }
 
         return result;
     }
 
     @Override
-    public List<MediaModel> updateBasicAttributes(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
-        // TODO Auto-generated method stub
-        return MediaDataController.super.updateBasicAttributes(media, result, typeReference, mediaApi);
+    public MediaModel updateBasicAttributes(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
+        MediaModel rawMedia = new MediaModel();
+
+        if (result == null) {
+            for (ExternalReferenceModel reference : media.getExternalReference()) {
+                if (reference.getTypeReference().equals(typeReference)) {
+                    // TODO Get basic info
+                }
+            }
+        } else {
+            rawMedia = result;
+        }
+
+        MediaModel mediaResult = new MediaModel();
+
+        media.setAbout(rawMedia.getAbout());
+        media.setMediaCategory(rawMedia.getMediaCategory());
+        media.setName(rawMedia.getName());
+
+        return mediaResult;
     }
-
-
 }
