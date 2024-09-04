@@ -19,9 +19,11 @@ import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
+import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.services.ApiKeyService;
+import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
 import jakarta.annotation.PostConstruct;
@@ -35,6 +37,9 @@ public class GamesAndVNsApiImpl implements MediaApi {
     private TypeReferenceModel typeReference;
     @Autowired
     private TypeReferenceService typeReferenceService;
+    @Autowired
+    private MediaCategoryService mediaCategoryService;
+    private MediaCategoryModel category;
 
     @PostConstruct
     private void init() {
@@ -53,6 +58,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
         wrapper.setCredentials(clientId, tokenId.getKey());
 
         typeReference = typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow();
+        category = mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow();
     }
 
     @Override
@@ -63,12 +69,9 @@ public class GamesAndVNsApiImpl implements MediaApi {
         try {
             var searchGames = ProtoRequestKt.search(wrapper, apicalypse);
 
-            var reference = new ExternalReferenceModel();
-            reference.setTypeReference(typeReference);
             searchGames.forEach((result) -> {
-                reference.setReference(String.valueOf(result.getGame().getId()));
-
                 var media = new MediaModel();
+                var reference = new ExternalReferenceModel(null, String.valueOf(result.getGame().getId()), media, typeReference);
 
                 media.setName(result.getGame().getName());
                 media.setCover(ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(), ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
@@ -80,9 +83,10 @@ public class GamesAndVNsApiImpl implements MediaApi {
                 }
                 media.setAlternativeTitles(alternativeTitles);
                 media.setExternalReference(Arrays.asList(reference));
+                media.setMediaCategory(category);
 
                 medias.add(media);
-        });
+            });
 
         } catch (RequestException e) {
             e.printStackTrace();

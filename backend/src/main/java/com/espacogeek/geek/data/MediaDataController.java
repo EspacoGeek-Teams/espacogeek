@@ -75,6 +75,7 @@ public interface MediaDataController {
         for (ExternalReferenceModel ereference : media.getExternalReference()) {
             var external = externalReferenceService.findByReferenceAndType(ereference.getReference(), typeReference);
             if (external == null || external.isEmpty()) {
+                media.setId(null);
                 return mediaService.save(media);
             } else {
                 return external.orElseThrow().getMedia();

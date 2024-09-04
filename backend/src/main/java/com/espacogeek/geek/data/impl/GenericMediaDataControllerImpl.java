@@ -243,17 +243,18 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
     public List<MediaModel> searchMedia(String search, MediaApi mediaApi, TypeReferenceModel typeReference, MediaCategoryModel mediaCategory) {
         var rawMediaSearchList = mediaApi.doSearch(search);
         var result = new ArrayList<MediaModel>();
-        var media = new MediaModel();
-        media.setMediaCategory(mediaCategory);
 
         for (MediaModel mediaSearch : rawMediaSearchList) {
+            var media = new MediaModel();
+            media.setMediaCategory(mediaCategory);
+            
             try {
                 media = createMediaIfNotExistAndIfExistReturnIt(mediaSearch, mediaService, externalReferenceService, typeReference);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            if (media.getId() != null) {
+            if (media != null) {
                 updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
                 updateArtworks(media, mediaSearch, typeReference, mediaApi);
                 updateExternalReferences(media, mediaSearch, typeReference, mediaApi);
