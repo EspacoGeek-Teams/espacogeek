@@ -13,11 +13,11 @@ public class GenericExeptionResolver extends DataFetcherExceptionResolverAdapter
 
     @Override
     protected GraphQLError resolveToSingleError(Throwable exception, DataFetchingEnvironment env) {
-        if (exception instanceof GenericException) { // * @AbigailGeovana se o erro for do tipo GenericException
-            return GraphqlErrorBuilder.newError(env) // * @AbigailGeovana cria o erro e retorna para o cliente
+        if (exception instanceof GenericException) {
+            return GraphqlErrorBuilder.newError(env)
                     .message(exception.getMessage())
                     .build();
         }
-        return null; // * se não for um GenericException
+        return null;
     }
 }

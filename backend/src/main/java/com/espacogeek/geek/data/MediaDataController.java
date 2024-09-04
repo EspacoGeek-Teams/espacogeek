@@ -3,6 +3,7 @@ package com.espacogeek.geek.data;
 import java.util.List;
 
 import com.espacogeek.geek.data.api.MediaApi;
+import com.espacogeek.geek.exception.MediaAlreadyExist;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
@@ -70,18 +71,7 @@ public interface MediaDataController {
         throw new UnsupportedOperationException();
     }
 
-    default public MediaModel createMediaIfNotExistAndIfExistReturnIt(MediaModel media, MediaService mediaService, ExternalReferenceService externalReferenceService, TypeReferenceModel typeReference) throws Exception {
-
-        for (ExternalReferenceModel ereference : media.getExternalReference()) {
-            var external = externalReferenceService.findByReferenceAndType(ereference.getReference(), typeReference);
-            if (external == null || external.isEmpty()) {
-                media.setId(null);
-                return mediaService.save(media);
-            } else {
-                return external.orElseThrow().getMedia();
-            }
-        }
-
-        throw new java.lang.Exception("Unexpected Error at MediaDataController.java in createMediaIfNotExistAndIfExistReturnIt default method.");
+    default public MediaModel createMediaIfNotExistAndIfExistReturnIt(MediaModel media, TypeReferenceModel typeReference) {
+        throw new UnsupportedOperationException();
     }
 }

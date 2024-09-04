@@ -47,5 +47,4 @@ public class GameTests {
             response.hasSizeGreaterThan(0);
         }
     }
-
 }

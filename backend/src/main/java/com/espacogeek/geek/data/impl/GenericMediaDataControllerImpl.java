@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
+import com.espacogeek.geek.exception.MediaAlreadyExist;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
@@ -55,12 +56,6 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         }
         if (result == null) {
             return media;
-        }
-
-        try {
-            createMediaIfNotExistAndIfExistReturnIt(media, mediaService, externalReferenceService, typeReference);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         updateAlternativeTitles(media, result, typeReference, mediaApi);
@@ -154,10 +149,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             rawExternalReferences = result.getExternalReference();
         }
 
+        if (media.getExternalReference() == null) media.setExternalReference(new ArrayList<>());
         for (ExternalReferenceModel reference : rawExternalReferences) {
             if (CollectionUtils.isEmpty(media.getExternalReference()) || media.getExternalReference().stream().noneMatch((eReference) -> eReference.equals(reference))) {
                 reference.setMedia(media);
-                if (media.getExternalReference() == null) media.setExternalReference(new ArrayList<>());
                 media.getExternalReference().add(reference);
             }
         }
@@ -247,18 +242,22 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         for (MediaModel mediaSearch : rawMediaSearchList) {
             var media = new MediaModel();
             media.setMediaCategory(mediaCategory);
-            
-            try {
-                media = createMediaIfNotExistAndIfExistReturnIt(mediaSearch, mediaService, externalReferenceService, typeReference);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            if (media != null) {
-                updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
-                updateArtworks(media, mediaSearch, typeReference, mediaApi);
-                updateExternalReferences(media, mediaSearch, typeReference, mediaApi);
-                updateAlternativeTitles(media, mediaSearch, typeReference, mediaApi);
+            try {
+                media = createMediaIfNotExistAndIfExistReturnIt(mediaSearch, typeReference);
+                media = mediaSearch;
+
+                if (media != null) {
+                    updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
+                    updateArtworks(media, mediaSearch, typeReference, mediaApi);
+                    updateExternalReferences(media, mediaSearch, typeReference, mediaApi);
+                    updateAlternativeTitles(media, mediaSearch, typeReference, mediaApi);
+                }
+
+                result.add(media);
+
+            } catch (MediaAlreadyExist e) {
+                result.add(mediaSearch);
             }
         }
 
@@ -286,5 +285,34 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         media.setName(rawMedia.getName());
 
         return mediaResult;
+    }
+
+    /**
+     * Save the provided media if not exist in database, but <strong>Media (<code>MediaModel</code>) must have only one <code>ExternalReference</code>.</strong>
+     *
+     * @param media
+     * @param typeReference
+     * @return <code>media</code> by reference saved.
+     * @throws MediaAlreadyExist when media already exist in database.
+     *
+     * @see MediaDataController#createMediaIfNotExistAndIfExistReturnIt(MediaModel, TypeReferenceModel)
+     */
+    @Override
+    public MediaModel createMediaIfNotExistAndIfExistReturnIt(MediaModel media, TypeReferenceModel typeReference) {
+
+        for (ExternalReferenceModel ereference : media.getExternalReference()) {
+            var external = externalReferenceService.findByReferenceAndType(ereference.getReference(), typeReference);
+            if (external == null || external.isEmpty()) {
+                media.setId(null);
+                return mediaService.save(media);
+            } else {
+                if (external.orElseThrow().getMedia() != null) {
+                    throw new MediaAlreadyExist(external.orElseThrow().getMedia().toString());
+                }
+                return external.orElseThrow().getMedia();
+            }
+        }
+
+        throw new MediaAlreadyExist(media.toString());
     }
 }
