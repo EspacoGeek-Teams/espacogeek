@@ -29,7 +29,7 @@ public class ExternalReferenceServiceImpl implements ExternalReferenceService {
     @SuppressWarnings("unchecked")
     @Override
     public List<ExternalReferenceModel> findAll(MediaModel media) {
-        return this.externalReferenceRepository.findAll(Example.of(media)); // * @AbigailGeovana com o "Example" e o repositorio marcado como generalizado "<T>" eu posso passar um Example Object para pesquisar as External References daquela media
+        return this.externalReferenceRepository.findAll(Example.of(media)); 
     }
 
     /**

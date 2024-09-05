@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.repositories.MediaRepository;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
@@ -31,7 +33,7 @@ public class MediaServiceImpl implements MediaService {
      */
     @Override
     public MediaModel save(MediaModel media) {
-        return this.mediaRepository.save(media);
+        return (MediaModel) this.mediaRepository.save(media);
     }
 
     /**
@@ -50,7 +52,7 @@ public class MediaServiceImpl implements MediaService {
         var medias = new ArrayList<MediaModel>();
 
         if (id != null) {
-            medias.add(this.mediaRepository.findById(id).orElseGet(null));
+            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(null));
             return medias;
         }
 
@@ -65,7 +67,7 @@ public class MediaServiceImpl implements MediaService {
         var medias = new ArrayList<MediaModel>();
 
         if (id != null) {
-            medias.add(this.mediaRepository.findById(id).orElseGet(null));
+            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(null));
             return medias;
         }
 
@@ -78,5 +80,13 @@ public class MediaServiceImpl implements MediaService {
     @Override
     public Optional<MediaModel> findById(Integer idMedia) {
         return this.mediaRepository.findById(idMedia);
+    }
+
+    /**
+     * @see MediaService#findByReferenceAndTypeReference(ExternalReferenceModel, TypeReferenceModel)
+     */
+    @Override
+    public Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference, TypeReferenceModel typeReference) {
+        return this.mediaRepository.findOneMediaByExternalReferenceAndTypeReference(reference, typeReference);
     }
 }

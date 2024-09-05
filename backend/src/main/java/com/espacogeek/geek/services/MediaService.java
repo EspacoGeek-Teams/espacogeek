@@ -52,5 +52,12 @@ public interface MediaService {
      */
     Optional<MediaModel> findById(Integer idMedia);
 
+    /**
+     * Find media by <code>ExternalReference</code> and <code>TypeReference</code>.
+     *
+     * @param reference
+     * @param typeReferenceModel
+     * @return a Optional MediaModel
+     */
     Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference, TypeReferenceModel typeReferenceModel);
 }
