@@ -3,7 +3,9 @@ package com.espacogeek.geek.services;
 import java.util.List;
 import java.util.Optional;
 
+import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.TypeReferenceModel;
 
 /**
  * Interface for the MediaService, which provides methods for managing MediaModel objects.
@@ -49,4 +51,6 @@ public interface MediaService {
      * @return return a Optional Media.
      */
     Optional<MediaModel> findById(Integer idMedia);
+
+    Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference, TypeReferenceModel typeReferenceModel);
 }

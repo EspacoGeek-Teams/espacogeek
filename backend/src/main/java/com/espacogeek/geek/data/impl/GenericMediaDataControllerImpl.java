@@ -292,7 +292,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
      *
      * @param media
      * @param typeReference
-     * @return <code>media</code> by reference saved.
+     * @return <code>MediaModel</code>.
      * @throws MediaAlreadyExist when media already exist in database.
      *
      * @see MediaDataController#createMediaIfNotExistAndIfExistReturnIt(MediaModel, TypeReferenceModel)
