@@ -19,6 +19,7 @@ import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
+import com.espacogeek.geek.utils.Utils;
 
 @Controller
 public class MediaController {
@@ -46,16 +47,7 @@ public class MediaController {
 
         var medias = this.mediaService.findSerieByIdOrName(id, name);
 
-        var newMedias = new ArrayList<MediaModel>();
-        for (MediaModel media: medias) {
-            LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
-
-            if (mediaUpdateAt == null || ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1) {
-                media = serieController.updateAllInformation(media, null);
-            }
-            newMedias.add(media);
-        }
-        return newMedias;
+        return Utils.updateMediaWhenLastTimeUpdateMoreThanOneDay(medias, serieController);
     }
 
     @QueryMapping(name = "game")
@@ -67,8 +59,11 @@ public class MediaController {
             return new ArrayList<>();
         }
 
-        var mediasApiResult = genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
-
-        return mediasApiResult;
+        if (id != null) {
+            var media = mediaService.findGameByIdOrName(id, null);
+            if (media != null) media = Utils.updateMediaWhenLastTimeUpdateMoreThanOneDay(media, genericMediaDataController);
+            return media;
+        }
+        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
     }
 }

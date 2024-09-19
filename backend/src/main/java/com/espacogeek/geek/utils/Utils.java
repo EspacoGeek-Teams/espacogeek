@@ -1,11 +1,18 @@
 package com.espacogeek.geek.utils;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.springframework.security.core.Authentication;
 
+import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.models.MediaModel;
+
 public abstract class Utils {
-    private static final String REG_EXPN_PASSWORD = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=])(?=\\S+$).{8,70}$";
 
     public static Integer getUserID(Authentication authentication) {
         return Integer.valueOf(
@@ -22,10 +29,26 @@ public abstract class Utils {
      * Validate the password.
      * @return <code>true</code> if the given password flow all rules and <code>false</code> if password doesn't flow any rule.
      */
-    public static boolean isValidPassword (String password) {
+    public static boolean isValidPassword(String password) {
+        final String REG_EXPN_PASSWORD = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=])(?=\\S+$).{8,70}$";
+
         var pattern = Pattern.compile(REG_EXPN_PASSWORD, Pattern.CASE_INSENSITIVE);
         var matcher = pattern.matcher(password);
 
         return matcher.matches();
+    }
+
+    public static List<MediaModel> updateMediaWhenLastTimeUpdateMoreThanOneDay(List<MediaModel> medias, MediaDataController mediaDataController) {
+        var newMedias = new ArrayList<MediaModel>();
+        for (MediaModel media : medias) {
+            LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null
+                    : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
+
+            if (mediaUpdateAt == null || ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1) {
+                media = mediaDataController.updateAllInformation(media, null);
+            }
+            newMedias.add(media);
+        }
+        return newMedias;
     }
 }
