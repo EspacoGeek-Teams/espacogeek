@@ -73,14 +73,13 @@ public class GamesAndVNsApiImpl implements MediaApi {
             var searchGames = ProtoRequestKt.search(wrapper, apicalypse);
 
             for (Search result : searchGames) {
-                if (result.getGame() != null) {
+                if ((long) result.getGame().getId() != (long) 0l) {
                     var media = new MediaModel();
                     var reference = new ExternalReferenceModel(null, String.valueOf(result.getGame().getId()), media, typeReference);
-                    if (!reference.getReference().equals("0")) break;
 
                     media.setName(result.getGame().getName());
                     media.setCover(!"".equals(result.getGame().getCover().getImageId()) ? ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(), ImageSize.SCREENSHOT_HUGE, ImageType.PNG) : null);
-                    media.setBanner(result.getGame().getArtworksList().isEmpty() ? null : ImageBuilderKt.imageBuilder(result.getGame().getArtworksList().getFirst().getImageId() , ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
+                    media.setBanner(result.getGame().getArtworksList().isEmpty() ? null : ImageBuilderKt.imageBuilder(result.getGame().getArtworksList().getFirst().getImageId(), ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
 
                     var alternativeTitles = new ArrayList<AlternativeTitleModel>();
                     for (proto.AlternativeName title : result.getGame().getAlternativeNamesList()) {
