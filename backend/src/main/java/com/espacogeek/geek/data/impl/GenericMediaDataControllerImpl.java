@@ -112,23 +112,19 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             allAlternativeTitles = result.getAlternativeTitles();
         }
 
-        var alternativeTitles = new ArrayList<AlternativeTitleModel>();
-
         for (AlternativeTitleModel title : allAlternativeTitles) {
             if (media.getAlternativeTitles() == null) {
-                alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
+                media.setAlternativeTitles(new ArrayList<>());
+                media.getAlternativeTitles().add(new AlternativeTitleModel(null, title.getName(), media));
             } else {
                 if (media.getAlternativeTitles().stream().noneMatch((alternativeTitle) -> alternativeTitle.getName().equals(title.getName()))) {
-                    alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
+                    media.getAlternativeTitles().add(new AlternativeTitleModel(null, title.getName(), media));
                 }
             }
         }
 
-        var newTitles = media.getAlternativeTitles() == null ? new ArrayList<AlternativeTitleModel>() : media.getAlternativeTitles();
-        var savedTitles = alternativeTitlesService.saveAll(alternativeTitles);
-        newTitles.addAll(savedTitles == null || savedTitles.isEmpty() ? new ArrayList<>() : savedTitles);
-
-        return newTitles;
+        media.getAlternativeTitles().addAll(alternativeTitlesService.saveAll(media.getAlternativeTitles()));
+        return media.getAlternativeTitles();
     }
 
     @Override
@@ -157,7 +153,9 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             }
         }
 
-        return externalReferenceService.saveAll(media.getExternalReference());
+        externalReferenceService.saveAll(media.getExternalReference());
+
+        return media.getExternalReference();
     }
 
     @Override
@@ -236,7 +234,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
     @Override
     public List<MediaModel> searchMedia(String search, MediaApi mediaApi, TypeReferenceModel typeReference, MediaCategoryModel mediaCategory) {
-        var rawMediaSearchList = mediaApi.doSearch(search);
+        var rawMediaSearchList = mediaApi.doSearch(search, mediaCategory);
         var result = new ArrayList<MediaModel>();
 
         for (MediaModel mediaSearch : rawMediaSearchList) {
@@ -257,7 +255,9 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
                 result.add(media);
 
             } catch (MediaAlreadyExist e) {
-                result.add(mediaSearch);
+                media = mediaService.findByReferenceAndTypeReference(mediaSearch.getExternalReference().getFirst(), typeReference).orElseThrow();
+
+                result.add(media);
             }
         }
 

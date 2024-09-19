@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import com.api.igdb.apicalypse.APICalypse;
 import com.api.igdb.exceptions.RequestException;
@@ -27,6 +28,7 @@ import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.TypeReferenceService;
 
 import jakarta.annotation.PostConstruct;
+import proto.Search;
 
 @Component("gamesAndVNsAPI")
 public class GamesAndVNsApiImpl implements MediaApi {
@@ -40,6 +42,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
     @Autowired
     private MediaCategoryService mediaCategoryService;
     private MediaCategoryModel category;
+    private final static String VN_ID = "34"; // VN Genre ID in IGDB
 
     @PostConstruct
     private void init() {
@@ -62,37 +65,42 @@ public class GamesAndVNsApiImpl implements MediaApi {
     }
 
     @Override
-    public List<MediaModel> doSearch(String search) {
-        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks, game.cover, game.name");
+    public List<MediaModel> doSearch(String search, MediaCategoryModel mediaCategoryModel) {
+        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks.image_id, game.cover.image_id, game.name").where("game.genres " + (mediaCategoryModel.getId() == MediaDataController.GAME_ID ? "!=" : "=") + " [" + VN_ID + "]");
         List<MediaModel> medias = new ArrayList<>();
 
         try {
             var searchGames = ProtoRequestKt.search(wrapper, apicalypse);
 
-            searchGames.forEach((result) -> {
-                var media = new MediaModel();
-                var reference = new ExternalReferenceModel(null, String.valueOf(result.getGame().getId()), media, typeReference);
+            for (Search result : searchGames) {
+                if (result.getGame() != null) {
+                    var media = new MediaModel();
+                    var reference = new ExternalReferenceModel(null, String.valueOf(result.getGame().getId()), media, typeReference);
+                    if (!reference.getReference().equals("0")) break;
 
-                media.setName(result.getGame().getName());
-                media.setCover(ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(), ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
-                media.setBanner(result.getGame().getArtworksList().isEmpty() ? null : ImageBuilderKt.imageBuilder(result.getGame().getArtworksList().getFirst().getImageId() , ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
+                    media.setName(result.getGame().getName());
+                    media.setCover(!"".equals(result.getGame().getCover().getImageId()) ? ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(), ImageSize.SCREENSHOT_HUGE, ImageType.PNG) : null);
+                    media.setBanner(result.getGame().getArtworksList().isEmpty() ? null : ImageBuilderKt.imageBuilder(result.getGame().getArtworksList().getFirst().getImageId() , ImageSize.SCREENSHOT_HUGE, ImageType.PNG));
 
-                var alternativeTitles = new ArrayList<AlternativeTitleModel>();
-                for (proto.AlternativeName title : result.getGame().getAlternativeNamesList()) {
-                    alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
+                    var alternativeTitles = new ArrayList<AlternativeTitleModel>();
+                    for (proto.AlternativeName title : result.getGame().getAlternativeNamesList()) {
+                        alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
+                    }
+                    media.setAlternativeTitles(alternativeTitles);
+                    media.setExternalReference(Arrays.asList(reference));
+
+                    media.setMediaCategory(category);
+
+                    medias.add(media);
                 }
-                media.setAlternativeTitles(alternativeTitles);
-                media.setExternalReference(Arrays.asList(reference));
-                media.setMediaCategory(category);
-
-                medias.add(media);
-            });
+            }
 
         } catch (RequestException e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
 
+        // return medias.stream().filter((media) -> !media.getExternalReference().getFirst().getReference().equals("0")).toList();
         return medias;
     }
 }

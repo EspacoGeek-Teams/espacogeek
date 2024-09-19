@@ -7,6 +7,7 @@ import org.json.simple.JSONArray;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
+import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.SeasonModel;
 
@@ -52,6 +53,10 @@ public interface MediaApi {
     }
 
     default public List<MediaModel> doSearch(String search) {
+        throw new UnsupportedOperationException();
+    }
+
+    default public List<MediaModel> doSearch(String search, MediaCategoryModel mediaCategoryModel) {
         throw new UnsupportedOperationException();
     }
 }
