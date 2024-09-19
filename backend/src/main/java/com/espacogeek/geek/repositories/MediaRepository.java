@@ -45,6 +45,6 @@ public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer> {
      * @param typeReference
      * @return a Optional of MediaModel.
      */
-    @Query("SELECT m FROM MediaModel m FULL JOIN ExternalReferenceModel e ON e MEMBER OF m.externalReference WHERE e = :reference AND e.typeReference = :typeReference")
-    public Optional<MediaModel> findOneMediaByExternalReferenceAndTypeReference(@Param("reference") ExternalReferenceModel externalReference, @Param("typeReference") TypeReferenceModel typeReference);
+    @Query("SELECT m FROM MediaModel m JOIN ExternalReferenceModel e ON e MEMBER OF m.externalReference WHERE e.reference = :reference AND e.typeReference = :typeReference")
+    public Optional<MediaModel> findOneMediaByExternalReferenceAndTypeReference(@Param("reference") String reference, @Param("typeReference") TypeReferenceModel typeReference);
 }
