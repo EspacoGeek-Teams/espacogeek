@@ -67,7 +67,7 @@ public class MediaServiceImpl implements MediaService {
         var medias = new ArrayList<MediaModel>();
 
         if (id != null) {
-            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(null));
+            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(() -> null));
             return medias;
         }
 

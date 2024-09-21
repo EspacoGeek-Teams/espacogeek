@@ -58,9 +58,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             return media;
         }
 
+        updateBasicAttributes(media, result, typeReference, mediaApi);
+        updateArtworks(media, result, typeReference, mediaApi);
         updateAlternativeTitles(media, result, typeReference, mediaApi);
         updateExternalReferences(media, result, typeReference, mediaApi);
-        updateArtworks(media, result, typeReference, mediaApi);
         updateGenres(media, result, typeReference, mediaApi);
         updateSeason(media, result, typeReference, mediaApi);
 
@@ -85,6 +86,8 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         } else {
             rawArtwork = result;
         }
+
+        if (rawArtwork == null) return media;
 
         media.setCover(rawArtwork.getCover());
         media.setBanner(rawArtwork.getBanner());
@@ -112,22 +115,16 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             allAlternativeTitles = result.getAlternativeTitles();
         }
 
-        if (CollectionUtils.isEmpty(allAlternativeTitles)) {
-            return media.getAlternativeTitles();
-        }
+        if (CollectionUtils.isEmpty(allAlternativeTitles)) return media.getAlternativeTitles();
 
+        if (media.getAlternativeTitles() == null) media.setAlternativeTitles(new ArrayList<>());
         for (AlternativeTitleModel title : allAlternativeTitles) {
-            if (media.getAlternativeTitles() == null) {
-                media.setAlternativeTitles(new ArrayList<>());
+            if (media.getAlternativeTitles().stream().noneMatch((alternativeTitle) -> alternativeTitle.getName().equals(title.getName()))) {
                 media.getAlternativeTitles().add(new AlternativeTitleModel(null, title.getName(), media));
-            } else {
-                if (media.getAlternativeTitles().stream().noneMatch((alternativeTitle) -> alternativeTitle.getName().equals(title.getName()))) {
-                    media.getAlternativeTitles().add(new AlternativeTitleModel(null, title.getName(), media));
-                }
             }
         }
 
-        media.getAlternativeTitles().addAll(alternativeTitlesService.saveAll(media.getAlternativeTitles()));
+        alternativeTitlesService.saveAll(media.getAlternativeTitles());
         return media.getAlternativeTitles();
     }
 
@@ -149,13 +146,11 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             rawExternalReferences = result.getExternalReference();
         }
 
-        if (CollectionUtils.isEmpty(rawExternalReferences)) {
-            return media.getExternalReference();
-        }
+        if (CollectionUtils.isEmpty(rawExternalReferences)) return media.getExternalReference();
 
         if (media.getExternalReference() == null) media.setExternalReference(new ArrayList<>());
         for (ExternalReferenceModel reference : rawExternalReferences) {
-            if (CollectionUtils.isEmpty(media.getExternalReference()) || media.getExternalReference().stream().noneMatch((eReference) -> eReference.equals(reference))) {
+            if (CollectionUtils.isEmpty(media.getExternalReference()) || media.getExternalReference().stream().noneMatch((eReference) -> eReference.getReference().equals(reference.getReference()))) {
                 reference.setMedia(media);
                 media.getExternalReference().add(reference);
             }
@@ -187,9 +182,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             rawGenres = result.getGenre();
         }
 
-        if (CollectionUtils.isEmpty(rawGenres)) {
-            return media.getGenre();
-        }
+        if (CollectionUtils.isEmpty(rawGenres)) return media.getGenre();
 
         rawGenres.forEach((rawGenre) -> {
             if (!media.getGenre().stream().anyMatch((genre) -> genre.getName().equals(rawGenre.getName()))) {
@@ -223,9 +216,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             rawSeasons = result.getSeason();
         }
 
-        if (CollectionUtils.isEmpty(rawSeasons)) {
-            return media.getSeason();
-        }
+        if (CollectionUtils.isEmpty(rawSeasons)) return media.getSeason();
 
         rawSeasons.forEach((rawSeason) -> {
             if (!media.getSeason().stream().anyMatch((season) -> season.getName().equals(rawSeason.getName()))) {
@@ -279,20 +270,21 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         if (result == null) {
             for (ExternalReferenceModel reference : media.getExternalReference()) {
                 if (reference.getTypeReference().equals(typeReference)) {
-                    // TODO Get basic info
+                    rawMedia = mediaApi.getUpdateBasicAttributes(Integer.parseInt(reference.getReference()));
+                    break;
                 }
             }
         } else {
             rawMedia = result;
         }
 
-        MediaModel mediaResult = new MediaModel();
+        if (rawMedia == null) return media;
 
         media.setAbout(rawMedia.getAbout());
         media.setMediaCategory(rawMedia.getMediaCategory());
         media.setName(rawMedia.getName());
 
-        return mediaResult;
+        return media;
     }
 
     /**

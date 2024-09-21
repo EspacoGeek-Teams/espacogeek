@@ -20,6 +20,11 @@
 	</properties>
 	<dependencies>
 
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+        </dependency>
+
 	    <dependency>
 	        <groupId>io.github.husnjak</groupId>
 	        <artifactId>igdb-api-jvm</artifactId>

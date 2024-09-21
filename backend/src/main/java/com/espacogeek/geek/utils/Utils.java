@@ -41,6 +41,8 @@ public abstract class Utils {
     }
 
     private static Boolean updateMediaWhenLastTimeUpdateMoreThanOneDay(MediaModel media) {
+        if (media == null) return false;
+
         LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
 
         if (mediaUpdateAt == null || ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1) {

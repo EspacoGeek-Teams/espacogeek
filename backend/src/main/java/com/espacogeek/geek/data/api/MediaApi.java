@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 
+import com.api.igdb.exceptions.RequestException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
@@ -29,6 +30,10 @@ public interface MediaApi {
     }
 
     default public MediaModel getArtwork(Integer id) {
+        throw new UnsupportedOperationException();
+    }
+
+    default public MediaModel getUpdateBasicAttributes(Integer id) {
         throw new UnsupportedOperationException();
     }
 
