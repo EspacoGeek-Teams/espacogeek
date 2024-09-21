@@ -112,6 +112,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             allAlternativeTitles = result.getAlternativeTitles();
         }
 
+        if (CollectionUtils.isEmpty(allAlternativeTitles)) {
+            return media.getAlternativeTitles();
+        }
+
         for (AlternativeTitleModel title : allAlternativeTitles) {
             if (media.getAlternativeTitles() == null) {
                 media.setAlternativeTitles(new ArrayList<>());
@@ -143,6 +147,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
             }
         } else {
             rawExternalReferences = result.getExternalReference();
+        }
+
+        if (CollectionUtils.isEmpty(rawExternalReferences)) {
+            return media.getExternalReference();
         }
 
         if (media.getExternalReference() == null) media.setExternalReference(new ArrayList<>());
@@ -180,7 +188,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         }
 
         if (CollectionUtils.isEmpty(rawGenres)) {
-            return new ArrayList<>();
+            return media.getGenre();
         }
 
         rawGenres.forEach((rawGenre) -> {
@@ -216,7 +224,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         }
 
         if (CollectionUtils.isEmpty(rawSeasons)) {
-            return new ArrayList<>();
+            return media.getSeason();
         }
 
         rawSeasons.forEach((rawSeason) -> {

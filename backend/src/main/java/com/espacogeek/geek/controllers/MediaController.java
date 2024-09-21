@@ -47,7 +47,7 @@ public class MediaController {
 
         var medias = this.mediaService.findSerieByIdOrName(id, name);
 
-        return Utils.updateMediaWhenLastTimeUpdateMoreThanOneDay(medias, serieController);
+        return Utils.updateMedia(medias, serieController);
     }
 
     @QueryMapping(name = "game")
@@ -61,9 +61,10 @@ public class MediaController {
 
         if (id != null) {
             var media = mediaService.findGameByIdOrName(id, null);
-            if (media != null) media = Utils.updateMediaWhenLastTimeUpdateMoreThanOneDay(media, genericMediaDataController);
+            if (media != null) media = Utils.updateGenericMedia(media, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
             return media;
         }
+
         return genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
     }
 }

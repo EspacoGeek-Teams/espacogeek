@@ -10,7 +10,9 @@ import java.util.regex.Pattern;
 import org.springframework.security.core.Authentication;
 
 import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.MediaModel;
+import com.espacogeek.geek.models.TypeReferenceModel;
 
 public abstract class Utils {
 
@@ -38,17 +40,37 @@ public abstract class Utils {
         return matcher.matches();
     }
 
-    public static List<MediaModel> updateMediaWhenLastTimeUpdateMoreThanOneDay(List<MediaModel> medias, MediaDataController mediaDataController) {
-        var newMedias = new ArrayList<MediaModel>();
-        for (MediaModel media : medias) {
-            LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null
-                    : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
+    private static Boolean updateMediaWhenLastTimeUpdateMoreThanOneDay(MediaModel media) {
+        LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
 
-            if (mediaUpdateAt == null || ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1) {
-                media = mediaDataController.updateAllInformation(media, null);
-            }
-            newMedias.add(media);
+        if (mediaUpdateAt == null || ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1) {
+            return true;
         }
-        return newMedias;
+
+        return false;
+    }
+
+    public static List<MediaModel> updateGenericMedia(List<MediaModel> medias, MediaDataController mediaDataController, TypeReferenceModel typeReference, MediaApi mediaApi) {
+        List<MediaModel> updatedMedias = new ArrayList<>();
+
+        for (MediaModel media : medias) {
+            updatedMedias.add(updateMediaWhenLastTimeUpdateMoreThanOneDay(media)
+                    ? mediaDataController.updateAllInformation(media, null, typeReference, mediaApi)
+                    : media);
+        }
+
+        return medias;
+    }
+
+    public static List<MediaModel> updateMedia(List<MediaModel> medias, MediaDataController mediaDataController) {
+        List<MediaModel> updatedMedias = new ArrayList<>();
+
+        for (MediaModel media : medias) {
+            updatedMedias.add(updateMediaWhenLastTimeUpdateMoreThanOneDay(media)
+                    ? mediaDataController.updateAllInformation(media, null)
+                    : media);
+        }
+
+        return medias;
     }
 }
