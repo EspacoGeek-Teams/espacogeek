@@ -112,3 +112,5 @@ VALUE
 INSERT INTO espacogeekdb.type_reference VALUES ('4', 'IGDB');
 
 INSERT INTO espacogeekdb.media_categories  VALUES ('2', 'Game');
+
+INSERT INTO espacogeekdb.media_categories  VALUES ('3', 'Visual Novel');

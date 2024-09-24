@@ -2,5 +2,6 @@ type Query {
     findUser(id: ID, username: String, email: String): [User]
     tvserie(id: ID, name: String): [Media]
     game(id: ID, name: String): [Media]
+    vn(id: ID, name: String): [Media]
     login: String
 }

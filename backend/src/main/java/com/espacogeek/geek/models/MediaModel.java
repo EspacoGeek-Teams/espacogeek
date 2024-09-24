@@ -85,7 +85,6 @@ public class MediaModel implements Serializable {
     @Transient
     private List<UserLibraryModel> userLibrary;
 
-    @UpdateTimestamp
     @Column(name = "update_at")
     private Date updateAt;
 

@@ -24,6 +24,7 @@ public interface MediaDataController {
     // Media Type references
     public static final Integer SERIE_ID = 1;
     public static final Integer GAME_ID = 2;
+    public static final Integer VN_ID = 3;
 
     /**
      * This method update all information from provide <code>MediaModel</code>.

@@ -67,4 +67,22 @@ public class MediaController {
 
         return genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
     }
+
+    @QueryMapping(name = "vn")
+    public List<MediaModel> getVisualNovel(@Argument Integer id, @Argument String name) {
+
+        name = name == null ? null : name.trim();
+
+        if (name == null & id == null || name == "" & id == null) {
+            return new ArrayList<>();
+        }
+
+        if (id != null) {
+            var media = mediaService.findGameByIdOrName(id, null);
+            if (media != null) media = Utils.updateGenericMedia(media, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
+            return media;
+        }
+
+        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.VN_ID).orElseThrow());
+    }
 }
