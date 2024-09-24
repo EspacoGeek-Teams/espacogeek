@@ -3,6 +3,7 @@ package com.espacogeek.geek.data.impl;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -163,10 +164,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
     @Override
     public List<GenreModel> updateGenres(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
-        List<GenreModel> genres = new ArrayList<>();
         List<GenreModel> rawGenres = new ArrayList<>();
-        var medias = new ArrayList<MediaModel>();
-        medias.add(media);
 
         if (result == null) {
             for (ExternalReferenceModel reference : media.getExternalReference()) {
@@ -185,20 +183,14 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         if (CollectionUtils.isEmpty(rawGenres)) return media.getGenre();
 
         rawGenres.forEach((rawGenre) -> {
-            if (!media.getGenre().stream().anyMatch((genre) -> genre.getName().equals(rawGenre.getName()))) {
-                rawGenre.setMedias(medias);
-                genres.add(rawGenre);
+            if (media.getGenre().stream().noneMatch((genre) -> genre.getId().equals(rawGenre.getId()))) {
+                rawGenre.setMedias(Arrays.asList(media));
+                media.getGenre().add(rawGenre);
             }
         });
 
-        var newGenres = new ArrayList<GenreModel>();
-        if (!genres.isEmpty()) {
-            media.setGenre(genres);
-            genreService.saveAll(genres);
-        }
-        newGenres.addAll(media.getGenre() == null ? new ArrayList<>() : media.getGenre());
-
-        return newGenres;
+        genreService.saveAll(media.getGenre());
+        return media.getGenre();
     }
 
     @Override

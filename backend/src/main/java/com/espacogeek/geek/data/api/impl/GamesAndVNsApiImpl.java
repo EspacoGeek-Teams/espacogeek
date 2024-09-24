@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
@@ -50,7 +52,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
     @Autowired
     private GenreService genreService;
 
-    private void newToken(RequestException e, Integer id) {
+    private void newToken() {
         var tAuth = TwitchAuthenticator.INSTANCE;
         var clientId = apiKeyService.findById(IGDB_CLIENT_ID).orElseThrow().getKey();
         var clientSecrete = apiKeyService.findById(IGDB_CLIENT_SECRET).orElseThrow().getKey();
@@ -61,6 +63,8 @@ public class GamesAndVNsApiImpl implements MediaApi {
             tokenId.setKey(token.getAccess_token());
             apiKeyService.save(tokenId);
         }
+
+        wrapper.setCredentials(clientId, tokenId.getKey());
     }
 
     @PostConstruct
@@ -76,9 +80,9 @@ public class GamesAndVNsApiImpl implements MediaApi {
     }
 
     @Override
-    @Retryable(maxAttempts = 3, retryFor = RequestException.class)
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public MediaModel getDetails(Integer id) {
-        var apicalypse = new APICalypse().fields("*, game.artworks.image_id, game.cover.image_id").where("id = " + id);
+        var apicalypse = new APICalypse().fields("*, artworks.image_id, cover.image_id, genres.name").where("id = " + id);
         MediaModel media = null;
 
         try {
@@ -118,12 +122,14 @@ public class GamesAndVNsApiImpl implements MediaApi {
             }
 
         } catch (RequestException e) {
-            e.printStackTrace();
+            newToken();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
         return media;
     }
 
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<MediaModel> doSearch(String search, MediaCategoryModel mediaCategoryModel) {
         var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks.image_id, game.cover.image_id, game.name").where("game.genres " + (mediaCategoryModel.getId() == MediaDataController.GAME_ID ? "!=" : "=") + " [" + VN_ID + "]");
         List<MediaModel> medias = new ArrayList<>();
@@ -160,8 +166,8 @@ public class GamesAndVNsApiImpl implements MediaApi {
             }
 
         } catch (RequestException e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+            newToken();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
 
         return medias;
