@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,7 @@ public class AlternativeTitleModel implements Serializable {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "id_media")
+    @NotNull
+    @JoinColumn(name = "id_media", nullable = false)
     private MediaModel media;
 }

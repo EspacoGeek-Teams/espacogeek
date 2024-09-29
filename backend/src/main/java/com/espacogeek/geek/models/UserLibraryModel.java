@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -47,10 +48,12 @@ public class UserLibraryModel implements Serializable {
     private UserModel user;
 
     @ManyToOne
-    @JoinColumn(name = "status")
+    @JoinColumn(name = "status", nullable = false)
+    @NotNull
     private TypeStatusModel typeStatus;
 
     @ManyToOne
-    @JoinColumn(name = "id_media")
+    @NotNull
+    @JoinColumn(name = "id_media", nullable = false)
     private MediaModel media;
 }

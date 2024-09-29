@@ -37,7 +37,8 @@ public class ExternalReferenceModel implements Serializable {
     private String reference;
 
     @ManyToOne
-    @JoinColumn(name = "medias_id_media")
+    @NotNull
+    @JoinColumn(name = "medias_id_media", nullable = false)
     private MediaModel media;
 
     @NotNull

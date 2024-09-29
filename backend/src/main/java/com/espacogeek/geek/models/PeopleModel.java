@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -36,7 +37,8 @@ public class PeopleModel implements Serializable {
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "type_person")
+    @NotNull
+    @JoinColumn(name = "type_person", nullable = false)
     private TypePerson typePerson;
 
     @ManyToMany(mappedBy = "people")

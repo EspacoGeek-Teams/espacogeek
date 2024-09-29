@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,7 +50,8 @@ public class SeasonModel implements Serializable {
     @Column(name = "episode_count")
     private Integer episodeCount;
 
-    @JoinColumn(name = "medias_id_medias")
+    @JoinColumn(name = "medias_id_medias", nullable = false)
+    @NotNull
     @ManyToOne
     private MediaModel media;
 }

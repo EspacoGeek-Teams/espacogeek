@@ -34,7 +34,7 @@ public class UserModel implements Serializable {
     @Size(max = 20, message = "username too long")
     @Column(name = "username", nullable = false)
     private String username;
-    
+
     @Size(max = 50, message = "email too long")
     @Column(name = "email", nullable = false, unique = true)
     @Email(message = "Invalid email.")
@@ -44,7 +44,6 @@ public class UserModel implements Serializable {
     @Column(name = "password", nullable = false)
     private byte[] password;
 
-    @OneToMany(mappedBy = "user")
-    @Transient
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private List<UserLibraryModel> userLibrary;
 }

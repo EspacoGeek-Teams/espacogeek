@@ -19,6 +19,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -54,10 +55,12 @@ public class MediaModel implements Serializable {
     @Column(name = "url_banner")
     private String banner;
 
-    @JoinColumn(name = "id_category")
+    @JoinColumn(name = "id_category", nullable = false)
+    @NotNull
     private MediaCategoryModel mediaCategory;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER, orphanRemoval = true)
+    @NotNull
     private List<ExternalReferenceModel> externalReference;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -88,9 +91,9 @@ public class MediaModel implements Serializable {
     @Column(name = "update_at")
     private Date updateAt;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<AlternativeTitleModel> alternativeTitles;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER, orphanRemoval = true)
     private List<SeasonModel> season;
 }

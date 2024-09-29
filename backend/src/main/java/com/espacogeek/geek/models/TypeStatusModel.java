@@ -35,6 +35,5 @@ public class TypeStatusModel implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "typeStatus")
-    @Transient
     private List<UserLibraryModel> userLibrary;
 }
