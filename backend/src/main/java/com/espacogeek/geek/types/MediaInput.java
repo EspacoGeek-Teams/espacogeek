@@ -8,6 +8,7 @@ import lombok.Setter;
 @Deprecated(forRemoval = true)
 /**
  * Class used to GraphQL Input Type, used principally to search media
+ * @deprecated
  */
 public class MediaInput {
     private Integer id;
