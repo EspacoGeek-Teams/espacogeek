@@ -1,14 +1,84 @@
-import Form from 'react-bootstrap/Form';
-import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Button } from "primereact/button";
+import { Dialog } from "primereact/dialog";
+import { Form, Formik } from "formik";
 
-function LogIn({show, handleClose}){
+function LogIn({ show, handleClose }) {
+    const headerElement = (
+        <div className="inline-flex align-items-center justify-content-center gap-2">
+            <span className="font-bold white-space-nowrap">Login</span>
+        </div>
+    );
+
+    const footerContent = (
+        <div>
+            <Button
+                label="Ok"
+                icon="pi pi-check"
+                onClick={() => handleClose()}
+                autoFocus
+            />
+        </div>
+    );
 
     return (
         <>
-            <Modal show={show} onHide={handleClose}>
+            <Dialog
+                visible={show}
+                modal
+                header={headerElement}
+                footer={footerContent}
+                style={{ width: "50rem" }}
+                onHide={() => handleClose()}
+                resizable={false}
+                draggable={false}
+                position="top"
+                breakpoints={{ "960px": "50vw", "641px": "75vw" }}
+            >
+                <Formik
+                    initialValues={{ email: "", password: "" }}
+                    validate={(values) => {
+                        const errors = {};
+                        if (!values.email) {
+                            errors.email = "Required";
+                        } else if (
+                            !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+                                values.email
+                            )
+                        ) {
+                            errors.email = "Invalid email address";
+                        }
+
+                        if (!values.password) {
+                            errors.password = "Required";
+                        } else if (values.password.length() < 8) {
+                            errors.password = "Invalid password";
+                        }
+                        return errors;
+                    }}
+                    onSubmit={(values, { setSubmitting }) => {
+                        setTimeout(() => {
+                            alert(JSON.stringify(values, null, 2));
+                            setSubmitting(false);
+                        }, 400);
+                    }}
+                >
+                    {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                        isSubmitting,
+                    }) => (
+                        <Form onSubmit={handleSubmit}>
+                            
+                        </Form>
+                    )}
+                </Formik>
+            </Dialog>
+            {/* <Modal show={show} onHide={handleClose}>
 
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -46,7 +116,7 @@ function LogIn({show, handleClose}){
                     </Button>
                 </Modal.Footer>
 
-            </Modal>
+            </Modal> */}
         </>
     );
 }
