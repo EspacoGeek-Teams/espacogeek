@@ -1,6 +1,6 @@
 @layer tailwind-base, primereact, tailwind-utilities;
 
-@import "primereact/resources/themes/lara-dark-blue/theme.css"
+@import 'primereact/resources/themes/lara-dark-blue/theme.css'
 
 @layer tailwind-base {
     @tailwind base;
