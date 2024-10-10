@@ -1,11 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useContext, useState } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
 import { useMutation } from "@apollo/client";
 import singInMutation from "../apollo/schemas/mutations/signInUser";
-import Loading from "../loading/LoadingSpinner";
 import { ErrorContext } from "../../contexts/ErrorContext";
 
 // eslint-disable-next-line react/prop-types
@@ -44,8 +40,7 @@ function SignIn({ show, handleClose }) {
 
     return (
         <>
-            <Modal show={show} onHide={handleClose} centered>
-                <Loading show={loading} />
+            {/* <Modal show={show} onHide={handleClose} centered>
 
                 <Modal.Header closeButton>
                     <Modal.Title>
@@ -122,7 +117,7 @@ function SignIn({ show, handleClose }) {
                         </Button>
                     </Modal.Footer>
                 </Form>
-            </Modal>
+            </Modal> */}
         </>
     );
 }

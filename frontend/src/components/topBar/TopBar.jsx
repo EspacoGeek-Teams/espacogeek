@@ -3,11 +3,13 @@ import SearchBar from "./SearchBar";
 import SignInBar from "./SignInBar";
 import LogInBar from "./LogInBar";
 import { Toolbar } from "primereact/toolbar";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Ripple } from 'primereact/ripple';
 
 function TopBar() {
+    const navigate = useNavigate();
+
     const [SearchComponent, setSearchComponent] = useState(false);
     const [SignInComponent, setSignInComponent] = useState(false);
     const [LogInComponent, setLogInComponent] = useState(false);
@@ -18,6 +20,8 @@ function TopBar() {
     const handleLogInClose = () => setLogInComponent(false);
     const handleLogInShow = () => setLogInComponent(true);
 
+    const handleNavToHome = () => navigate("/");
+
     const startContent = (
         <div className="flex flex-wrap align-items-center">
             <h5>EG</h5>
@@ -26,21 +30,22 @@ function TopBar() {
 
     const centerContent = (
         <div className="flex flex-wrap align-items-center gap-3">
-            <Link
-                to={`/`}
-                className="p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200 no-underline p-ripple"
-            >
-                <i className="pi pi-home text-2xl" />
-                <Ripple />
-            </Link>
-            <button
-                className="p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200 p-ripple"
+            <Button
+                onClick={handleNavToHome}
+                className="text-1xl p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200 p-ripple"
+                label="Home"
                 type="button"
-                onClick={() => setSearchComponent(true)}
-            >
-                <i className="pi pi-search text-2xl" />
+                icon="pi pi-home">
                 <Ripple />
-            </button>
+            </Button>
+            <Button
+                className="text-1xl p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200 p-ripple"
+                label="Search"
+                icon="pi pi-search"
+                type="button"
+                onClick={() => setSearchComponent(true)}>
+                <Ripple />
+            </Button>
         </div>
     );
 
@@ -81,7 +86,7 @@ function TopBar() {
                     start={startContent}
                     center={centerContent}
                     end={endContent}
-                    className="z-50 sticky"
+                    className="z-40 sticky"
                     style={{
                         borderRadius: "3rem",
                         backgroundImage:
