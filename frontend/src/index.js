@@ -7,8 +7,6 @@ import { ErrorProvider } from "./contexts/ErrorContext";
 import { RouterProvider } from "react-router-dom";
 import routes from "./routes/routes";
 import { PrimeReactProvider } from "primereact/api";
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/lara-dark-blue/theme.css';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const primeReactConfig = {

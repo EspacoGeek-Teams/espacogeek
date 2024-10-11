@@ -24,7 +24,7 @@ function TopBar() {
 
     const startContent = (
         <div className="flex flex-wrap align-items-center">
-            <h5>EG</h5>
+            <h5 className="select-none">EG</h5>
         </div>
     );
 
@@ -86,12 +86,7 @@ function TopBar() {
                     start={startContent}
                     center={centerContent}
                     end={endContent}
-                    className="z-40 sticky"
-                    style={{
-                        borderRadius: "3rem",
-                        backgroundImage:
-                            "linear-gradient(to right, var(--bluegray-700), var(--bluegray-900))",
-                    }}
+                    className="z-40 sticky bg-slate-500 bg-opacity-10 backdrop-blur-sm rounded-full"
                 />
             </div>
             {SearchComponent && <SearchBar />}
