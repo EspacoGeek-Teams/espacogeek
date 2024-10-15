@@ -5,7 +5,8 @@ import LogInBar from "./LogInBar";
 import { Toolbar } from "primereact/toolbar";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
-import { Ripple } from 'primereact/ripple';
+import { Ripple } from "primereact/ripple";
+import { SpeedDial } from "primereact/speeddial";
 
 function TopBar() {
     const navigate = useNavigate();
@@ -35,7 +36,8 @@ function TopBar() {
                 className="text-1xl p-link inline-flex justify-content-center align-items-center text-white h-3rem w-3rem border-circle hover:bg-white-alpha-10 transition-all transition-duration-200 p-ripple"
                 label="Home"
                 type="button"
-                icon="pi pi-home">
+                icon="pi pi-home"
+            >
                 <Ripple />
             </Button>
             <Button
@@ -43,7 +45,8 @@ function TopBar() {
                 label="Search"
                 icon="pi pi-search"
                 type="button"
-                onClick={() => setSearchComponent(true)}>
+                onClick={() => setSearchComponent(true)}
+            >
                 <Ripple />
             </Button>
         </div>
@@ -79,16 +82,41 @@ function TopBar() {
         </React.Fragment>
     );
 
+    const items = [
+        {
+            label: "Home",
+            icon: "pi pi-home",
+            command: () => {
+                window.location.href = "https://react.dev/";
+            },
+        },
+    ];
+
     return (
         <>
-            <div className="card pt-2 pl-2 pr-2">
+            <div className="card pt-2 pl-2 pr-2 hidden md:block">
                 <Toolbar
                     start={startContent}
                     center={centerContent}
                     end={endContent}
-                    className="z-40 sticky bg-slate-500 bg-opacity-10 backdrop-blur-sm rounded-full"
+                    className="z-40 bg-slate-500 bg-opacity-10 backdrop-blur-sm rounded-full sticky"
                 />
             </div>
+
+            <div className="card block md:hidden">
+                <SpeedDial
+                    mask
+                    showIcon="pi pi-bars"
+                    hideIcon="pi pi-times"
+                    buttonClassName="p-button-outlined"
+                    transitionDelay={80}
+                    model={items}
+                    radius={120}
+                    direction="up"
+                    style={{ right: 0, bottom: 0 }}
+                />
+            </div>
+
             {SearchComponent && <SearchBar />}
             {SignInComponent && (
                 <SignInBar

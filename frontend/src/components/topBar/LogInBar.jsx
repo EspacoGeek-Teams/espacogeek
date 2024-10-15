@@ -4,25 +4,13 @@ import { Dialog } from "primereact/dialog";
 import { Form, Formik } from "formik";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 function LogIn({ show, handleClose }) {
-    const headerElement = (
-        <div className="inline-flex align-items-center justify-content-center gap-2">
-            <span className="font-bold white-space-nowrap">Login</span>
-        </div>
-    );
-
-    const footerContent = (
-        <div>
-            <Button
-                label="Ok"
-                icon="pi pi-check"
-                onClick={() => handleClose()}
-                autoFocus
-            />
-        </div>
-    );
+    const navigate = useNavigate();
+    const handleNavToRecoverPassword = () => navigate("recoverPassword");
 
     return (
         <>
@@ -31,13 +19,7 @@ function LogIn({ show, handleClose }) {
                 modal
                 onHide={() => handleClose()}
                 content={({ hide }) => (
-                    <div
-                        className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-r from-indigo-500"
-                        style={{
-                            borderRadius: "12px",
-                            // backgroundImage: "radial-gradient(circle at left top, var(--primary-800), var(--primary-900))",
-                        }}
-                    >
+                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-sky-700 rounded-xl">
                         <h1 className="select-none p-3 font-bold">EG</h1>
                         <Formik
                             initialValues={{ email: "", password: "" }}
@@ -57,7 +39,10 @@ function LogIn({ show, handleClose }) {
                                 handleSubmit,
                                 isSubmitting,
                             }) => (
-                                <Form onSubmit={handleSubmit} className="flex gap-7 flex-col">
+                                <Form
+                                    onSubmit={handleSubmit}
+                                    className="flex gap-7 flex-col"
+                                >
                                     <FloatLabel>
                                         <InputText
                                             type="email"
@@ -73,22 +58,27 @@ function LogIn({ show, handleClose }) {
                                             errors.email}
                                         <label htmlFor="email">Email</label>
                                     </FloatLabel>
-                                    <FloatLabel>
-                                        <InputText
-                                            type="password"
-                                            name="password"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            className="bg-white-alpha-20 border-none p-3 text-primary-50"
-                                            value={values.password}
-                                        />
-                                        {errors.password &&
-                                            touched.password &&
-                                            errors.password}
-                                        <label htmlFor="password">
-                                            Password
-                                        </label>
-                                    </FloatLabel>
+                                    <div className="flex flex-col">
+                                        <FloatLabel>
+                                            <InputText
+                                                type="password"
+                                                name="password"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                                className="bg-white-alpha-20 border-none p-3 text-primary-50"
+                                                value={values.password}
+                                            />
+                                            {errors.password &&
+                                                touched.password &&
+                                                errors.password}
+                                            <label htmlFor="password">
+                                                Password
+                                            </label>
+                                        </FloatLabel>
+                                        <Link to="recoverPassword" className="text-xs self-start p-1">
+                                            Forgotten Password?
+                                        </Link>
+                                    </div>
                                     <div className="flex align-items-center gap-2">
                                         <Button
                                             label="Login"

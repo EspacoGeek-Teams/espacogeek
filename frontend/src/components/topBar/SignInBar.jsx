@@ -3,6 +3,7 @@ import React, { useContext, useState } from "react";
 import { useMutation } from "@apollo/client";
 import singInMutation from "../apollo/schemas/mutations/signInUser";
 import { ErrorContext } from "../../contexts/ErrorContext";
+import { Dialog } from "primereact/dialog";
 
 // eslint-disable-next-line react/prop-types
 function SignIn({ show, handleClose }) {
@@ -24,15 +25,17 @@ function SignIn({ show, handleClose }) {
                     email: email,
                     password: password,
                 },
-            }).then((data) => {
-                console.log(data.data.createUser);
-                //mensagem ou 'icon'/imagem de OK, maybe um certinho
-            }).catch((error) => {
-                setErrorMessage(error.graphQLErrors[0].message);
-                //mensagem ou 'icon'/imagem de FAIL, maybe um erradinho
             })
+                .then((data) => {
+                    console.log(data.data.createUser);
+                    //mensagem ou 'icon'/imagem de OK, maybe um certinho
+                })
+                .catch((error) => {
+                    setErrorMessage(error.graphQLErrors[0].message);
+                    //mensagem ou 'icon'/imagem de FAIL, maybe um erradinho
+                });
         } else {
-            setErrorMessage('Incorret Password');
+            setErrorMessage("Incorret Password");
         }
 
         if (!loading) handleClose();
@@ -40,6 +43,17 @@ function SignIn({ show, handleClose }) {
 
     return (
         <>
+            <Dialog
+                visible={show}
+                modal
+                onHide={() => handleClose()}
+                content={({ hide }) => (
+                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-sky-700 rounded-xl">
+                        <h1 className="select-none p-3 font-bold">EG</h1>
+                        
+                    </div>
+            )} />
+
             {/* <Modal show={show} onHide={handleClose} centered>
 
                 <Modal.Header closeButton>
