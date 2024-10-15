@@ -6,6 +6,13 @@ export const theme = {
     extend: {},
 };
 export const plugins = [
+    plugin(function({ addVariant }) {
+        addVariant('children', '& > *');
+    }),
+    plugin(function({ addVariant }) {
+        addVariant('childrens', '& _ * _');
+    }),
+
     plugin(function ({ addVariant, e, postcss }) {
         addVariant("firefox", ({ container, separator }) => {
             const isFirefoxRule = postcss.atRule({
