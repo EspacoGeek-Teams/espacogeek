@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
 import { Ripple } from "primereact/ripple";
 import { SpeedDial } from "primereact/speeddial";
+import { Tooltip } from 'primereact/tooltip';
 
 function TopBar() {
     const navigate = useNavigate();
@@ -87,9 +88,25 @@ function TopBar() {
             label: "Home",
             icon: "pi pi-home",
             command: () => {
-                window.location.href = "https://react.dev/";
+                handleNavToHome();
             },
         },
+        {
+            label: "Login",
+            icon: "pi pi-user",
+            command: () => {
+                handleLogInShow();
+            }
+
+        },
+        {
+            label: "Sign In",
+            icon: "pi pi-sign-in",
+            command: () => {
+                handleSignInShow();
+            }
+
+        }
     ];
 
     return (
@@ -104,16 +121,17 @@ function TopBar() {
             </div>
 
             <div className="card block md:hidden">
+                <Tooltip target=".speeddial-bottom-left .p-speeddial-action" position="left" />
                 <SpeedDial
                     mask
                     showIcon="pi pi-bars"
                     hideIcon="pi pi-times"
+                    className="speeddial-bottom-left right-0 bottom-0 [&_*_.p-speeddial-action]:text-black"
                     buttonClassName="p-button-outlined"
                     transitionDelay={80}
                     model={items}
                     radius={120}
                     direction="up"
-                    style={{ right: 0, bottom: 0 }}
                 />
             </div>
 
