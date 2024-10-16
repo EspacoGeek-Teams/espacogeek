@@ -92,6 +92,13 @@ function TopBar() {
             },
         },
         {
+            label: "Search",
+            icon: "pi pi-search",
+            command: () => {
+                setSearchComponent(true);
+            },
+        },
+        {
             label: "Login",
             icon: "pi pi-user",
             command: () => {
