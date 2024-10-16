@@ -5,12 +5,9 @@ import { Form, Formik } from "formik";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 function LogIn({ show, handleClose }) {
-    const navigate = useNavigate();
-    const handleNavToRecoverPassword = () => navigate("recoverPassword");
 
     return (
         <>
@@ -81,15 +78,15 @@ function LogIn({ show, handleClose }) {
                                     </div>
                                     <div className="flex align-items-center gap-2">
                                         <Button
-                                            label="Login"
-                                            type="submit"
+                                            label="Cancel"
                                             disabled={isSubmitting}
                                             onClick={(e) => hide(e)}
                                             text
                                             className="p-3 w-full text-primary-50 border-1 border-white-alpha-30 hover:bg-white-alpha-10"
                                         />
                                         <Button
-                                            label="Cancel"
+                                            label="Login"
+                                            type="submit"
                                             disabled={isSubmitting}
                                             onClick={(e) => hide(e)}
                                             text
