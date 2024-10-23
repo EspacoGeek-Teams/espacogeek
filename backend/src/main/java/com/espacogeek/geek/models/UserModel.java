@@ -31,16 +31,16 @@ public class UserModel implements Serializable {
     @Column(name = "id_user")
     private Integer id;
 
-    @Size(max = 20, message = "username too long")
+    @Size(min = 3, max = 20, message = "Invalid size")
     @Column(name = "username", nullable = false)
     private String username;
 
-    @Size(max = 50, message = "email too long")
+    @Size(max = 50, message = "Invalid size")
     @Column(name = "email", nullable = false, unique = true)
     @Email(message = "Invalid email.")
     private String email;
 
-    @Size(max = 70, message = "Password too long")
+    @Size(min = 8, max = 70, message = "Invalid size")
     @Column(name = "password", nullable = false)
     private byte[] password;
 
