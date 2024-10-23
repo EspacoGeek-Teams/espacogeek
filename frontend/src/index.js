@@ -7,6 +7,7 @@ import { ErrorProvider } from "./contexts/ErrorContext";
 import { RouterProvider } from "react-router-dom";
 import routes from "./routes/routes";
 import { PrimeReactProvider } from "primereact/api";
+import { ErrorNotification } from "./components/toast/Notification";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const primeReactConfig = {
@@ -20,6 +21,7 @@ root.render(
                 <PrimeReactProvider value={primeReactConfig}>
                     <main id="rootElement" data-bs-theme="dark">
                         <RouterProvider router={routes} />
+                        <ErrorNotification />
                     </main>
                 </PrimeReactProvider>
             </ApolloProvider>
