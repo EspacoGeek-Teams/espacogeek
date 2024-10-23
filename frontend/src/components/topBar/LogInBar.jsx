@@ -5,6 +5,7 @@ import { Form, Formik } from "formik";
 import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { Link } from "react-router-dom";
+import { Password } from 'primereact/password';
 
 // eslint-disable-next-line react/prop-types
 function LogIn({ show, handleClose }) {
@@ -16,7 +17,7 @@ function LogIn({ show, handleClose }) {
                 modal
                 onHide={() => handleClose()}
                 content={({ hide }) => (
-                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-sky-700 rounded-xl">
+                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-slate-700 rounded-xl">
                         <h1 className="select-none p-3 font-bold">EG</h1>
                         <Formik
                             initialValues={{ email: "", password: "" }}
@@ -29,8 +30,6 @@ function LogIn({ show, handleClose }) {
                         >
                             {({
                                 values,
-                                errors,
-                                touched,
                                 handleChange,
                                 handleBlur,
                                 handleSubmit,
@@ -38,7 +37,7 @@ function LogIn({ show, handleClose }) {
                             }) => (
                                 <Form
                                     onSubmit={handleSubmit}
-                                    className="flex gap-7 flex-col"
+                                    className="flex gap-7 flex-col p-4"
                                 >
                                     <FloatLabel>
                                         <InputText
@@ -47,27 +46,22 @@ function LogIn({ show, handleClose }) {
                                             required={false}
                                             onChange={handleChange}
                                             onBlur={handleBlur}
-                                            className="bg-white-alpha-20 border-none p-3 text-primary-50"
+                                            className="p-3"
                                             value={values.email}
                                         />
-                                        {errors.email &&
-                                            touched.email &&
-                                            errors.email}
                                         <label htmlFor="email">Email</label>
                                     </FloatLabel>
                                     <div className="flex flex-col">
                                         <FloatLabel>
-                                            <InputText
-                                                type="password"
+                                            <Password
                                                 name="password"
                                                 onChange={handleChange}
                                                 onBlur={handleBlur}
-                                                className="bg-white-alpha-20 border-none p-3 text-primary-50"
+                                                className="[&>_*_.p-password-input]:p-3"
                                                 value={values.password}
+                                                toggleMask
+                                                feedback={false}
                                             />
-                                            {errors.password &&
-                                                touched.password &&
-                                                errors.password}
                                             <label htmlFor="password">
                                                 Password
                                             </label>
