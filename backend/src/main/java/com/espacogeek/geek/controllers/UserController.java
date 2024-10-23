@@ -42,6 +42,10 @@ public class UserController {
             throw new GenericException(HttpStatus.BAD_REQUEST.toString());
         }
 
+        if (newUser.username().length() < 3 || newUser.username().length() > 21) {
+            throw new GenericException(HttpStatus.BAD_REQUEST.toString());
+        }
+
         var passwordCrypt = BCrypt.withDefaults().hash(12, newUser.password().toCharArray());
         var user = new UserModel(null, newUser.username(), newUser.email().toLowerCase(), passwordCrypt, null);
 
