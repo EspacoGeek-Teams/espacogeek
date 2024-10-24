@@ -8,12 +8,15 @@ import { FloatLabel } from "primereact/floatlabel";
 import { Button } from "primereact/button";
 import { Password } from 'primereact/password';
 import { ErrorContext } from "../../contexts/ErrorContext";
+import { SuccessContext } from "../../contexts/SuccessContext";
+import * as Yup from 'yup';
 
 // eslint-disable-next-line react/prop-types
 function SignIn({ show, handleClose }) {
     const cssInvalid = "[&>_*_.p-inputtext]:border-red-500 [&>_*_.p-inputtext]:border-[1px]";
     const [newUser, { loading }] = useMutation(signInMutation);
     const { setErrorMessage } = useContext(ErrorContext);
+    const { setSuccessMessage } = useContext(SuccessContext);
 
     async function handleSubmit(values) {
         try {
@@ -24,56 +27,26 @@ function SignIn({ show, handleClose }) {
                     password: values.password,
                 },
             });
-            console.log(data.createUser);
-            setErrorMessage(data.createUser);
+            setSuccessMessage(data.createUser);
             handleClose();
         } catch (error) {
             const errorMsg = error.graphQLErrors?.[0]?.message || "An error occurred";
-            console.log(errorMsg);
             setErrorMessage(errorMsg);
         }
     }
 
-    function handleValidation(values) {
-        const errors = {};
-
-        errors.email = false;
-        errors.emailMessage = "";
-        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email) && values.email !== "") {
-            errors.email = true;
-            errors.emailMessage = "Invalid email.";
-        }
-
-        errors.confirmPassword = false;
-        errors.confirmPasswordMessage = "";
-        if (values.password !== values.confirmPassword) {
-            errors.confirmPassword = true;
-            errors.confirmPasswordMessage = "Password not match.";
-        }
-
-        errors.username = false;
-        errors.usernameMessage = "";
-        if (values.username.length < 3 && values.username !== "") {
-            errors.username = true;
-            errors.usernameMessage = "Username must've more than 2 characters.";
-        }
-        if (values.username.length > 21 && values.username !== "") {
-            errors.usernameMessage = "Username must've less than 21 characters.";
-        }
-
-        errors.password = false;
-        errors.passwordMessage = "";
-        if (values.password.length < 8 && values.password !== "") {
-            errors.password = true;
-            errors.passwordMessage = "Password must've more than 8 characters.";
-        }
-        if (values.password.length > 70 && values.password !== "") {
-            errors.password = true;
-            errors.passwordMessage = "Password must've less than 8 characters.";
-        }
-
-        return errors;
-    }
+    const validation = Yup.object().shape({
+        username: Yup.string()
+            .min(3, "Username must be at least 3 characters")
+            .max(20, "Username must be at most 20 characters"),
+        email: Yup.string()
+            .email("Invalid email"),
+        password: Yup.string()
+            .min(8, "Password must be at least 8 characters")
+            .max(70, "Password must be at most 70 characters"),
+        confirmPassword: Yup.string()
+            .oneOf([Yup.ref('password'), null], 'Passwords must match'),
+    });
 
     const formik = useFormik({
         initialValues: {
@@ -83,7 +56,7 @@ function SignIn({ show, handleClose }) {
             confirmPassword: "",
         },
         onSubmit: (values) => handleSubmit(values),
-        validate: (values) => handleValidation(values),
+        validationSchema: validation,
     });
 
     return (
@@ -114,7 +87,7 @@ function SignIn({ show, handleClose }) {
                                 <small
                                     id="email-help"
                                     className="text-red-300 select-none">
-                                    {formik.errors.emailMessage}
+                                    {formik.errors.email}
                                 </small>
                             </div>
                             <div className={"flex flex-col " + (formik.errors.username ? cssInvalid : "")}>
@@ -135,7 +108,7 @@ function SignIn({ show, handleClose }) {
                                 <small
                                     id="username-help"
                                     className="text-red-300 select-none">
-                                    {formik.errors.usernameMessage}
+                                    {formik.errors.username}
                                 </small>
                             </div>
                             <div className={"flex flex-col " + (formik.errors.password ? cssInvalid : "")}>
@@ -156,7 +129,7 @@ function SignIn({ show, handleClose }) {
                                 <small
                                     id="confirmPassword-help"
                                     className="text-red-300 select-none">
-                                    {formik.errors.passwordMessage}
+                                    {formik.errors.password}
                                 </small>
                             </div>
                             <div className={"flex flex-col " + (formik.errors.confirmPassword ? cssInvalid : "")}>
@@ -177,7 +150,7 @@ function SignIn({ show, handleClose }) {
                                 <small
                                     id="confirmPassword-help"
                                     className="text-red-300 select-none">
-                                    {formik.errors.confirmPasswordMessage}
+                                    {formik.errors.confirmPassword}
                                 </small>
                             </div>
                             <div className="flex align-items-center gap-2">
