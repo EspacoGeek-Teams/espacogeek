@@ -1,11 +1,10 @@
-import React from 'react';
-import { createContext, useState } from "react";
+import React, { createContext, useState } from 'react';
 
-const SuccessContext = createContext();
+export const SuccessContext = createContext();
 
 // eslint-disable-next-line react/prop-types
-const SuccessProvider = ({ children }) => {
-    const [successMessage, setSuccessMessage] = useState(null);
+export const SuccessProvider = ({ children }) => {
+    const [successMessage, setSuccessMessage] = useState("");
 
     return (
         <SuccessContext.Provider value={{ successMessage, setSuccessMessage }}>
@@ -13,5 +12,3 @@ const SuccessProvider = ({ children }) => {
         </SuccessContext.Provider>
     );
 };
-
-export { SuccessProvider, SuccessContext };

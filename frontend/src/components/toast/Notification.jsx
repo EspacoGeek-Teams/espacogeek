@@ -9,7 +9,7 @@ export function ErrorNotification() {
 
     useEffect(() => {
         if (errorMessage && toastRef.current) {
-            toastRef.current.show({ severity: 'error', detail: errorMessage, life: 3000  });
+            toastRef.current.show({ severity: 'error', summary: 'Error', detail: errorMessage, life: 3000 });
         }
     }, [errorMessage]);
 
@@ -26,7 +26,7 @@ export function SuccessNotification() {
 
     useEffect(() => {
         if (successMessage && toastRef.current) {
-            toastRef.current.show({ severity: 'success', detail: successMessage, life: 3000  });
+            toastRef.current.show({ severity: 'success', summary: 'Success',  detail: successMessage, life: 3000  });
         }
     }, [successMessage]);
 

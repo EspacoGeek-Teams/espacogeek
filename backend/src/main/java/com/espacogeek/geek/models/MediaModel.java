@@ -16,6 +16,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -56,6 +57,7 @@ public class MediaModel implements Serializable {
     private String banner;
 
     @JoinColumn(name = "id_category", nullable = false)
+    @ManyToOne
     @NotNull
     private MediaCategoryModel mediaCategory;
 

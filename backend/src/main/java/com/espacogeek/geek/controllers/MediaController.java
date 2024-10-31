@@ -78,7 +78,7 @@ public class MediaController {
         }
 
         if (id != null) {
-            var media = mediaService.findGameByIdOrName(id, null);
+            var media = mediaService.findGameByIdOrName(id, null); // do a find by vn
             if (media != null) media = Utils.updateGenericMedia(media, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
             return media;
         }

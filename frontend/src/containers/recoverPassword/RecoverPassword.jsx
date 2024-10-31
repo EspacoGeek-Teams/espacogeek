@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import TopBar from "../../components/topBar/TopBar";
-import { Form } from "react-router-dom";
-import { useMutation } from "@apollo/client";
 
 export default function RecoverPassword() {
 

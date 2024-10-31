@@ -37,9 +37,11 @@ function SignIn({ show, handleClose }) {
 
     const validation = Yup.object().shape({
         username: Yup.string()
+            .trim()
             .min(3, "Username must be at least 3 characters")
             .max(20, "Username must be at most 20 characters"),
         email: Yup.string()
+            .trim()
             .email("Invalid email"),
         password: Yup.string()
             .min(8, "Password must be at least 8 characters")
