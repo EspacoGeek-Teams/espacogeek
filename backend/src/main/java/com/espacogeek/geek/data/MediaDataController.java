@@ -3,7 +3,6 @@ package com.espacogeek.geek.data;
 import java.util.List;
 
 import com.espacogeek.geek.data.api.MediaApi;
-import com.espacogeek.geek.exception.MediaAlreadyExist;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
@@ -11,8 +10,6 @@ import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.SeasonModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
-import com.espacogeek.geek.services.ExternalReferenceService;
-import com.espacogeek.geek.services.MediaService;
 
 public interface MediaDataController {
     // External references

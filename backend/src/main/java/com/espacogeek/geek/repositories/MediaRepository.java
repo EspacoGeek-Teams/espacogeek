@@ -15,27 +15,30 @@ import com.espacogeek.geek.models.TypeReferenceModel;
 
 @Repository
 public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer> {
-    // if at some time the queries become more complex, see https://www.jooq.org/ and https://persistence.blazebit.com/.
+    // if at some time the queries become more complex, see https://www.jooq.org/
+    // and https://persistence.blazebit.com/.
 
-    /**
-     * That query search for Medias with the given params.
-     * @param id of the media in the database, <b>priority 1st</b>.
-     * @param name of the media in the database, <b>priority 2nd</b>.
-     * @param alternativeTitle of the media in the database, <b>priority 3rd</b>.
-     * @param category the category of media.
-     * @return List of MediaModel with tge results of query operation.
-     */
-    @Query("SELECT m FROM MediaModel m " +
+/**
+ * Finds media by matching name or alternative title within a specific media category.
+ *
+ * This query searches for MediaModel entities where the name or any alternative
+ * title matches the provided name or alternativeTitle parameters. It filters the
+ * results to only include those within the specified media category.
+ *
+ * @param name            The name of the media to search for.
+ * @param alternativeTitle The alternative title of the media to search for.
+ * @param category        The ID of the media category to filter results by.
+ * @return A list of MediaModel objects that match the search criteria.
+ */
+    @Query("SELECT DISTINCT m FROM MediaModel m " +
             "LEFT JOIN AlternativeTitleModel a ON a MEMBER OF m.alternativeTitles " +
-            "WHERE m.mediaCategory = :category " +
-            "AND m.id = :id " +
-            "OR m.name LIKE CONCAT('%',:name,'%') " +
-            "OR a.name LIKE CONCAT('%',:alternativeTitle,'%')")
-    public List<MediaModel> findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(
-        @Param("id") Integer id,
-        @Param("name") String name,
-        @Param("alternativeTitle") String alternativeTitle,
-        @Param("category") MediaCategoryModel category
+            "WHERE m.mediaCategory.id = :category " +
+            "AND (m.name LIKE CONCAT('%',:name,'%') " +
+            "OR a.name LIKE CONCAT('%',:alternativeTitle,'%'))")
+    public List<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
+            @Param("name") String name,
+            @Param("alternativeTitle") String alternativeTitle,
+            @Param("category") Integer category
     );
 
     /**

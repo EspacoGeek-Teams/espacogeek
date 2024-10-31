@@ -56,7 +56,7 @@ public class MediaServiceImpl implements MediaService {
             return medias;
         }
 
-        return this.mediaRepository.findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get());
+        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId());
     }
 
     /**
@@ -71,7 +71,7 @@ public class MediaServiceImpl implements MediaService {
             return medias;
         }
 
-        return this.mediaRepository.findMediaByIdOrNameOrAlternativeTitleAndMediaCategory(id, name, name, mediaCategoryService.findById(MediaDataController.GAME_ID).get());
+        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.GAME_ID).get().getId());
     }
 
     /**
