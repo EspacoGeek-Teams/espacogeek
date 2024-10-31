@@ -38,7 +38,7 @@ public class SeasonModel implements Serializable {
     @Column(name = "end_air_date")
     private Date endAirDate;
 
-    @Column(name = "about_season", length = 1000)
+    @Column(name = "about_season", length = 10000)
     private String about;
 
     @Column(name = "path_cover")
