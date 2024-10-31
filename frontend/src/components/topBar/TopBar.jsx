@@ -22,6 +22,9 @@ function TopBar() {
     const handleLogInClose = () => setLogInComponent(false);
     const handleLogInShow = () => setLogInComponent(true);
 
+    const handleSearchClose = () => setSearchComponent(false);
+    const handleSearchShow = () => setSearchComponent(true);
+
     const handleNavToHome = () => navigate("/");
 
     const startContent = (
@@ -46,7 +49,7 @@ function TopBar() {
                 label="Search"
                 icon="pi pi-search"
                 type="button"
-                onClick={() => setSearchComponent(true)}
+                onClick={handleSearchShow}
             >
                 <Ripple />
             </Button>
@@ -95,7 +98,7 @@ function TopBar() {
             label: "Search",
             icon: "pi pi-search",
             command: () => {
-                setSearchComponent(true);
+                handleSignInShow();
             },
         },
         {
@@ -142,7 +145,7 @@ function TopBar() {
                 />
             </div>
 
-            {SearchComponent && <SearchBar />}
+            {SearchComponent && <SearchBar handleClose={handleSearchClose} />}
             {SignInComponent && (
                 <SignInBar
                     show={SignInComponent}
