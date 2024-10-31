@@ -36,6 +36,13 @@ public class MediaController {
     @Autowired
     private MediaCategoryService mediaCategoryService;
 
+    /**
+     * Finds Series (MediaModel) objects by their ID or name.
+     *
+     * @param id   The ID of the Series (MediaModel) object to find.
+     * @param name The name of the Series (MediaModel) object to find.
+     * @return A list of Series (MediaModel) objects that match the provided ID or name.
+     */
     @QueryMapping(name = "tvserie")
     public List<MediaModel> getSerie(@Argument Integer id, @Argument String name) {
 
@@ -50,6 +57,13 @@ public class MediaController {
         return Utils.updateMedia(medias, serieController);
     }
 
+    /**
+     * Finds Game (MediaModel) objects by their ID or name.
+     *
+     * @param id   The ID of the Game (MediaModel) object to find.
+     * @param name The name of the Game (MediaModel) object to find.
+     * @return A list of Game (MediaModel) objects that match the provided ID or name.
+     */
     @QueryMapping(name = "game")
     public List<MediaModel> getGame(@Argument Integer id, @Argument String name) {
 
@@ -68,6 +82,13 @@ public class MediaController {
         return genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
     }
 
+    /**
+     * Finds Visual Novel (MediaModel) objects by their ID or name.
+     *
+     * @param id   The ID of the Visual Novel (MediaModel) object to find.
+     * @param name The name of the Visual Novel (MediaModel) object to find.
+     * @return A list of Visual Novel (MediaModel) objects that match the provided ID or name.
+     */
     @QueryMapping(name = "vn")
     public List<MediaModel> getVisualNovel(@Argument Integer id, @Argument String name) {
 
