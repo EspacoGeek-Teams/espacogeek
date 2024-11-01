@@ -7,12 +7,20 @@ import { InputIcon } from 'primereact/inputicon';
 import { IconField } from 'primereact/iconfield';
 import { ErrorContext } from "../../contexts/ErrorContext";
 import { DataView } from 'primereact/dataview';
+import { ListBox } from 'primereact/listbox';
 
 // eslint-disable-next-line react/prop-types
 function SearchBar({ handleClose }) {
     const [value, setValue] = useState('');
     const { loading, error, data, refetch } = useQuery(searchQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
     const { setErrorMessage } = useContext(ErrorContext);
+    const [selectedQuery, setSelectedQuery] = useState('tvserie');
+
+    const queries = [
+        { name: 'TVSerie', code: 'tvserie' },
+        { name: 'Game', code: 'game' },
+        { name: 'Visual Novel', code: 'vn' },
+    ];
 
     useEffect(() => {
         if (error) {
@@ -38,25 +46,28 @@ function SearchBar({ handleClose }) {
     return (
         <>
             <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center flex-col gap-6">
-                <div className="flex items-center">
-                    <IconField iconPosition="left">
-                        <InputText
-                            placeholder="Search"
-                            value={value}
-                            autoFocus
-                            className="px-9 p-4 text-xl"
-                            onInput={(e) => { setValue(e.target.value); refetch(); }} />
-                        <InputIcon className={loading ? "pi pi-spin pi-spinner" : "pi pi-search"} />
-                    </IconField>
-                    <Button
-                        icon="pi pi-times"
-                        className="p-button-text"
-                        onClick={handleClose}
-                        aria-label="Close" />
+                <div className="flex items-center gap-5">
+                    <ListBox value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name" className="w-36" style={{backgroundColor: 'transparent'}} />
+                    <div className="flex items-center">
+                        <IconField iconPosition="left">
+                            <InputText
+                                placeholder="Search"
+                                value={value}
+                                autoFocus
+                                className="px-9 p-4 text-xl"
+                                onInput={(e) => { setValue(e.target.value); refetch(); }} />
+                            <InputIcon className={loading ? "pi pi-spin pi-spinner" : "pi pi-search"} />
+                        </IconField>
+                        <Button
+                            icon="pi pi-times"
+                            className="p-button-text"
+                            onClick={handleClose}
+                            aria-label="Close" />
+                    </div>
                 </div>
                 <div>
                     {data && (
-                        <DataView value={data?.['tvserie']} itemTemplate={itemTemplate} className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent" emptyMessage=" " />
+                        <DataView value={data?.[selectedQuery]} itemTemplate={itemTemplate} className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent" emptyMessage=" " />
                     )}
                 </div>
             </div>
