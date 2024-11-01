@@ -98,7 +98,7 @@ function TopBar() {
             label: "Search",
             icon: "pi pi-search",
             command: () => {
-                handleSignInShow();
+                handleSearchShow();
             },
         },
         {
