@@ -42,6 +42,17 @@ public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer> {
             @Param("alternativeTitle") String alternativeTitle,
             @Param("category") Integer category);
 
+    @Query("SELECT :fields FROM medias m " +
+            "LEFT JOIN alternative_titles a.id_media ON a = m.id_media " +
+            "WHERE m.id_category = :category " +
+            "AND (m.name_media LIKE CONCAT('%',:name,'%') " +
+            "OR a.name_title LIKE CONCAT('%',:alternativeTitle,'%'))", nativeQuery = true)
+    public List<Object[]> findMediaByNameOrAlternativeTitleAndMediaCategory(
+            @Param("name") String name,
+            @Param("alternativeTitle") String alternativeTitle,
+            @Param("category") Integer category,
+            @Param("fields") String fields);
+
     /**
      * Find Media by ExternalReference and TypeReference.
      *

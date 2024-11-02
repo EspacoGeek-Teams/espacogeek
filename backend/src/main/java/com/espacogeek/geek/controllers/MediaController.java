@@ -6,6 +6,8 @@ import java.time.temporal.ChronoUnit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -20,6 +22,9 @@ import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
 import com.espacogeek.geek.utils.Utils;
+
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.SelectedField;
 
 @Controller
 public class MediaController {
@@ -41,10 +46,12 @@ public class MediaController {
      *
      * @param id   The ID of the Series (MediaModel) object to find.
      * @param name The name of the Series (MediaModel) object to find.
-     * @return A list of Series (MediaModel) objects that match the provided ID or name.
+     * @return A list of Series (MediaModel) objects that match the provided ID or
+     *         name.
      */
     @QueryMapping(name = "tvserie")
-    public List<MediaModel> getSerie(@Argument Integer id, @Argument String name) {
+    public List<MediaModel> getSerie(@Argument Integer id, @Argument String name,
+            DataFetchingEnvironment dataFetchingEnvironment) {
 
         name = name == null ? null : name.trim();
 
@@ -52,7 +59,14 @@ public class MediaController {
             return new ArrayList<>();
         }
 
-        var medias = this.mediaService.findSerieByIdOrName(id, name);
+        var requestedFields = dataFetchingEnvironment.getSelectionSet()
+                .getFields()
+                .stream()
+                .map(SelectedField::getName)
+                .map((item) -> "m." + item)
+                .collect(Collectors.toList());
+
+        var medias = this.mediaService.findSerieByIdOrName(id, name, requestedFields);
 
         return Utils.updateMedia(medias, serieController);
     }
@@ -62,7 +76,8 @@ public class MediaController {
      *
      * @param id   The ID of the Game (MediaModel) object to find.
      * @param name The name of the Game (MediaModel) object to find.
-     * @return A list of Game (MediaModel) objects that match the provided ID or name.
+     * @return A list of Game (MediaModel) objects that match the provided ID or
+     *         name.
      */
     @QueryMapping(name = "game")
     public List<MediaModel> getGame(@Argument Integer id, @Argument String name) {
@@ -75,11 +90,15 @@ public class MediaController {
 
         if (id != null) {
             var media = mediaService.findGameByIdOrName(id, null);
-            if (media != null) media = Utils.updateGenericMedia(media, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
+            if (media != null)
+                media = Utils.updateGenericMedia(media, genericMediaDataController,
+                        typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
             return media;
         }
 
-        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
+        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI,
+                typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(),
+                mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
     }
 
     /**
@@ -87,7 +106,8 @@ public class MediaController {
      *
      * @param id   The ID of the Visual Novel (MediaModel) object to find.
      * @param name The name of the Visual Novel (MediaModel) object to find.
-     * @return A list of Visual Novel (MediaModel) objects that match the provided ID or name.
+     * @return A list of Visual Novel (MediaModel) objects that match the provided
+     *         ID or name.
      */
     @QueryMapping(name = "vn")
     public List<MediaModel> getVisualNovel(@Argument Integer id, @Argument String name) {
@@ -100,10 +120,14 @@ public class MediaController {
 
         if (id != null) {
             var media = mediaService.findGameByIdOrName(id, null); // do a find by vn
-            if (media != null) media = Utils.updateGenericMedia(media, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
+            if (media != null)
+                media = Utils.updateGenericMedia(media, genericMediaDataController,
+                        typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
             return media;
         }
 
-        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.VN_ID).orElseThrow());
+        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI,
+                typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(),
+                mediaCategoryService.findById(MediaDataController.VN_ID).orElseThrow());
     }
 }

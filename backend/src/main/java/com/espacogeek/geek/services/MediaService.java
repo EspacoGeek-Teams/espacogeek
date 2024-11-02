@@ -21,6 +21,16 @@ public interface MediaService {
     List<MediaModel> findSerieByIdOrName(Integer id, String name);
 
     /**
+     * Finds Series (MediaModel) objects by their ID or name.
+     *
+     * @param id   The ID of the Series (MediaModel) object to find.
+     * @param name The name of the Series (MediaModel) object to find.
+     * @param requestedFields The fields to include in the response.
+     * @return A list of Series (MediaModel) objects that match the provided ID or name.
+     */
+    List<MediaModel> findSerieByIdOrName(Integer id, String name, List<String> requestedFields);
+
+    /**
      * Finds Game (MediaModel) objects by their ID or name.
      *
      * @param id   The ID of the Game (MediaModel) object to find.

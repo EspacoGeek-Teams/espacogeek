@@ -60,6 +60,25 @@ public class MediaServiceImpl implements MediaService {
     }
 
     /**
+     * @see MediaService#findSerieByIdOrName(Integer, String, List<String>)
+     */
+    @Override
+    public List<MediaModel> findSerieByIdOrName(Integer id, String name, List<String> requestedFields) {
+        var medias = new ArrayList<MediaModel>();
+
+        if (id != null) {
+            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(null));
+            return medias;
+        }
+
+        List<Object[]> results = this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), requestedFields.toArray().toString());
+        
+        
+
+        return ;
+    }
+
+    /**
      * @see MediaService#findGameByIdOrName(Integer, String)
      */
     @Override

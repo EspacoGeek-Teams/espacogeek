@@ -1,12 +1,17 @@
 package com.espacogeek.geek.utils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.Authentication;
 
 import com.espacogeek.geek.data.MediaDataController;
@@ -29,7 +34,9 @@ public abstract class Utils {
 
     /**
      * Validate the password.
-     * @return <code>true</code> if the given password flow all rules and <code>false</code> if password doesn't flow any rule.
+     * 
+     * @return <code>true</code> if the given password flow all rules and
+     *         <code>false</code> if password doesn't flow any rule.
      */
     public static boolean isValidPassword(String password) {
         final String REG_EXPN_PASSWORD = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!*@#$%^&+=])(?=\\S+$).{8,70}$";
@@ -41,9 +48,11 @@ public abstract class Utils {
     }
 
     private static Boolean updateMediaWhenLastTimeUpdateMoreThanOneDay(MediaModel media) {
-        if (media == null) return false;
+        if (media == null)
+            return false;
 
-        LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
+        LocalDate mediaUpdateAt = media.getUpdateAt() == null ? null
+                : LocalDate.ofInstant(media.getUpdateAt().toInstant(), ZoneId.systemDefault());
 
         if (mediaUpdateAt == null || ChronoUnit.DAYS.between(mediaUpdateAt, LocalDate.now()) > 1l) {
             return true;
@@ -52,7 +61,8 @@ public abstract class Utils {
         return false;
     }
 
-    public static List<MediaModel> updateGenericMedia(List<MediaModel> medias, MediaDataController mediaDataController, TypeReferenceModel typeReference, MediaApi mediaApi) {
+    public static List<MediaModel> updateGenericMedia(List<MediaModel> medias, MediaDataController mediaDataController,
+            TypeReferenceModel typeReference, MediaApi mediaApi) {
         List<MediaModel> updatedMedias = new ArrayList<>();
 
         for (MediaModel media : medias) {
@@ -74,5 +84,31 @@ public abstract class Utils {
         }
 
         return medias;
+    }
+
+    public static <T> T objectToClass(Class<T> clazz, List<Object[]> data, String[] columnNames) {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Object[] row : data) {
+            Map<String, Object> rowMap = new HashMap<>();
+            for (int i = 0; i < columnNames.length; i++) {
+                rowMap.put(columnNames[i], row[i]);
+            }
+            result.add(rowMap);
+        }
+
+        T instance;
+		try {
+			instance = clazz.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+		}
+        result.forEach((item) -> {
+            org.apache.commons.beanutils.BeanUtils.populate(instance, item);
+
+        });
+
+        return instance;
     }
 }
