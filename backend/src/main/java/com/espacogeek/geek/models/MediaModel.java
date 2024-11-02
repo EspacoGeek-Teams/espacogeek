@@ -19,6 +19,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -91,6 +93,8 @@ public class MediaModel implements Serializable {
     private List<UserLibraryModel> userLibrary;
 
     @Column(name = "update_at")
+    @UpdateTimestamp
+    @Temporal(TemporalType.TIMESTAMP)
     private Date updateAt;
 
     @OneToMany(mappedBy = "media", fetch = FetchType.EAGER, orphanRemoval = true)
