@@ -14,7 +14,7 @@ function SearchBar({ handleClose }) {
     const [value, setValue] = useState('');
     const { loading, error, data, refetch } = useQuery(searchQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
     const { setErrorMessage } = useContext(ErrorContext);
-    const [selectedQuery, setSelectedQuery] = useState('tvserie');
+    const [selectedQuery, setSelectedQuery] = useState({ name: 'TVSerie', code: 'tvserie' });
 
     const queries = [
         { name: 'TVSerie', code: 'tvserie' },
@@ -67,7 +67,7 @@ function SearchBar({ handleClose }) {
                 </div>
                 <div>
                     {data && (
-                        <DataView value={data?.[selectedQuery]} itemTemplate={itemTemplate} className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent" emptyMessage=" " />
+                        <DataView value={data?.[selectedQuery.code]} itemTemplate={itemTemplate} className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent" emptyMessage=" " />
                     )}
                 </div>
             </div>
@@ -77,4 +77,5 @@ function SearchBar({ handleClose }) {
 }
 
 export default SearchBar;
+
 
