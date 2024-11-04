@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.espacogeek.geek.data.MediaDataController;
@@ -15,6 +19,7 @@ import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.repositories.MediaRepository;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
+import com.espacogeek.geek.utils.Utils;
 
 /**
  * A Implementation class of MediaService @see MediaService
@@ -45,10 +50,22 @@ public class MediaServiceImpl implements MediaService {
     }
 
     /**
-     * @see MediaService#findSerieByIdOrName(Integer, String)
+     * @see MediaService#findSerieByIdOrName(Integer, String, Pageable)
      */
     @Override
-    public List<MediaModel> findSerieByIdOrName(Integer id, String name) {
+    public Page<MediaModel> findSerieByIdOrName(Integer id, String name, Pageable pageable) {
+        if (id != null) {
+            return (Page<MediaModel>) this.mediaRepository.findById(id).orElseGet(null);
+        }
+
+        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), pageable);
+    }
+
+    /**
+     * @see MediaService#findSerieByIdOrName(Integer, String, Map<String, List<String>>)
+     */
+    @Override
+    public List<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields) {
         var medias = new ArrayList<MediaModel>();
 
         if (id != null) {
@@ -56,41 +73,21 @@ public class MediaServiceImpl implements MediaService {
             return medias;
         }
 
-        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId());
+        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), requestedFields);
+
+        return results;
     }
 
     /**
-     * @see MediaService#findSerieByIdOrName(Integer, String, List<String>)
+     * @see MediaService#findGameByIdOrName(Integer, String, Pageable)
      */
     @Override
-    public List<MediaModel> findSerieByIdOrName(Integer id, String name, List<String> requestedFields) {
-        var medias = new ArrayList<MediaModel>();
-
+    public Page<MediaModel> findGameByIdOrName(Integer id, String name, Pageable pageable) {
         if (id != null) {
-            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(null));
-            return medias;
+            return (Page<MediaModel>) this.mediaRepository.findById(id).orElseGet(null);
         }
 
-        List<Object[]> results = this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), requestedFields.toArray().toString());
-        
-        
-
-        return ;
-    }
-
-    /**
-     * @see MediaService#findGameByIdOrName(Integer, String)
-     */
-    @Override
-    public List<MediaModel> findGameByIdOrName(Integer id, String name) {
-        var medias = new ArrayList<MediaModel>();
-
-        if (id != null) {
-            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(() -> null));
-            return medias;
-        }
-
-        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.GAME_ID).get().getId());
+        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.GAME_ID).get().getId(), pageable);
     }
 
     /**

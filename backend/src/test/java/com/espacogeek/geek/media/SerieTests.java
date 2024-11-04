@@ -9,7 +9,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
@@ -32,7 +33,8 @@ public class SerieTests {
 
     @BeforeEach
     void init() {
-        this.mediaTest = mediaService.findSerieByIdOrName(null, NAME).getFirst();
+        Pageable pageable = PageRequest.of(0, 10);
+        this.mediaTest = mediaService.findSerieByIdOrName(null, NAME, pageable).getContent().get(0);
     }
 
     @Nested

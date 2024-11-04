@@ -21,10 +21,12 @@ import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
+import com.espacogeek.geek.types.MediaPage;
 import com.espacogeek.geek.utils.Utils;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
+import jakarta.transaction.Transactional;
 
 @Controller
 public class MediaController {
@@ -50,29 +52,28 @@ public class MediaController {
      *         name.
      */
     @QueryMapping(name = "tvserie")
-    public List<MediaModel> getSerie(@Argument Integer id, @Argument String name,
-            DataFetchingEnvironment dataFetchingEnvironment) {
-
+    @Transactional
+    public MediaPage getSerie(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
+        MediaPage response = new MediaPage();
         name = name == null ? null : name.trim();
 
         if (name == null & id == null || name == "" & id == null) {
-            return new ArrayList<>();
+            return response;
         }
 
-        var requestedFields = dataFetchingEnvironment.getSelectionSet()
-                .getFields()
-                .stream()
-                .map(SelectedField::getName)
-                .map((item) -> "m." + item)
-                .collect(Collectors.toList());
+        var medias = this.mediaService.findSerieByIdOrName(id, name, Utils.getPageable(dataFetchingEnvironment));
 
-        var medias = this.mediaService.findSerieByIdOrName(id, name, requestedFields);
+        response.setContent(Utils.updateMedia(medias.getContent(), serieController));
+        response.setTotalPages(medias.getTotalPages());
+        response.setTotalElements(medias.getTotalElements());
+        response.setNumber(medias.getNumber());
+        response.setSize(medias.getSize());
 
-        return Utils.updateMedia(medias, serieController);
+        return response;
     }
 
     /**
-     * Finds Game (MediaModel) objects by their ID or name.
+     * Finds Game (MediaModel) objects by their ID or name. When searching by ID, the name parameter is not used amd all fields are updated.
      *
      * @param id   The ID of the Game (MediaModel) object to find.
      * @param name The name of the Game (MediaModel) object to find.
@@ -80,25 +81,31 @@ public class MediaController {
      *         name.
      */
     @QueryMapping(name = "game")
-    public List<MediaModel> getGame(@Argument Integer id, @Argument String name) {
-
+    public MediaPage getGame(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
+        MediaPage response = new MediaPage();
         name = name == null ? null : name.trim();
 
         if (name == null & id == null || name == "" & id == null) {
-            return new ArrayList<>();
+            return response;
         }
 
         if (id != null) {
-            var media = mediaService.findGameByIdOrName(id, null);
-            if (media != null)
-                media = Utils.updateGenericMedia(media, genericMediaDataController,
-                        typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
-            return media;
+            var medias = mediaService.findGameByIdOrName(id, null, Utils.getPageable(dataFetchingEnvironment));
+
+            response.setTotalPages(medias.getTotalPages());
+            response.setTotalElements(medias.getTotalElements());
+            response.setNumber(medias.getNumber());
+            response.setSize(medias.getSize());
+            response.setContent(Utils.updateGenericMedia(medias.getContent(), genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
+
+            return response;
         }
 
-        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI,
-                typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(),
-                mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
+        var medias = genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
+
+        response.setContent(Utils.updateGenericMedia(medias, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
+
+        return response;
     }
 
     /**
@@ -110,24 +117,30 @@ public class MediaController {
      *         ID or name.
      */
     @QueryMapping(name = "vn")
-    public List<MediaModel> getVisualNovel(@Argument Integer id, @Argument String name) {
-
+    public MediaPage getVisualNovel(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
+        MediaPage response = new MediaPage();
         name = name == null ? null : name.trim();
 
         if (name == null & id == null || name == "" & id == null) {
-            return new ArrayList<>();
+            return response;
         }
 
         if (id != null) {
-            var media = mediaService.findGameByIdOrName(id, null); // do a find by vn
-            if (media != null)
-                media = Utils.updateGenericMedia(media, genericMediaDataController,
-                        typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI);
-            return media;
+            var medias = mediaService.findGameByIdOrName(id, null, Utils.getPageable(dataFetchingEnvironment));
+
+            response.setTotalPages(medias.getTotalPages());
+            response.setTotalElements(medias.getTotalElements());
+            response.setNumber(medias.getNumber());
+            response.setSize(medias.getSize());
+            response.setContent(Utils.updateGenericMedia(medias.getContent(), genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
+
+            return response;
         }
 
-        return genericMediaDataController.searchMedia(name, gamesAndVNsAPI,
-                typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(),
-                mediaCategoryService.findById(MediaDataController.VN_ID).orElseThrow());
+        var medias = genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
+
+        response.setContent(Utils.updateGenericMedia(medias, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
+
+        return response;
     }
 }

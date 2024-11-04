@@ -19,3 +19,11 @@ input MediaInput {
     id: ID
     name: String
 }
+
+type MediaPage {
+    content: [Media]
+    totalPages: Int
+    totalElements: Int
+    number: Int
+    size: Int
+}

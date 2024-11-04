@@ -15,12 +15,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
-import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.GenreModel;
@@ -42,7 +42,6 @@ import info.movito.themoviedbapi.model.tv.series.Images;
 import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
 import info.movito.themoviedbapi.tools.appendtoresponse.TvSeriesAppendToResponse;
-import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.annotation.PostConstruct;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -69,11 +68,6 @@ public class TvSeriesApiImpl implements MediaApi {
         this.api = new TmdbApi(this.apiKeyService.findById(TMDB_API_KEY_ID).get().getKey()).getTvSeries();
     }
 
-    @SuppressWarnings("unused")
-    private void fallbackMethod(RequestNotPermitted requestNotPermitted) {
-        throw new GenericException(HttpStatus.TOO_MANY_REQUESTS.toString());
-    }
-
     /**
      * @see MediaApi#updateTitles()
      *
@@ -85,6 +79,7 @@ public class TvSeriesApiImpl implements MediaApi {
      */
     @SuppressWarnings("unchecked")
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public JSONArray updateTitles() {
         var now = LocalDateTime.now();
 
@@ -93,14 +88,18 @@ public class TvSeriesApiImpl implements MediaApi {
         var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? "0".concat(String.valueOf(now.getDayOfMonth())) : now.getDayOfMonth();
         var year = String.valueOf(now.getYear()).replace(".", "");
 
-        // * @AbigailGeovana faz o request
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
-        Request request = new Request.Builder()
-                .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_05_{2}.json.gz", month,
+        var client = new OkHttpClient().newBuilder().build();
+        Request request = null;
+        try {
+            request = new Request.Builder()
+                .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", month,
                         day, year))
                 .method("GET", null)
                 .addHeader("Content-Type", "application/json")
                 .build();
+        } catch (Exception e) {
+            throw new com.espacogeek.geek.exception.RequestException("");
+        }
 
         Response response = null;
         try {
@@ -109,7 +108,6 @@ public class TvSeriesApiImpl implements MediaApi {
             e.printStackTrace();
         }
 
-        // * @AbigailGeovana Descompacta e transforma em uma string
         GZIPInputStream inputStream = null;
         String[] json = null;
         try {
@@ -119,7 +117,6 @@ public class TvSeriesApiImpl implements MediaApi {
             e.printStackTrace();
         }
 
-        // * @AbigailGeovana tranforma em json
         JSONArray jsonArray = new JSONArray();
         for (var item : json) {
             JSONParser parser = new JSONParser();
@@ -137,21 +134,21 @@ public class TvSeriesApiImpl implements MediaApi {
     /**
      * @see MediaApi#updateTitles(Integer)
      */
-    // @RateLimiter(name = "tmdbapi", fallbackMethod = "fallbackMethod") // * @AbigailGeovana limita as requisições a essa função, a configuração "tmdbapi" fica no arquivo application.proprieters. E chama a função "fallbackMethod()" se estorar o limite
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     @Override
     public MediaModel getDetails(Integer id) {
         TvSeriesDb rawSerieDetails = new TvSeriesDb();
         try {
-            rawSerieDetails = api.getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES); // * @AbigailGeovana TvSeriesAppendToResponse.* serve para mim solicitar mais dados
+            rawSerieDetails = api.getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES);
         } catch (TmdbException e) {
-            e.printStackTrace();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
 
         MediaModel serie = new MediaModel(
                 null,
                 rawSerieDetails.getName(),
                 rawSerieDetails.getNumberOfEpisodes(),
-                rawSerieDetails.getEpisodeRunTime().isEmpty() || rawSerieDetails.getEpisodeRunTime() == null ? null : rawSerieDetails.getEpisodeRunTime().getFirst(),
+                rawSerieDetails.getEpisodeRunTime() == null || rawSerieDetails.getEpisodeRunTime().isEmpty() ? null : rawSerieDetails.getEpisodeRunTime().getFirst(),
                 rawSerieDetails.getOverview(),
                 rawSerieDetails.getPosterPath() == null ? null : URL_IMAGE_TMDB + rawSerieDetails.getPosterPath(),
                 rawSerieDetails.getBackdropPath() == null ? null : URL_IMAGE_TMDB + rawSerieDetails.getBackdropPath(),
@@ -172,12 +169,13 @@ public class TvSeriesApiImpl implements MediaApi {
      * @see MediaApi#getArtwork(Integer)
      */
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public MediaModel getArtwork(Integer id) {
         Images rawArtwork = new Images();
         try {
             rawArtwork = api.getImages(id, "en");
         } catch (TmdbException e) {
-            e.printStackTrace();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
         var media = new MediaModel();
 
@@ -191,25 +189,26 @@ public class TvSeriesApiImpl implements MediaApi {
      * @see MediaApi#getArtwork(Integer)
      */
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<Keyword> getKeyword(Integer id) {
         try {
             return api.getKeywords(id).getResults();
         } catch (TmdbException e) {
-            e.printStackTrace();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
-        return new ArrayList<>();
     }
 
     /**
      * @see MediaApi#getAlternativeTitles(Integer)
      */
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<AlternativeTitleModel> getAlternativeTitles(Integer id) {
         List<AlternativeTitle> rawAlternativeTitles = new ArrayList<>();
         try {
             rawAlternativeTitles = api.getAlternativeTitles(id).getResults();
         } catch (TmdbException e) {
-            e.printStackTrace();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
         return formatAlternativeTitles(rawAlternativeTitles);
     }
@@ -228,12 +227,13 @@ public class TvSeriesApiImpl implements MediaApi {
      * @see MediaApi#getExternalReference(Integer)
      */
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<ExternalReferenceModel> getExternalReference(Integer id) {
         ExternalIds rawExternalReferences = new ExternalIds();
         try {
             rawExternalReferences = api.getExternalIds(id);
         } catch (TmdbException e) {
-            e.printStackTrace();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
         return formatExternalReference(rawExternalReferences, id);
     }
@@ -244,11 +244,11 @@ public class TvSeriesApiImpl implements MediaApi {
         externalReferences.add(new ExternalReferenceModel(null, id.toString(), null,
                 typeReferenceService.findById(MediaDataController.TMDB_ID).get()));
 
-        if (rawExternalReferences.getTvdbId() != null) {
+        if (rawExternalReferences != null && rawExternalReferences.getTvdbId() != null) {
             externalReferences.add(new ExternalReferenceModel(null, rawExternalReferences.getTvdbId(), null,
                     typeReferenceService.findById(MediaDataController.TVDB_ID).get()));
         }
-        if (rawExternalReferences.getImdbId() != null) {
+        if (rawExternalReferences != null && rawExternalReferences.getImdbId() != null) {
             externalReferences.add(new ExternalReferenceModel(null, rawExternalReferences.getImdbId(), null,
                     typeReferenceService.findById(MediaDataController.IMDB_ID).get()));
         }
@@ -260,14 +260,18 @@ public class TvSeriesApiImpl implements MediaApi {
      * @see MediaApi#getGenre(Integer)
      */
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<GenreModel> getGenre(Integer id) {
         TvSeriesDb rawSerieDetails = new TvSeriesDb();
         try {
             rawSerieDetails = api.getDetails(id, "en-US");
         } catch (TmdbException e) {
-            e.printStackTrace();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
 
+        if (rawSerieDetails == null || rawSerieDetails.getGenres() == null) {
+            return new ArrayList<GenreModel>();
+        }
         return formatGenre(rawSerieDetails.getGenres());
     }
 
@@ -296,13 +300,14 @@ public class TvSeriesApiImpl implements MediaApi {
      * @see MediaApi#getSeason(Integer)
      */
     @Override
+    @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<SeasonModel> getSeason(Integer id) {
         List<TvSeason> rawSession = new ArrayList<>();
 
         try {
             rawSession = api.getDetails(id, "en-US").getSeasons();
         } catch (TmdbException e) {
-            e.printStackTrace();
+            throw new com.espacogeek.geek.exception.RequestException("");
         }
 
         return formatSeason(rawSession);

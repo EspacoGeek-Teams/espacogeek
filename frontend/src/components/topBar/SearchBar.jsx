@@ -12,7 +12,7 @@ import { ListBox } from 'primereact/listbox';
 // eslint-disable-next-line react/prop-types
 function SearchBar({ handleClose }) {
     const [value, setValue] = useState('');
-    const { loading, error, data, refetch } = useQuery(searchQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
+    const { loading, error, data } = useQuery(searchQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
     const { setErrorMessage } = useContext(ErrorContext);
     const [selectedQuery, setSelectedQuery] = useState({ name: 'TVSerie', code: 'tvserie' });
 
@@ -46,29 +46,35 @@ function SearchBar({ handleClose }) {
     return (
         <>
             <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center flex-col gap-6">
-                <div className="flex items-center gap-5">
-                    <ListBox value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name" className="w-36" style={{backgroundColor: 'transparent'}} />
-                    <div className="flex items-center">
-                        <IconField iconPosition="left">
-                            <InputText
-                                placeholder="Search"
-                                value={value}
-                                autoFocus
-                                className="px-9 p-4 text-xl"
-                                onInput={(e) => { setValue(e.target.value); refetch(); }} />
-                            <InputIcon className={loading ? "pi pi-spin pi-spinner" : "pi pi-search"} />
-                        </IconField>
-                        <Button
-                            icon="pi pi-times"
-                            className="p-button-text"
-                            onClick={handleClose}
-                            aria-label="Close" />
+                <div className="flex items-start gap-5">
+                    <ListBox value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name" className="w-36" style={{ backgroundColor: 'transparent' }} />
+                    <div className="flex flex-col items-center gap-2">
+                        <div className="flex items-center">
+                            <IconField iconPosition="left">
+                                <InputText
+                                    placeholder="Search"
+                                    value={value}
+                                    autoFocus
+                                    className="px-9 p-4 text-xl"
+                                    onInput={(e) => { setValue(e.target.value); }} />
+                                <InputIcon className={loading ? "pi pi-spin pi-spinner" : "pi pi-search"} />
+                            </IconField>
+                            <Button
+                                icon="pi pi-times"
+                                className="p-button-text"
+                                onClick={handleClose}
+                                aria-label="Close" />
+                        </div>
+                        <div className="max-h-96 overflow-y-auto">
+                            {data && (
+                                <DataView
+                                    value={data.tvserie.content}
+                                    itemTemplate={itemTemplate}
+                                    className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent"
+                                    emptyMessage=" " />
+                            )}
+                        </div>
                     </div>
-                </div>
-                <div>
-                    {data && (
-                        <DataView value={data?.[selectedQuery.code]} itemTemplate={itemTemplate} className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent" emptyMessage=" " />
-                    )}
                 </div>
             </div>
             <div className="fixed top-0 left-0 right-0 bottom-0 z-40 backdrop-blur-sm bg-blue-900 bg-opacity-10"></div>

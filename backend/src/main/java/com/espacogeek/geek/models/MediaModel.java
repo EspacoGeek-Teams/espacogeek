@@ -17,6 +17,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -27,9 +29,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Table(name = "medias", indexes = {@Index(name = "idx_name_media", columnList = "name", unique = true)})
+@Table(name = "medias", indexes = {@Index(name = "idx_name_media", columnList = "name_media", unique = true)})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -63,25 +66,25 @@ public class MediaModel implements Serializable {
     @NotNull
     private MediaCategoryModel mediaCategory;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
     @NotNull
     private List<ExternalReferenceModel> externalReference;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "medias_has_companies",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
     private List<CompanyModel> company;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "medias_has_people",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
     private List<PeopleModel> people;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "medias_has_genres",
         joinColumns = @JoinColumn(name = "medias_id_media"),
@@ -97,9 +100,9 @@ public class MediaModel implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateAt;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<AlternativeTitleModel> alternativeTitles;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SeasonModel> season;
 }

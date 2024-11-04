@@ -2,19 +2,32 @@ package com.espacogeek.geek.repositories;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
+
 @Repository
-public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer> {
+public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer>, MediaRepositoryCustom {
+
+    @PersistenceContext
+    public EntityManager entityManager = null;
+
     // if at some time the queries become more complex, see https://www.jooq.org/
     // and https://persistence.blazebit.com/.
 
@@ -37,21 +50,11 @@ public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer> {
             "WHERE m.mediaCategory.id = :category " +
             "AND (m.name LIKE CONCAT('%',:name,'%') " +
             "OR a.name LIKE CONCAT('%',:alternativeTitle,'%'))")
-    public List<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
-            @Param("name") String name,
-            @Param("alternativeTitle") String alternativeTitle,
-            @Param("category") Integer category);
-
-    @Query("SELECT :fields FROM medias m " +
-            "LEFT JOIN alternative_titles a.id_media ON a = m.id_media " +
-            "WHERE m.id_category = :category " +
-            "AND (m.name_media LIKE CONCAT('%',:name,'%') " +
-            "OR a.name_title LIKE CONCAT('%',:alternativeTitle,'%'))", nativeQuery = true)
-    public List<Object[]> findMediaByNameOrAlternativeTitleAndMediaCategory(
+    public Page<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
             @Param("name") String name,
             @Param("alternativeTitle") String alternativeTitle,
             @Param("category") Integer category,
-            @Param("fields") String fields);
+            Pageable pageable);
 
     /**
      * Find Media by ExternalReference and TypeReference.

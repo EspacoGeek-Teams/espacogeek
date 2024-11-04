@@ -1,13 +1,12 @@
 package com.espacogeek.geek.data.impl;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Date;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -27,6 +26,10 @@ import com.espacogeek.geek.services.ExternalReferenceService;
 import com.espacogeek.geek.services.GenreService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.SeasonService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @Component("genericMediaDataController")
 public abstract class GenericMediaDataControllerImpl implements MediaDataController {
@@ -49,12 +52,13 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
     public MediaModel updateAllInformation(MediaModel media, MediaModel result, TypeReferenceModel typeReference, MediaApi mediaApi) {
         if (result == null) {
             var id = media.getExternalReference().stream()
-                    .filter(
-                            (externalReference) -> externalReference.getTypeReference().getId()
-                                    .equals(typeReference.getId()))
-                    .findFirst().get().getReference();
+                        .filter(externalReference -> externalReference.getTypeReference().getId().equals(typeReference.getId()))
+                        .map(externalReference -> externalReference.getReference())
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Reference not found for the given typeReference"));
             result = mediaApi.getDetails(Integer.valueOf(id));
         }
+
         if (result == null) {
             return media;
         }
@@ -67,10 +71,8 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         updateSeason(media, result, typeReference, mediaApi);
 
         media.setUpdateAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
-        media = mediaService.save(media);
 
-        result = new MediaModel();
-        return media;
+        return mediaService.save(media);
     }
 
     @Override

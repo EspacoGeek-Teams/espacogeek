@@ -1,17 +1,21 @@
 package com.espacogeek.geek.utils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 
 import com.espacogeek.geek.data.MediaDataController;
@@ -19,8 +23,24 @@ import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 
+import graphql.schema.DataFetchingEnvironment;
+import graphql.schema.SelectedField;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.criteria.Root;
+
 public abstract class Utils {
 
+    /**
+     * Extracts the user ID from the given authentication object. The user ID is
+     * assumed
+     * to be stored in an authority with the prefix "ID_".
+     *
+     * @param authentication the authentication object
+     * @return the user ID
+     */
     public static Integer getUserID(Authentication authentication) {
         return Integer.valueOf(
                 authentication.getAuthorities().stream().filter(
@@ -34,7 +54,7 @@ public abstract class Utils {
 
     /**
      * Validate the password.
-     * 
+     *
      * @return <code>true</code> if the given password flow all rules and
      *         <code>false</code> if password doesn't flow any rule.
      */
@@ -47,6 +67,15 @@ public abstract class Utils {
         return matcher.matches();
     }
 
+    /**
+     * Checks if the media needs an update by determining if the last update was
+     * more than one day ago.
+     *
+     * @param media the media object to check
+     * @return <code>true</code> if the media should be updated (i.e., the last
+     *         update was more than one day ago
+     *         or if the update date is null), <code>false</code> otherwise
+     */
     private static Boolean updateMediaWhenLastTimeUpdateMoreThanOneDay(MediaModel media) {
         if (media == null)
             return false;
@@ -61,6 +90,18 @@ public abstract class Utils {
         return false;
     }
 
+    /**
+     * Updates all medias in the list when the last time update is more than one
+     * day ago. Use the given <code>mediaDataController</code> to update the
+     * media.
+     * <p>
+     *
+     * @param medias              the list of medias to update
+     * @param mediaDataController the controller to update the media
+     * @param typeReference       reference source of information to the Media.
+     * @param mediaApi            implementation of MediaAPI.
+     * @return the list of updated medias
+     */
     public static List<MediaModel> updateGenericMedia(List<MediaModel> medias, MediaDataController mediaDataController,
             TypeReferenceModel typeReference, MediaApi mediaApi) {
         List<MediaModel> updatedMedias = new ArrayList<>();
@@ -74,6 +115,14 @@ public abstract class Utils {
         return medias;
     }
 
+    /**
+     * Updates all medias in the list when the last time update is more than one
+     * day ago.
+     *
+     * @param medias              the list of medias to update
+     * @param mediaDataController the controller to update the media
+     * @return the list of updated medias
+     */
     public static List<MediaModel> updateMedia(List<MediaModel> medias, MediaDataController mediaDataController) {
         List<MediaModel> updatedMedias = new ArrayList<>();
 
@@ -86,29 +135,125 @@ public abstract class Utils {
         return medias;
     }
 
-    public static <T> T objectToClass(Class<T> clazz, List<Object[]> data, String[] columnNames) {
-        List<Map<String, Object>> result = new ArrayList<>();
+    /**
+     * Converts a list of objects into a list of instances of the given class
+     * using the Apache Commons BeanUtils library. The list of objects is
+     * expected to contain rows of data, where each row is an array of objects
+     * and the column names are given in the columnNames parameter.
+     * <p>
+     * The method will iterate over the list of objects, create a new instance of
+     * the given class for each row, and then use the BeanUtils populate method
+     * to set the values of the instance from the row of data.
+     * <p>
+     *
+     * @param clazz       the class to instantiate
+     * @param data        the list of objects to convert
+     * @param columnNames the names of the columns in the data
+     * @return a list of instances of the given class
+     * @throws RuntimeException if any of the instances cannot be created
+     */
+    public static <T> List<T> objectToClass(Class<T> clazz, List<Object[]> data, String[] columnNames) {
+        List<T> resultList = new ArrayList<>();
 
         for (Object[] row : data) {
             Map<String, Object> rowMap = new HashMap<>();
-            for (int i = 0; i < columnNames.length; i++) {
+            int length = Math.min(row.length, columnNames.length);
+            for (int i = 0; i < length; i++) {
                 rowMap.put(columnNames[i], row[i]);
             }
-            result.add(rowMap);
+
+            T instance = null;
+            try {
+                instance = clazz.getDeclaredConstructor().newInstance();
+                BeanWrapper beanWrapper = new BeanWrapperImpl(instance);
+                rowMap.forEach((propertyName, propertyValue) -> {
+                    try {
+                        beanWrapper.setPropertyValue(
+                                propertyName.split(
+                                        propertyName.contains(".") ? "\\." : "\\s")[propertyName.contains(".") ? 1 : 0],
+                                propertyValue);
+                    } catch (Exception e) {
+                        System.out.println("Erro ao definir a propriedade: " + propertyName + " - " + e.getMessage());
+                    }
+                });
+                resultList.add(instance);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException
+                    | NoSuchMethodException e) {
+                throw new RuntimeException("Failed to instantiate " + clazz.getName(), e);
+            }
         }
 
-        T instance;
-		try {
-			instance = clazz.getDeclaredConstructor().newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			e.printStackTrace();
-		}
-        result.forEach((item) -> {
-            org.apache.commons.beanutils.BeanUtils.populate(instance, item);
+        return resultList;
+    }
 
-        });
+    /**
+     * Returns a map of requested fields where the key is the field name and
+     * the value is a list of its subfields.
+     * <p>
+     * This is useful to select only the fields that are requested by the
+     * client, which can be used to reduce the amount of data that needs to
+     * be retrieved from the database.
+     * <p>
+     * For example, if the client requests the following fields:
+     *
+     * <pre>
+     * {
+     *   media {
+     *     id
+     *     title
+     *     genres {
+     *       name
+     *     }
+     *   }
+     * }
+     * </pre>
+     *
+     * This method will return a map like this:
+     *
+     * <pre>
+     * {
+     *   "media": [
+     *     "id",
+     *     "title",
+     *     "genres"
+     *   ],
+     *   "genres": [
+     *     "name"
+     *   ]
+     * }
+     * </pre>
+     * <p>
+     * This can be used to create a JPA query that only selects the requested
+     * fields, which can improve performance.
+     * <p>
+     *
+     * @param environment the {@link DataFetchingEnvironment} that contains
+     *                    information about the fields that were requested by
+     *                    the client
+     * @return a map of requested fields
+     */
+    public static Map<String, List<String>> getRequestedFields(DataFetchingEnvironment environment) {
+        return environment.getSelectionSet().getFields().stream()
+                .collect(Collectors.toMap(
+                        SelectedField::getName,
+                        field -> field.getSelectionSet().getFields().stream()
+                                .map(SelectedField::getName)
+                                .collect(Collectors.toList())));
+    }
 
-        return instance;
+    public static boolean isJoinableField(Root<MediaModel> mediaRoot, String field) {
+        try {
+            return mediaRoot.getModel().getAttribute(field).isAssociation();
+        } catch (IllegalArgumentException e) {
+            return false;
+
+        }
+    }
+
+    public static Pageable getPageable(DataFetchingEnvironment dataFetchingEnvironment) {
+        int page = dataFetchingEnvironment.getArgumentOrDefault("page", 0);
+        int size = dataFetchingEnvironment.getArgumentOrDefault("size", 10);
+        Pageable pageable = PageRequest.of(page, size);
+        return pageable;
     }
 }

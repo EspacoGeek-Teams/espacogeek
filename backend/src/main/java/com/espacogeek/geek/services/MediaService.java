@@ -3,6 +3,11 @@ package com.espacogeek.geek.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.Map;
+
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
@@ -18,7 +23,7 @@ public interface MediaService {
      * @param name The name of the Series (MediaModel) object to find.
      * @return A list of Series (MediaModel) objects that match the provided ID or name.
      */
-    List<MediaModel> findSerieByIdOrName(Integer id, String name);
+    Page<MediaModel> findSerieByIdOrName(Integer id, String name, Pageable pageable);
 
     /**
      * Finds Series (MediaModel) objects by their ID or name.
@@ -28,7 +33,7 @@ public interface MediaService {
      * @param requestedFields The fields to include in the response.
      * @return A list of Series (MediaModel) objects that match the provided ID or name.
      */
-    List<MediaModel> findSerieByIdOrName(Integer id, String name, List<String> requestedFields);
+    List<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields);
 
     /**
      * Finds Game (MediaModel) objects by their ID or name.
@@ -37,7 +42,7 @@ public interface MediaService {
      * @param name The name of the Game (MediaModel) object to find.
      * @return A list of Game (MediaModel) objects that match the provided ID or name.
      */
-    List<MediaModel> findGameByIdOrName(Integer id, String name);
+    Page<MediaModel> findGameByIdOrName(Integer id, String name, Pageable pageable);
 
     /**
      * Saves a MediaModel object to the database.
