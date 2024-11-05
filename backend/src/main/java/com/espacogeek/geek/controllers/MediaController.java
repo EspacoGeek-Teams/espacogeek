@@ -1,14 +1,5 @@
 package com.espacogeek.geek.controllers;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -16,16 +7,15 @@ import org.springframework.stereotype.Controller;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
-import com.espacogeek.geek.data.impl.GenericMediaDataControllerImpl;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
 import com.espacogeek.geek.types.MediaPage;
 import com.espacogeek.geek.utils.Utils;
+import com.espacogeek.geek.exception.GenericException;
 
 import graphql.schema.DataFetchingEnvironment;
-import graphql.schema.SelectedField;
 import jakarta.transaction.Transactional;
 
 @Controller
@@ -42,6 +32,11 @@ public class MediaController {
     private TypeReferenceService typeReferenceService;
     @Autowired
     private MediaCategoryService mediaCategoryService;
+
+    @QueryMapping(name = "media")
+    public MediaModel getMediaById(@Argument Integer id) {
+        return this.mediaService.findById(id).orElseThrow(() -> new GenericException("Media not found"));
+    }
 
     /**
      * Finds Series (MediaModel) objects by their ID or name.
