@@ -2,6 +2,7 @@ package com.espacogeek.geek.repositories;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import com.espacogeek.geek.models.MediaModel;
 
@@ -30,4 +31,7 @@ public interface MediaRepositoryCustom {
             String alternativeTitle,
             Integer category,
             Map<String, List<String>> requestedFields);
+
+            
+    public Optional<MediaModel> findByIdEager(Integer id);
 }

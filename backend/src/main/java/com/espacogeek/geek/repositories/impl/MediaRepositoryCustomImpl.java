@@ -3,6 +3,7 @@ package com.espacogeek.geek.repositories.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,7 @@ import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.repositories.MediaRepositoryCustom;
 import com.espacogeek.geek.utils.Utils;
 
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -73,5 +75,10 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
         }
 
         return entityManager.createQuery(query).getResultList();
+    }
+
+    public Optional<MediaModel> findByIdEager(Integer id) {
+        EntityGraph entityGraph = entityManager.createEntityGraph(MediaModel.class);
+        return Optional.ofNullable(entityManager.createQuery("SELECT m FROM MediaModel m WHERE m.id = " + id, MediaModel.class).setHint("javax.persistence.loadgraph", entityGraph).getSingleResult());
     }
 }

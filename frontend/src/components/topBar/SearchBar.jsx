@@ -8,6 +8,7 @@ import { IconField } from 'primereact/iconfield';
 import { ErrorContext } from "../../contexts/ErrorContext";
 import { DataView } from 'primereact/dataview';
 import { ListBox } from 'primereact/listbox';
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 function SearchBar({ handleClose }) {
@@ -15,12 +16,18 @@ function SearchBar({ handleClose }) {
     const { loading, error, data } = useQuery(searchQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
     const { setErrorMessage } = useContext(ErrorContext);
     const [selectedQuery, setSelectedQuery] = useState({ name: 'TVSerie', code: 'tvserie' });
+    const navigate = useNavigate();
 
     const queries = [
         { name: 'TVSerie', code: 'tvserie' },
         { name: 'Game', code: 'game' },
         { name: 'Visual Novel', code: 'vn' },
     ];
+
+    const handleMediaClick = (id, name) => {
+        handleClose();
+        navigate(`media/${id}/${name}`);
+    };
 
     useEffect(() => {
         if (error) {
@@ -30,7 +37,7 @@ function SearchBar({ handleClose }) {
 
     const itemTemplate = (media) => {
         return (
-            <div className="select-none hover:bg-slate-300/10 rounded-lg cursor-pointer" key={media.id}>
+            <div className="select-none hover:bg-slate-300/10 rounded-lg cursor-pointer" key={media.id} onClick={() => handleMediaClick(media.id, media.name)}>
                 <div className="flex flex-row align-items-start p-4 gap-4">
                     <img className="w-9 sm:w-12 shadow-sm block mx-auto rounded-lg" src={media.cover} alt={media.name} />
                     <div className="flex flex-row justify-content-between align-items-start flex-1 gap-4">

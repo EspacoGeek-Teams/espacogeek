@@ -9,12 +9,7 @@ const router = createBrowserRouter(
         <>
             <Route path="/" element={<Home />} />
             <Route path="recoverPassword" element={<RecoverPassword />} />
-            <Route
-                path="media/:mediaId/:mediaName"
-                element={<Media />}
-                loader={({ params }) => {
-                    
-                }}/>
+            <Route path="media/:mediaId/:mediaName" element={<Media />} />
         </>
     )
 );

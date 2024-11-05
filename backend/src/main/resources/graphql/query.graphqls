@@ -3,5 +3,6 @@ type Query {
     tvserie(id: ID, name: String, page: Int, size: Int): MediaPage
     game(id: ID, name: String, page: Int, size: Int): MediaPage
     vn(id: ID, name: String, page: Int, size: Int): MediaPage
+    media(id: ID): Media
     login: String
 }
