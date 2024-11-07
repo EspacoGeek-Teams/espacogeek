@@ -37,7 +37,7 @@ function SearchBar({ handleClose }) {
 
     const itemTemplate = (media) => {
         return (
-            <div className="select-none hover:bg-slate-300/10 rounded-lg cursor-pointer" key={media.id} onClick={() => handleMediaClick(media.id, media.name)}>
+            <div className="select-none hover:bg-slate-300/10 rounded-lg cursor-pointer" key={media.id} onClick={() => handleMediaClick(media.id, media.name.replace(/\s+/g, '-').toLowerCase())}>
                 <div className="flex flex-row align-items-start p-4 gap-4">
                     <img className="w-9 sm:w-12 shadow-sm block mx-auto rounded-lg" src={media.cover} alt={media.name} />
                     <div className="flex flex-row justify-content-between align-items-start flex-1 gap-4">
@@ -75,7 +75,7 @@ function SearchBar({ handleClose }) {
                         <div className="max-h-96 overflow-y-auto">
                             {data && (
                                 <DataView
-                                    value={data.tvserie.content}
+                                    value={data?.tvserie.content}
                                     itemTemplate={itemTemplate}
                                     className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent"
                                     emptyMessage=" " />

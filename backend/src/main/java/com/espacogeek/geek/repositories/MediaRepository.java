@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
 import com.espacogeek.geek.models.AlternativeTitleModel;
@@ -55,7 +56,7 @@ public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer>, 
             @Param("name") String name,
             @Param("alternativeTitle") String alternativeTitle,
             @Param("category") Integer category,
-            Pageable pageable);
+            @PageableDefault(size = 10, page = 0) Pageable pageable);
 
     /**
      * Find Media by ExternalReference and TypeReference.

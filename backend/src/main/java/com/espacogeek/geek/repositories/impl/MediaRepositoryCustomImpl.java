@@ -1,5 +1,6 @@
 package com.espacogeek.geek.repositories.impl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,10 @@ import com.espacogeek.geek.utils.Utils;
 
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
@@ -77,8 +81,26 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
         return entityManager.createQuery(query).getResultList();
     }
 
+    /**
+     * @see MediaRepositoryCustom#findByIdEager(Integer)
+     */
+    @Override
     public Optional<MediaModel> findByIdEager(Integer id) {
         EntityGraph entityGraph = entityManager.createEntityGraph(MediaModel.class);
-        return Optional.ofNullable(entityManager.createQuery("SELECT m FROM MediaModel m WHERE m.id = " + id, MediaModel.class).setHint("javax.persistence.loadgraph", entityGraph).getSingleResult());
+
+        MediaModel mediaModel = new MediaModel();
+        for (Field field : mediaModel.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            System.out.println("Field: " + field.getName());
+            if (field.isAnnotationPresent(OneToMany.class) || field.isAnnotationPresent(ManyToMany.class)) {
+                entityGraph.addAttributeNodes(field.getName());
+                System.out.println("Eagerly loading: " + field.getName());
+            }
+        }
+
+        TypedQuery<MediaModel> query = entityManager.createQuery("SELECT m FROM MediaModel m WHERE m.id = :id", MediaModel.class);
+        query.setParameter("id", id);
+        query.setHint("javax.persistence.loadgraph", entityGraph);
+        return Optional.ofNullable(query.getSingleResult());
     }
 }

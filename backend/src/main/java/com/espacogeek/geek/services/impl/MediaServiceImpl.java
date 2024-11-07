@@ -102,7 +102,17 @@ public class MediaServiceImpl implements MediaService {
      * @see MediaService#findByReferenceAndTypeReference(ExternalReferenceModel, TypeReferenceModel)
      */
     @Override
-    public Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference, TypeReferenceModel typeReference) {
-        return this.mediaRepository.findOneMediaByExternalReferenceAndTypeReference(reference.getReference(), typeReference);
+    public Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference,
+            TypeReferenceModel typeReference) {
+        return this.mediaRepository.findOneMediaByExternalReferenceAndTypeReference(reference.getReference(),
+                typeReference);
+    }
+
+        /**
+     * @see MediaService#findByIdEager(Integer)
+     */
+    @Override
+    public Optional<MediaModel> findByIdEager(Integer id) {
+        return this.mediaRepository.findByIdEager(id);
     }
 }

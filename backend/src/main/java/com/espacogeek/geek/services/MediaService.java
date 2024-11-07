@@ -75,4 +75,6 @@ public interface MediaService {
      * @return a Optional MediaModel
      */
     Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference, TypeReferenceModel typeReferenceModel);
+
+    Optional<MediaModel> findByIdEager(Integer id);
 }

@@ -32,6 +32,6 @@ public interface MediaRepositoryCustom {
             Integer category,
             Map<String, List<String>> requestedFields);
 
-            
+    
     public Optional<MediaModel> findByIdEager(Integer id);
 }

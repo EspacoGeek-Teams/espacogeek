@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
@@ -67,6 +69,7 @@ public class MediaModel implements Serializable {
     private MediaCategoryModel mediaCategory;
 
     @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     @NotNull
     private List<ExternalReferenceModel> externalReference;
 
@@ -75,6 +78,7 @@ public class MediaModel implements Serializable {
         name = "medias_has_companies",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "companies_id_company"))
+    @Fetch(FetchMode.SUBSELECT)
     private List<CompanyModel> company;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -82,6 +86,7 @@ public class MediaModel implements Serializable {
         name = "medias_has_people",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "people_id_person"))
+    @Fetch(FetchMode.SUBSELECT)
     private List<PeopleModel> people;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -89,11 +94,8 @@ public class MediaModel implements Serializable {
         name = "medias_has_genres",
         joinColumns = @JoinColumn(name = "medias_id_media"),
         inverseJoinColumns = @JoinColumn(name = "genres_id_genre"))
+    @Fetch(FetchMode.SUBSELECT)
     private List<GenreModel> genre;
-
-    @OneToMany(mappedBy = "media")
-    @Transient
-    private List<UserLibraryModel> userLibrary;
 
     @Column(name = "update_at")
     @UpdateTimestamp
@@ -101,8 +103,10 @@ public class MediaModel implements Serializable {
     private Date updateAt;
 
     @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     private List<AlternativeTitleModel> alternativeTitles;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "media", orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
     private List<SeasonModel> season;
 }

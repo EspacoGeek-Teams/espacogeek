@@ -35,7 +35,7 @@ public class MediaController {
 
     @QueryMapping(name = "media")
     public MediaModel getMediaById(@Argument Integer id) {
-        return this.mediaService.findById(id).orElseThrow(() -> new GenericException("Media not found"));
+        return this.mediaService.findByIdEager(id).orElseThrow(() -> new GenericException("Media not found"));
     }
 
     /**
