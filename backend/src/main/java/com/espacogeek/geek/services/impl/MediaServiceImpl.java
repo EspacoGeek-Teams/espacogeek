@@ -1,5 +1,8 @@
 package com.espacogeek.geek.services.impl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.espacogeek.geek.data.MediaDataController;
+import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
@@ -20,6 +24,10 @@ import com.espacogeek.geek.repositories.MediaRepository;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.utils.Utils;
+
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.transaction.Transactional;
 
 /**
  * A Implementation class of MediaService @see MediaService
@@ -58,11 +66,13 @@ public class MediaServiceImpl implements MediaService {
             return (Page<MediaModel>) this.mediaRepository.findById(id).orElseGet(null);
         }
 
-        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), pageable);
+        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
+                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), pageable);
     }
 
     /**
-     * @see MediaService#findSerieByIdOrName(Integer, String, Map<String, List<String>>)
+     * @see MediaService#findSerieByIdOrName(Integer, String, Map<String,
+     *      List<String>>)
      */
     @Override
     public List<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields) {
@@ -73,7 +83,8 @@ public class MediaServiceImpl implements MediaService {
             return medias;
         }
 
-        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), requestedFields);
+        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
+                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), requestedFields);
 
         return results;
     }
@@ -87,7 +98,8 @@ public class MediaServiceImpl implements MediaService {
             return (Page<MediaModel>) this.mediaRepository.findById(id).orElseGet(null);
         }
 
-        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.GAME_ID).get().getId(), pageable);
+        return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
+                mediaCategoryService.findById(MediaDataController.GAME_ID).get().getId(), pageable);
     }
 
     /**
@@ -99,7 +111,8 @@ public class MediaServiceImpl implements MediaService {
     }
 
     /**
-     * @see MediaService#findByReferenceAndTypeReference(ExternalReferenceModel, TypeReferenceModel)
+     * @see MediaService#findByReferenceAndTypeReference(ExternalReferenceModel,
+     *      TypeReferenceModel)
      */
     @Override
     public Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference,
@@ -108,11 +121,45 @@ public class MediaServiceImpl implements MediaService {
                 typeReference);
     }
 
-        /**
+    /**
      * @see MediaService#findByIdEager(Integer)
      */
+    @SuppressWarnings("unchecked")
     @Override
+    @Transactional
     public Optional<MediaModel> findByIdEager(Integer id) {
-        return this.mediaRepository.findByIdEager(id);
+        var fieldList = new ArrayList<Field>();
+        MediaModel media = (MediaModel) mediaRepository.findById(id).orElseGet(null);
+        if (media == null) return Optional.empty();
+
+        for (Field field : media.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(OneToMany.class) || field.isAnnotationPresent(ManyToMany.class)) {
+                fieldList.add(field);
+            }
+        }
+
+        for (Field field : fieldList) {
+            try {
+                String getterName = "get" + capitalize(field.getName());
+                Method getter = media.getClass().getMethod(getterName);
+                var fieldValue = getter.invoke(media);
+                if (fieldValue instanceof List) {
+                    ((List<?>) fieldValue).size(); // This will initialize the collection
+                }
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return Optional.ofNullable(media);
+    }
+
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
+
     }
 }

@@ -33,6 +33,13 @@ public class MediaController {
     @Autowired
     private MediaCategoryService mediaCategoryService;
 
+    /**
+     * Finds a MediaModel object by its ID.
+     *
+     * @param id The ID of the MediaModel object to find.
+     * @return The MediaModel object that matches the provided ID.
+     * @throws GenericException if the MediaModel object is not found.
+     */
     @QueryMapping(name = "media")
     public MediaModel getMediaById(@Argument Integer id) {
         return this.mediaService.findByIdEager(id).orElseThrow(() -> new GenericException("Media not found"));

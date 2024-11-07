@@ -76,5 +76,10 @@ public interface MediaService {
      */
     Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference, TypeReferenceModel typeReferenceModel);
 
+    /**
+     * Find any media by ID (PK) provided with eager loading.
+     * @param idMedia the ID (PK) of the media.
+     * @return return a Optional Media.
+     */
     Optional<MediaModel> findByIdEager(Integer id);
 }

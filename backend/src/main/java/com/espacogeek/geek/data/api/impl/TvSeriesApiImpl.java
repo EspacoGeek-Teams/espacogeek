@@ -158,7 +158,6 @@ public class TvSeriesApiImpl implements MediaApi {
                 null,
                 formatGenre(rawSerieDetails.getGenres()),
                 null,
-                null,
                 formatAlternativeTitles(rawSerieDetails.getAlternativeTitles().getResults()),
                 formatSeason(rawSerieDetails.getSeasons()));
 

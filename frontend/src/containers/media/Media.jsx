@@ -12,7 +12,8 @@ export default function Media() {
         <>
             <TopBar />
             <div>
-                <image src={data?.media.banner} alt={data?.media.name} />
+                <div className={`w-full h-96 bg-cover bg-no-repeat bg-[50%_35%]`} style={{ backgroundImage: `url(${data?.media.banner})` }}></div>
+                {/* <img src={data?.media.banner} alt={data?.media.name} className={`h-96 bg-cover bg-no-repeat bg-[50%_35%]`} /> */}
             </div>
         </>
     );

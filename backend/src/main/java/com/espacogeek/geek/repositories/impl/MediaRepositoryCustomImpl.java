@@ -1,6 +1,8 @@
 package com.espacogeek.geek.repositories.impl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,8 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
     private EntityManager entityManager;
 
     /**
-     * @see MediaRepositoryCustom#findMediaByNameOrAlternativeTitleAndMediaCategory(String, String, Integer, Map)
+     * @see MediaRepositoryCustom#findMediaByNameOrAlternativeTitleAndMediaCategory(String,
+     *      String, Integer, Map)
      */
     @Override
     public List<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
@@ -79,28 +82,5 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
         }
 
         return entityManager.createQuery(query).getResultList();
-    }
-
-    /**
-     * @see MediaRepositoryCustom#findByIdEager(Integer)
-     */
-    @Override
-    public Optional<MediaModel> findByIdEager(Integer id) {
-        EntityGraph entityGraph = entityManager.createEntityGraph(MediaModel.class);
-
-        MediaModel mediaModel = new MediaModel();
-        for (Field field : mediaModel.getClass().getDeclaredFields()) {
-            field.setAccessible(true);
-            System.out.println("Field: " + field.getName());
-            if (field.isAnnotationPresent(OneToMany.class) || field.isAnnotationPresent(ManyToMany.class)) {
-                entityGraph.addAttributeNodes(field.getName());
-                System.out.println("Eagerly loading: " + field.getName());
-            }
-        }
-
-        TypedQuery<MediaModel> query = entityManager.createQuery("SELECT m FROM MediaModel m WHERE m.id = :id", MediaModel.class);
-        query.setParameter("id", id);
-        query.setHint("javax.persistence.loadgraph", entityGraph);
-        return Optional.ofNullable(query.getSingleResult());
     }
 }
