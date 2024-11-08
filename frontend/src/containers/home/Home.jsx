@@ -5,7 +5,7 @@ import { useEffect } from "react";
 
 function Home() {
     useEffect(() => {
-        document.title = "Home - Espaço Geek";
+        document.title = "Home - EspaçoGeek";
     }, []);
 
     return (

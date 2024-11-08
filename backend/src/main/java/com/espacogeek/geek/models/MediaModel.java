@@ -68,7 +68,7 @@ public class MediaModel implements Serializable {
     @NotNull
     private MediaCategoryModel mediaCategory;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     @NotNull
     private List<ExternalReferenceModel> externalReference;
@@ -102,11 +102,11 @@ public class MediaModel implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updateAt;
 
-    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "media", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
     private List<AlternativeTitleModel> alternativeTitles;
 
-    @OneToMany(mappedBy = "media", orphanRemoval = true)
+    @OneToMany(mappedBy = "media")
     @Fetch(FetchMode.SUBSELECT)
     private List<SeasonModel> season;
 }

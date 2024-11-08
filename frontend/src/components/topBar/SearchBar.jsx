@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useQuery } from '@apollo/client';
-import searchQuery from '../apollo/schemas/queries/tvserieSearch';
+import searchTvSerieQuery from '../apollo/schemas/queries/tvserieSearch';
+import searchGameQuery from '../apollo/schemas/queries/gameSearch';
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { InputIcon } from 'primereact/inputicon';
@@ -13,10 +14,10 @@ import { useNavigate } from "react-router-dom";
 // eslint-disable-next-line react/prop-types
 function SearchBar({ handleClose }) {
     const [value, setValue] = useState('');
-    const { loading, error, data } = useQuery(searchQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
     const { setErrorMessage } = useContext(ErrorContext);
     const [selectedQuery, setSelectedQuery] = useState({ name: 'TVSerie', code: 'tvserie' });
     const navigate = useNavigate();
+    const { loading, error, data } = useQuery( selectedQuery?.code === 'tvserie' ? searchTvSerieQuery : searchGameQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
 
     const queries = [
         { name: 'TVSerie', code: 'tvserie' },
@@ -79,7 +80,7 @@ function SearchBar({ handleClose }) {
                         <div className="max-h-96 overflow-y-auto">
                             {data && (
                                 <DataView
-                                    value={data?.tvserie.content}
+                                    value={data?.[selectedQuery?.code].content}
                                     itemTemplate={itemTemplate}
                                     className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent"
                                     emptyMessage=" " />
