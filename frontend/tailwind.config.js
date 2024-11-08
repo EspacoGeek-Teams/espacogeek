@@ -1,16 +1,20 @@
 /** @type {import('tailwindcss').Config} */
-import plugin from 'tailwindcss/plugin';
+import plugin from "tailwindcss/plugin";
 
 export const content = ["./src/**/*.{js,jsx,ts,tsx}"];
 export const theme = {
-    extend: {},
+    extend: {
+        colors: {
+            mainBgColor: "#101316",
+        },
+    },
 };
 export const plugins = [
-    plugin(function({ addVariant }) {
-        addVariant('children', '& > *');
+    plugin(function ({ addVariant }) {
+        addVariant("children", "& > *");
     }),
-    plugin(function({ addVariant }) {
-        addVariant('childrens', '& _ * _');
+    plugin(function ({ addVariant }) {
+        addVariant("childrens", "& _ * _");
     }),
 
     plugin(function ({ addVariant, e, postcss }) {

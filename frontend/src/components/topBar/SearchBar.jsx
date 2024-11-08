@@ -25,8 +25,12 @@ function SearchBar({ handleClose }) {
     ];
 
     const handleMediaClick = (id, name) => {
-        handleClose();
-        navigate(`media/${id}/${name}`);
+        if (window.location.pathname.startsWith('/media')) {
+            window.location.href = `/media/${id}/${name}`;
+        } else {
+            handleClose();
+            navigate(`media/${id}/${name}`);
+        }
     };
 
     useEffect(() => {

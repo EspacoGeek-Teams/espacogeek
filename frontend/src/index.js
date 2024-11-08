@@ -21,7 +21,7 @@ root.render(
             <SuccessProvider>
                 <ApolloProvider client={ClientAPI}>
                     <PrimeReactProvider value={primeReactConfig}>
-                        <main id="rootElement" data-bs-theme="dark">
+                        <main id="rootElement" data-bs-theme="dark" className="h-screen w-screen">
                             <RouterProvider router={routes} />
                             <ErrorNotification />
                             <SuccessNotification />
