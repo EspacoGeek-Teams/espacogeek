@@ -105,7 +105,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
                     media.setCover(
                             !"".equals(result.getCover().getImageId())
                                     ? ImageBuilderKt.imageBuilder(result.getCover().getImageId(),
-                                            ImageSize.SCREENSHOT_HUGE, ImageType.PNG)
+                                            ImageSize.COVER_BIG, ImageType.PNG)
                                     : null);
                     media.setBanner(result.getArtworksList().isEmpty() ? null
                             : ImageBuilderKt.imageBuilder(result.getArtworksList().getFirst().getImageId(),
@@ -116,7 +116,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
                         if (!title.getName().equals("")) alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
                     }
                     media.setAlternativeTitles(alternativeTitles);
-                    media.setExternalReference(Arrays.asList(reference));
+                    media.setExternalReference(new ArrayList<>(Arrays.asList(reference)));
                     media.setMediaCategory(category);
                 }
             }
@@ -146,7 +146,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
                     media.setCover(
                             !"".equals(result.getGame().getCover().getImageId())
                                     ? ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(),
-                                            ImageSize.SCREENSHOT_HUGE, ImageType.PNG)
+                                            ImageSize.COVER_BIG, ImageType.PNG)
                                     : null);
                     media.setBanner(result.getGame().getArtworksList().isEmpty() ? null
                             : ImageBuilderKt.imageBuilder(result.getGame().getArtworksList().getFirst().getImageId(),
@@ -157,7 +157,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
                         if (!title.getName().equals("")) alternativeTitles.add(new AlternativeTitleModel(null, title.getName(), media));
                     }
                     media.setAlternativeTitles(alternativeTitles);
-                    media.setExternalReference(Arrays.asList(reference));
+                    media.setExternalReference(new ArrayList<>(Arrays.asList(reference)));
 
                     media.setMediaCategory(category);
 

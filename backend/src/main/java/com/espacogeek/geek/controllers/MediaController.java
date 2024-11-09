@@ -1,5 +1,7 @@
 package com.espacogeek.geek.controllers;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -42,7 +44,21 @@ public class MediaController {
      */
     @QueryMapping(name = "media")
     public MediaModel getMediaById(@Argument Integer id) {
-        return this.mediaService.findByIdEager(id).orElseThrow(() -> new GenericException("Media not found"));
+        var media = this.mediaService.findByIdEager(id).orElseThrow(() -> new GenericException("Media not found"));
+
+        switch (media.getMediaCategory().getId()) {
+            case MediaDataController.GAME_ID:
+            case MediaDataController.VN_ID:
+                return Utils
+                        .updateGenericMedia(Arrays.asList(media), genericMediaDataController,
+                                typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI)
+                        .getFirst();
+
+            case MediaDataController.SERIE_ID:
+                return Utils.updateMedia(Arrays.asList(media), serieController).getFirst();
+        }
+
+        return media;
     }
 
     /**
@@ -83,6 +99,7 @@ public class MediaController {
      *         name.
      */
     @QueryMapping(name = "game")
+    @Transactional
     public MediaPage getGame(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
         MediaPage response = new MediaPage();
         name = name == null ? null : name.trim();

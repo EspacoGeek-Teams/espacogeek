@@ -10,6 +10,7 @@ import { ErrorContext } from "../../contexts/ErrorContext";
 import { DataView } from 'primereact/dataview';
 import { ListBox } from 'primereact/listbox';
 import { useNavigate } from "react-router-dom";
+import { Dropdown } from 'primereact/dropdown';
 
 // eslint-disable-next-line react/prop-types
 function SearchBar({ handleClose }) {
@@ -17,7 +18,7 @@ function SearchBar({ handleClose }) {
     const { setErrorMessage } = useContext(ErrorContext);
     const [selectedQuery, setSelectedQuery] = useState({ name: 'TVSerie', code: 'tvserie' });
     const navigate = useNavigate();
-    const { loading, error, data } = useQuery( selectedQuery?.code === 'tvserie' ? searchTvSerieQuery : searchGameQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
+    const { loading, error, data } = useQuery(selectedQuery?.code === 'tvserie' ? searchTvSerieQuery : searchGameQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
 
     const queries = [
         { name: 'TVSerie', code: 'tvserie' },
@@ -58,8 +59,9 @@ function SearchBar({ handleClose }) {
     return (
         <>
             <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center flex-col gap-6">
-                <div className="flex items-start gap-5">
-                    <ListBox value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name" className="w-36" style={{ backgroundColor: 'transparent' }} />
+                <div className="flex items-start gap-5 flex-col md:flex-row">
+                    <Dropdown value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name"  className="w-full md:w-14rem md:hidden" />
+                    <ListBox value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name" className="w-36 hidden md:block" style={{ backgroundColor: 'transparent' }} />
                     <div className="flex flex-col items-center gap-2">
                         <div className="flex items-center">
                             <IconField iconPosition="left">

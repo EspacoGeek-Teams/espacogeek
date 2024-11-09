@@ -95,8 +95,6 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         media.setCover(rawArtwork.getCover());
         media.setBanner(rawArtwork.getBanner());
 
-        mediaService.save(media);
-
         return media;
     }
 
@@ -186,7 +184,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
         rawGenres.forEach((rawGenre) -> {
             if (media.getGenre().stream().noneMatch((genre) -> genre.getId().equals(rawGenre.getId()))) {
-                rawGenre.setMedias(Arrays.asList(media));
+                rawGenre.setMedias(new ArrayList<>(Arrays.asList(media)));
                 media.getGenre().add(rawGenre);
             }
         });
@@ -239,10 +237,12 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
                 media = mediaSearch;
 
                 if (media != null) {
-                    updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
-                    updateArtworks(media, mediaSearch, typeReference, mediaApi);
                     updateExternalReferences(media, mediaSearch, typeReference, mediaApi);
                     updateAlternativeTitles(media, mediaSearch, typeReference, mediaApi);
+                    updateArtworks(media, mediaSearch, typeReference, mediaApi);
+                    updateBasicAttributes(media, mediaSearch, typeReference, mediaApi);
+
+                    mediaService.save(media);
                 }
 
                 result.add(media);

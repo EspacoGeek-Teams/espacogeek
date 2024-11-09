@@ -13,15 +13,15 @@ import com.espacogeek.geek.models.TypeReferenceModel;
 
 public interface MediaDataController {
     // External references
-    public static final Integer TMDB_ID = 1;
-    public static final Integer TVDB_ID = 2;
-    public static final Integer IMDB_ID = 3;
-    public static final Integer IGDB_ID = 4;
+    public static final int TMDB_ID = 1;
+    public static final int TVDB_ID = 2;
+    public static final int IMDB_ID = 3;
+    public static final int IGDB_ID = 4;
 
     // Media Type references
-    public static final Integer SERIE_ID = 1;
-    public static final Integer GAME_ID = 2;
-    public static final Integer VN_ID = 3;
+    public static final int SERIE_ID = 1;
+    public static final int GAME_ID = 2;
+    public static final int VN_ID = 3;
 
     /**
      * This method update all information from provide <code>MediaModel</code>.
