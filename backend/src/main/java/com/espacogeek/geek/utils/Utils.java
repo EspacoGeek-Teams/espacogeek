@@ -1,5 +1,6 @@
 package com.espacogeek.geek.utils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -16,12 +17,15 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
+import com.espacogeek.geek.exception.GenericException;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
@@ -29,6 +33,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.TupleElement;
 import jakarta.persistence.criteria.Root;
 
 public abstract class Utils {
@@ -241,6 +247,13 @@ public abstract class Utils {
                                 .collect(Collectors.toList())));
     }
 
+    /**
+     * Checks if a given field is a joinable field in the media entity.
+     *
+     * @param mediaRoot the root of the media entity
+     * @param field     the field to check
+     * @return true if the field is joinable, false otherwise
+     */
     public static boolean isJoinableField(Root<MediaModel> mediaRoot, String field) {
         try {
             return mediaRoot.getModel().getAttribute(field).isAssociation();
@@ -250,10 +263,67 @@ public abstract class Utils {
         }
     }
 
+    /**
+     * Returns a Pageable object based on the "page" and "size" arguments of the
+     * given DataFetchingEnvironment.
+     * <p>
+     * If the "page" argument is not provided, it defaults to 0. If the "size"
+     * argument is not provided, it defaults to 10.
+     * <p>
+     * The returned Pageable object can be used to construct a JPA query that
+     * will return the requested page of data.
+     * <p>
+     *
+     * @param dataFetchingEnvironment the DataFetchingEnvironment that contains
+     *                                the "page" and "size" arguments
+     * @return a Pageable object
+     */
     public static Pageable getPageable(DataFetchingEnvironment dataFetchingEnvironment) {
         int page = dataFetchingEnvironment.getArgumentOrDefault("page", 0);
         int size = dataFetchingEnvironment.getArgumentOrDefault("size", 10);
         Pageable pageable = PageRequest.of(page, size);
         return pageable;
+    }
+
+    /**
+     * Creates an instance of the given class, using the given tuple to populate its fields.
+     * <p>
+     * This method is used to convert a Tuple object returned by a JPA query into a
+     * custom object. The Tuple object is expected to have the same fields as the
+     * class provided, and the fields must have the same name.
+     * <p>
+     * If any of the fields are not present in the tuple, or if any of the fields are
+     * not accessible, a GenericException is thrown.
+     * <p>
+     * The method returns the populated instance of the class.
+     * <p>
+     *
+     * @param tuple the tuple to use to populate the object
+     * @param clazz the class to instantiate and populate
+     * @return the populated instance of the class
+     * @throws GenericException if any of the fields are not present in the tuple, or if any of the
+     *                           fields are not accessible
+     */
+    public static <T> T fromTuple(Tuple tuple, Class<T> clazz) {
+        try {
+            Constructor<T> constructor = clazz.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            T instance = constructor.newInstance();
+            for (TupleElement<?> element : tuple.getElements()) {
+                try {
+                    Field field = clazz.getDeclaredField(element.getAlias());
+                    field.setAccessible(true);
+                    field.set(instance, tuple.get(element.getAlias()));
+                } catch (NoSuchFieldException | IllegalAccessException e) {
+                    e.printStackTrace();
+                    // throw new GenericException(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+                }
+            }
+            return instance;
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+            // throw new GenericException(HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        }
+        return null;
     }
 }
