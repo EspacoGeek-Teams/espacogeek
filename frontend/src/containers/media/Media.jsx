@@ -11,6 +11,7 @@ import { GlobalLoadingContext } from "../../contexts/GlobalLoadingContext";
 import { ScrollPanel } from 'primereact/scrollpanel';
 import YouTube from "../../components/youTubeEmbed/YouTubeEmbed";
 import { Timeline } from 'primereact/timeline';
+import { Divider } from 'primereact/divider';
 
 export default function Media() {
     const { mediaId } = useParams();
@@ -30,10 +31,11 @@ export default function Media() {
     }, [data?.media.name]);
 
     function convertDateFormat(dateString) {
+        if (!dateString) return '';
         const date = dateString.split(/\s+/g)[0];
         const parts = date.replace(/-/g, '/').replace('00:00:00.0', '').replace(/\s+/g, '').split('/');
         if (parts.length !== 3) {
-            throw new Error("Invalid date format. Expected format: YYYY/MM/DD");
+            return '';
         }
         const [year, month, day] = parts;
         return `${day}/${month}/${year}`;
@@ -49,10 +51,24 @@ export default function Media() {
 
     const sessonContent = (item) => {
         return (
-            <>
-                <p>{convertDateFormat(item?.airDate)}</p>
-                {item.cover && <img src={item?.cover} width={200} className="shadow-1" />}
-            </>
+            <div className="mr-8 md:mr-0">
+                <Divider align="center" className="[&>.p-divider-content]:bg-mainBgColor before:border-solid before:border-t-[1px] before:border-[#e5e7eb] -mt-1 hidden md:inline-flex">
+                    <div className="inline-flex align-items-center">
+                        <b>{item?.airDate ? convertDateFormat(item?.airDate).split('/')[2] : 'TBA'}</b>
+                    </div>
+                </Divider>
+                <div className="md:hidden flex flex-col -mt-3">
+                    <strong>{item?.airDate ? convertDateFormat(item?.airDate).split('/')[2] : 'TBA'}</strong>
+                    <p>{item?.name}</p>
+                </div>
+                <p className="text-center -mt-5 hidden md:block">{item?.name}</p>
+                <div className="hidden md:block">
+                    {item.cover && <Image src={item?.cover} alt={data?.media.name} width="200" className="[&>_img]:rounded-md shadow-1 mr-6 md:mr-0" preview />}
+                </div>
+                <div className="block md:hidden">
+                    {item.cover && <Image src={item?.cover} alt={data?.media.name} className="[&>_img]:rounded-md shadow-1 w-36" preview />}
+                </div>
+            </div>
         );
     };
 
@@ -70,7 +86,7 @@ export default function Media() {
             <div className="relative top-24 pl-0 flex gap-5 flex-col items-center md:pl-28 md:flex-row md:justify-start">
                 <div className="w-56">
                     <Skeleton width="100%" height="14rem" className="rounded-lg shadow-2xl" hidden={!loading} />
-                    <Image src={data?.media.cover} alt={data?.media.name} width="250" preview />
+                    <Image src={data?.media.cover} alt={data?.media.name} width="250" className="[&>_img]:rounded-md shadow-2xl" preview />
                 </div>
                 <div className="flex gap-1 flex-col items-center md:items-start">
                     <div className="md:pt-10 w-25 md:w-[30rem]">
@@ -90,7 +106,7 @@ export default function Media() {
                     </div>
                 </div>
             </div>
-            <div className="relative flex flex-col md:flex-row items-center md:pl-28 pt-28 md:items-start gap-5">
+            <div className="relative flex flex-col-reverse md:flex-row items-center md:pl-28 pt-28 md:items-start gap-5">
                 <Card className="w-80 md:w-56 bg-slate-700 bg-opacity-15 border-none shadow-lg">
                     <div className="flex w-full h-full flex-col gap-4 p-0 m-0">
                         <div>
@@ -105,6 +121,12 @@ export default function Media() {
                             <p className="text-1x1 font-bold">Genres</p>
                             {data?.media?.genre.slice(0, -1).map(genre => genre?.name).join(", ")}
                             {data?.media?.genre.length > 1 ? ` and ${data?.media?.genre[data?.media?.genre.length - 1].name}` : data?.media?.genre[0]?.name}
+                        </div>
+                        <div className={data?.media?.season === null ? "hidden" : ""}>
+                            <Skeleton width="70%" height="1rem" hidden={!loading} />
+                            <Skeleton width="5rem" height="0.5rem" className="mb-2 mt-2" hidden={!loading} />
+                            <p className="text-1x1 font-bold">Total Seasons</p>
+                            <p className="pt-2">{data?.media?.season.length}</p>
                         </div>
                         <div className={data?.media?.totalEpisodes === null ? "hidden" : ""}>
                             <Skeleton width="70%" height="1rem" hidden={!loading} />
@@ -127,18 +149,36 @@ export default function Media() {
                         </div>
                     </div>
                 </Card>
-                {data?.media?.externalReference?.filter(reference => reference.typeReference.nameReference === 'YouTube')[0]?.reference &&
-                    <div className="h-full w-1/2">
-                        <Skeleton width="100%" height="20rem" className="rounded-lg m-0 p-0" hidden={!loading} />
-                        <div hidden={loading}>
-                            <YouTube videoId={data?.media?.externalReference?.filter(reference => reference.typeReference.nameReference === 'YouTube')[0]?.reference} />
-                        </div>
-                    </div>
-                }
-                {console.log(data?.media?.season)}
+                <div className="h-full w-72 md:w-1/2">
+                    {data?.media?.externalReference?.filter(reference => reference.typeReference.nameReference === 'YouTube')[0]?.reference &&
+                        <>
+                            <Skeleton width="100%" height="20rem" className="rounded-lg m-0 p-0" hidden={!loading} />
+                            <div hidden={loading}>
+                                <YouTube videoId={data?.media?.externalReference?.filter(reference => reference.typeReference.nameReference === 'YouTube')[0]?.reference} />
+                            </div>
+                        </>
+                    }
+                </div>
                 {data?.media?.season &&
                     <div className="h-full w-72">
-                        <Timeline value={data?.media?.season} align="alternate" className="customized-timeline" marker={seasonMarker} content={sessonContent} />
+                        <ScrollPanel className="w-full md:h-[34rem] hidden md:block">
+                            <Timeline
+                                value={data?.media?.season}
+                                align="alternate"
+                                layout="vertical"
+                                className="customized-timeline"
+                                marker={seasonMarker}
+                                content={sessonContent} />
+                        </ScrollPanel>
+                        <ScrollPanel className="md:h-[34rem] md:hidden">
+                            <Timeline
+                                value={data?.media?.season}
+                                align="top"
+                                layout="horizontal"
+                                className="customized-timeline"
+                                marker={seasonMarker}
+                                content={sessonContent} />
+                        </ScrollPanel>
                     </div>}
             </div>
             <Footer />

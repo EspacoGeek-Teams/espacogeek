@@ -342,9 +342,11 @@ public class TvSeriesApiImpl implements MediaApi {
         rawSeasons.forEach((rawSeason) -> {
             try {
                 seasons.add(new SeasonModel(null, rawSeason.getName(),
-                        new SimpleDateFormat("yyyy-MM-dd").parse(rawSeason.getAirDate()),
+                        rawSeason.getAirDate() == null ? null : new SimpleDateFormat("yyyy-MM-dd").parse(rawSeason.getAirDate()),
                         null,
-                        rawSeason.getPosterPath() == null ? null : rawSeason.getOverview(), URL_IMAGE_TMDB + rawSeason.getPosterPath(), rawSeason.getSeasonNumber(),
+                        rawSeason.getOverview(),
+                        rawSeason.getPosterPath() == null ? null : URL_IMAGE_TMDB + rawSeason.getPosterPath(),
+                        rawSeason.getSeasonNumber(),
                         rawSeason.getEpisodeCount(),
                         null));
             } catch (java.text.ParseException e) {
