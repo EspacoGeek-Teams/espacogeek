@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import signInMutation from "../apollo/schemas/mutations/signInUser";
 import { Dialog } from "primereact/dialog";
@@ -9,6 +9,7 @@ import { Button } from "primereact/button";
 import { Password } from 'primereact/password';
 import { ErrorContext } from "../../contexts/ErrorContext";
 import { SuccessContext } from "../../contexts/SuccessContext";
+import { GlobalLoadingContext } from "../../contexts/GlobalLoadingContext";
 import * as Yup from 'yup';
 
 // eslint-disable-next-line react/prop-types
@@ -17,6 +18,7 @@ function SignIn({ show, handleClose }) {
     const [newUser, { loading }] = useMutation(signInMutation);
     const { setErrorMessage } = useContext(ErrorContext);
     const { setSuccessMessage } = useContext(SuccessContext);
+    const { setGlobalLoading } = useContext(GlobalLoadingContext);
 
     async function handleSubmit(values) {
         try {
@@ -61,6 +63,10 @@ function SignIn({ show, handleClose }) {
         validationSchema: validation,
     });
 
+    useEffect(() => {
+        setGlobalLoading(loading);
+    }, [loading]);
+
     return (
         <>
             <Dialog
@@ -69,7 +75,7 @@ function SignIn({ show, handleClose }) {
                 closable={!loading}
                 onHide={handleClose}
                 content={() => (
-                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-slate-700 rounded-xl">
+                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-slate-700 rounded-xl backdrop-blur-sm">
                         <h1 className="select-none p-3 font-bold">EG</h1>
                         <form className="flex gap-7 flex-col p-4" onSubmit={formik.handleSubmit}>
                             <div className={"flex flex-col " + (formik.errors.email ? cssInvalid : "")}>

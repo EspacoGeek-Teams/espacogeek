@@ -1,5 +1,5 @@
 import React from "react";
-import TopBar from "../../components/topBar/TopBar";
+import { TopBar, Footer } from "../../components/layout/Layout";
 
 export default function RecoverPassword() {
 
@@ -7,9 +7,8 @@ export default function RecoverPassword() {
     return (
         <>
             <TopBar />
-
-
             <h1>Abigail</h1>
+            <Footer/>
         </>
     );
 }

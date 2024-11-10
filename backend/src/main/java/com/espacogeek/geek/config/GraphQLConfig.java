@@ -7,7 +7,7 @@ import com.espacogeek.geek.exception.resolver.GenericExeptionResolver;
 
 @Configuration
 public class GraphQLConfig {
-    // Habilita mensagem de erro personalizado
+
     public DataFetcherExceptionResolver customGraphQLExceptionResolver() {
         return new GenericExeptionResolver();
     }

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.GZIPInputStream;
 
 import org.json.simple.JSONArray;
@@ -33,6 +34,7 @@ import com.espacogeek.geek.services.TypeReferenceService;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbTvSeries;
+import info.movito.themoviedbapi.model.authentication.Session;
 import info.movito.themoviedbapi.model.core.AlternativeTitle;
 import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.keywords.Keyword;
@@ -43,6 +45,7 @@ import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
 import info.movito.themoviedbapi.tools.appendtoresponse.TvSeriesAppendToResponse;
 import jakarta.annotation.PostConstruct;
+import lombok.var;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -84,19 +87,23 @@ public class TvSeriesApiImpl implements MediaApi {
         var now = LocalDateTime.now();
 
         // formatting the date to do request as tmdb pattern
-        var month = String.valueOf(now.getMonth().getValue()).length() == 1 ? "0".concat(String.valueOf(now.getMonth().getValue())) : now.getMonth().getValue();
-        var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? "0".concat(String.valueOf(now.getDayOfMonth())) : now.getDayOfMonth();
+        var month = String.valueOf(now.getMonth().getValue()).length() == 1
+                ? "0".concat(String.valueOf(now.getMonth().getValue()))
+                : now.getMonth().getValue();
+        var day = String.valueOf(now.getDayOfMonth()).length() == 1 ? "0".concat(String.valueOf(now.getDayOfMonth()))
+                : now.getDayOfMonth();
         var year = String.valueOf(now.getYear()).replace(".", "");
 
         var client = new OkHttpClient().newBuilder().build();
         Request request = null;
         try {
             request = new Request.Builder()
-                .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz", month,
-                        day, year))
-                .method("GET", null)
-                .addHeader("Content-Type", "application/json")
-                .build();
+                    .url(MessageFormat.format("http://files.tmdb.org/p/exports/tv_series_ids_{0}_{1}_{2}.json.gz",
+                            month,
+                            day, year))
+                    .method("GET", null)
+                    .addHeader("Content-Type", "application/json")
+                    .build();
         } catch (Exception e) {
             throw new com.espacogeek.geek.exception.RequestException("");
         }
@@ -139,29 +146,46 @@ public class TvSeriesApiImpl implements MediaApi {
     public MediaModel getDetails(Integer id) {
         TvSeriesDb rawSerieDetails = new TvSeriesDb();
         try {
-            rawSerieDetails = api.getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES);
+            rawSerieDetails = api.getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES, TvSeriesAppendToResponse.VIDEOS);
         } catch (TmdbException e) {
             throw new com.espacogeek.geek.exception.RequestException("");
         }
 
+        var season = formatSeason(rawSerieDetails.getSeasons());
+        var trailer = getTrailer(rawSerieDetails);
+        var externalReferences = formatExternalReference(rawSerieDetails.getExternalIds(), rawSerieDetails.getId());
+
+        if (trailer != null) externalReferences.add(trailer);
+
         MediaModel serie = new MediaModel(
                 null,
                 rawSerieDetails.getName(),
-                rawSerieDetails.getNumberOfEpisodes(),
+                Optional.ofNullable(rawSerieDetails.getNumberOfEpisodes()).orElse(season.stream().map(SeasonModel::getEpisodeCount).reduce(Integer::sum).orElseGet(null)),
                 rawSerieDetails.getEpisodeRunTime() == null || rawSerieDetails.getEpisodeRunTime().isEmpty() ? null : rawSerieDetails.getEpisodeRunTime().getFirst(),
                 rawSerieDetails.getOverview(),
                 rawSerieDetails.getPosterPath() == null ? null : URL_IMAGE_TMDB + rawSerieDetails.getPosterPath(),
                 rawSerieDetails.getBackdropPath() == null ? null : URL_IMAGE_TMDB + rawSerieDetails.getBackdropPath(),
                 mediaCategoryService.findById(MediaDataController.SERIE_ID).get(),
-                formatExternalReference(rawSerieDetails.getExternalIds(), rawSerieDetails.getId()),
+                externalReferences,
                 null,
                 null,
                 formatGenre(rawSerieDetails.getGenres()),
                 null,
                 formatAlternativeTitles(rawSerieDetails.getAlternativeTitles().getResults()),
-                formatSeason(rawSerieDetails.getSeasons()));
+                season);
 
         return serie;
+    }
+
+    public ExternalReferenceModel getTrailer(TvSeriesDb rawSerieDetails) {
+        ExternalReferenceModel trailers = null;
+
+        trailers = rawSerieDetails.getVideos().getResults().stream().filter(video -> video.getType().equals("Trailer"))
+                .findFirst().map(video -> new ExternalReferenceModel(null, video.getKey(), null,
+                        typeReferenceService.findById(MediaDataController.YT_ID).get()))
+                .orElse(null);
+
+        return trailers;
     }
 
     /**
@@ -318,9 +342,11 @@ public class TvSeriesApiImpl implements MediaApi {
         rawSeasons.forEach((rawSeason) -> {
             try {
                 seasons.add(new SeasonModel(null, rawSeason.getName(),
-                        rawSeason.getAirDate() == null ? new Date() : new SimpleDateFormat("yyyy-MM-dd").parse(rawSeason.getAirDate()), null,
+                        new SimpleDateFormat("yyyy-MM-dd").parse(rawSeason.getAirDate()),
+                        null,
                         rawSeason.getPosterPath() == null ? null : rawSeason.getOverview(), URL_IMAGE_TMDB + rawSeason.getPosterPath(), rawSeason.getSeasonNumber(),
-                        rawSeason.getEpisodeCount(), null));
+                        rawSeason.getEpisodeCount(),
+                        null));
             } catch (java.text.ParseException e) {
                 e.printStackTrace();
             }

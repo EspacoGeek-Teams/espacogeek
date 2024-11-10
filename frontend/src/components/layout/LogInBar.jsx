@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Form, Formik } from "formik";
@@ -6,6 +6,7 @@ import { InputText } from "primereact/inputtext";
 import { FloatLabel } from "primereact/floatlabel";
 import { Link } from "react-router-dom";
 import { Password } from 'primereact/password';
+import { GlobalLoadingContext } from "../../contexts/GlobalLoadingContext";
 
 // eslint-disable-next-line react/prop-types
 function LogIn({ show, handleClose }) {
@@ -17,7 +18,7 @@ function LogIn({ show, handleClose }) {
                 modal
                 onHide={() => handleClose()}
                 content={({ hide }) => (
-                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-slate-700 rounded-xl">
+                    <div className="flex flex-col text-center items-center justify-center p-4 gap-4 bg-gradient-to-tr from-slate-700 rounded-xl backdrop-blur-sm">
                         <h1 className="select-none p-3 font-bold">EG</h1>
                         <Formik
                             initialValues={{ email: "", password: "" }}

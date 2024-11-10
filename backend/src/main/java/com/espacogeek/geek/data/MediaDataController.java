@@ -17,6 +17,7 @@ public interface MediaDataController {
     public static final int TVDB_ID = 2;
     public static final int IMDB_ID = 3;
     public static final int IGDB_ID = 4;
+    public static final int YT_ID = 5;
 
     // Media Type references
     public static final int SERIE_ID = 1;

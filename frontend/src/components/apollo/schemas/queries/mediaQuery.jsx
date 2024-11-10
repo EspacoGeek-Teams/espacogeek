@@ -9,6 +9,8 @@ const query = gql`
                 id
                 name
                 about
+                airDate
+                endAirDate
                 cover
                 seasonNumber
                 episodeCount

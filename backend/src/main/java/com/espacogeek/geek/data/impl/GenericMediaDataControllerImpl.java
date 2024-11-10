@@ -3,6 +3,7 @@ package com.espacogeek.geek.data.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -28,6 +29,9 @@ import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.SeasonService;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
@@ -65,14 +69,16 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
         updateBasicAttributes(media, result, typeReference, mediaApi);
         updateArtworks(media, result, typeReference, mediaApi);
+
+        media.setUpdateAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
+        mediaService.save(media);
+
         updateAlternativeTitles(media, result, typeReference, mediaApi);
         updateExternalReferences(media, result, typeReference, mediaApi);
         updateGenres(media, result, typeReference, mediaApi);
         updateSeason(media, result, typeReference, mediaApi);
 
-        media.setUpdateAt(Date.from(LocalDateTime.now().toInstant(ZoneOffset.UTC)));
-
-        return mediaService.save(media);
+        return media;
     }
 
     @Override
@@ -274,9 +280,20 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
         if (rawMedia == null) return media;
 
-        media.setAbout(rawMedia.getAbout());
-        media.setMediaCategory(rawMedia.getMediaCategory());
-        media.setName(rawMedia.getName());
+        for (Field field : media.getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            for (Field rawField : rawMedia.getClass().getDeclaredFields()) {
+                rawField.setAccessible(true);
+                if (field.isAnnotationPresent(OneToMany.class) || field.isAnnotationPresent(ManyToMany.class) || field.isAnnotationPresent(Id.class)) continue;
+                if (field.getName().equals(rawField.getName())) {
+                    try {
+                        field.set(media, rawField.get(rawMedia));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
         return media;
     }

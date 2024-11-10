@@ -9,6 +9,7 @@ import routes from "./routes/routes";
 import { PrimeReactProvider } from "primereact/api";
 import { ErrorNotification, SuccessNotification } from "./components/toast/Notification";
 import { SuccessProvider } from "./contexts/SuccessContext";
+import { GlobalLoadingProvider } from "./contexts/GlobalLoadingContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const primeReactConfig = {
@@ -19,15 +20,17 @@ root.render(
     <React.StrictMode>
         <ErrorProvider>
             <SuccessProvider>
-                <ApolloProvider client={ClientAPI}>
-                    <PrimeReactProvider value={primeReactConfig}>
-                        <main id="rootElement" data-bs-theme="dark" className="h-screen w-screen">
-                            <RouterProvider router={routes} />
-                            <ErrorNotification />
-                            <SuccessNotification />
-                        </main>
-                    </PrimeReactProvider>
-                </ApolloProvider>
+                <GlobalLoadingProvider>
+                    <ApolloProvider client={ClientAPI}>
+                        <PrimeReactProvider value={primeReactConfig}>
+                            <main id="rootElement" data-bs-theme="dark" className="h-screen w-screen">
+                                <RouterProvider router={routes} />
+                                <ErrorNotification />
+                                <SuccessNotification />
+                            </main>
+                        </PrimeReactProvider>
+                    </ApolloProvider>
+                </GlobalLoadingProvider>
             </SuccessProvider>
         </ErrorProvider>
     </React.StrictMode>

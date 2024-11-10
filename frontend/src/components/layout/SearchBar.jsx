@@ -11,6 +11,7 @@ import { DataView } from 'primereact/dataview';
 import { ListBox } from 'primereact/listbox';
 import { useNavigate } from "react-router-dom";
 import { Dropdown } from 'primereact/dropdown';
+import { GlobalLoadingContext } from "../../contexts/GlobalLoadingContext";
 
 // eslint-disable-next-line react/prop-types
 function SearchBar({ handleClose }) {
@@ -19,6 +20,11 @@ function SearchBar({ handleClose }) {
     const [selectedQuery, setSelectedQuery] = useState({ name: 'TVSerie', code: 'tvserie' });
     const navigate = useNavigate();
     const { loading, error, data } = useQuery(selectedQuery?.code === 'tvserie' ? searchTvSerieQuery : searchGameQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
+    const { setGlobalLoading } = useContext(GlobalLoadingContext);
+
+    useEffect(() => {
+        setGlobalLoading(loading);
+    }, [loading]);
 
     const queries = [
         { name: 'TVSerie', code: 'tvserie' },
