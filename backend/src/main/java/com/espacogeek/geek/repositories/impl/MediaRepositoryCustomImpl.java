@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.hibernate.sql.results.internal.TupleImpl;
 import org.springframework.stereotype.Repository;
 
 import com.espacogeek.geek.models.AlternativeTitleModel;

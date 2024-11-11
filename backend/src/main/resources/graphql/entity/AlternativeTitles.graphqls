@@ -1,4 +1,4 @@
 type AlternativeTitles {
-    id: ID
-    name: String
+    idAlternativeTitle: ID
+    nameAlternativeTitle: String
 }

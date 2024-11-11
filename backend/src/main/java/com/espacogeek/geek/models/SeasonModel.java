@@ -27,10 +27,10 @@ public class SeasonModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_season")
-    private Integer id;
+    private Integer idSeason;
 
     @Column(name = "name_season")
-    private String name;
+    private String nameSeason;
 
     @Column(name = "air_date")
     private Date airDate;
@@ -39,10 +39,10 @@ public class SeasonModel implements Serializable {
     private Date endAirDate;
 
     @Column(name = "about_season", length = 10000)
-    private String about;
+    private String aboutSeason;
 
     @Column(name = "path_cover")
-    private String cover;
+    private String coverSeason;
 
     @Column(name = "season_number")
     private Integer seasonNumber;

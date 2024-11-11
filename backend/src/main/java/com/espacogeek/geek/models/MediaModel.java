@@ -17,8 +17,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -29,7 +27,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "medias", indexes = {@Index(name = "idx_name_media", columnList = "name_media", unique = true)})
@@ -41,10 +38,10 @@ public class MediaModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_media")
-    private Integer id;
+    private Integer idMedia;
 
     @Column(name = "name_media")
-    private String name;
+    private String nameMedia;
 
     @Column(name = "episode_count")
     private Integer totalEpisodes;
@@ -53,10 +50,10 @@ public class MediaModel implements Serializable {
     private Integer episodeLength;
 
     @Column(name = "about", length = 10000)
-    private String about;
+    private String aboutMedia;
 
     @Column(name = "url_cover")
-    private String cover;
+    private String coverMedia;
 
     @Column(name = "url_banner")
     private String banner;
