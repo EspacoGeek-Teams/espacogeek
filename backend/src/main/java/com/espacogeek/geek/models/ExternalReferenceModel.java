@@ -31,7 +31,7 @@ public class ExternalReferenceModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_external_reference")
-    private Integer id;
+    private Integer idExternalReference;
 
     @Column(name = "reference")
     private String reference;

@@ -1,19 +1,14 @@
 package com.espacogeek.geek.utils;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -25,10 +20,6 @@ import com.espacogeek.geek.models.TypeReferenceModel;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.criteria.Root;
 
 public abstract class Utils {
@@ -136,57 +127,6 @@ public abstract class Utils {
     }
 
     /**
-     * Converts a list of objects into a list of instances of the given class
-     * using the Apache Commons BeanUtils library. The list of objects is
-     * expected to contain rows of data, where each row is an array of objects
-     * and the column names are given in the columnNames parameter.
-     * <p>
-     * The method will iterate over the list of objects, create a new instance of
-     * the given class for each row, and then use the BeanUtils populate method
-     * to set the values of the instance from the row of data.
-     * <p>
-     *
-     * @param clazz       the class to instantiate
-     * @param data        the list of objects to convert
-     * @param columnNames the names of the columns in the data
-     * @return a list of instances of the given class
-     * @throws RuntimeException if any of the instances cannot be created
-     */
-    public static <T> List<T> objectToClass(Class<T> clazz, List<Object[]> data, String[] columnNames) {
-        List<T> resultList = new ArrayList<>();
-
-        for (Object[] row : data) {
-            Map<String, Object> rowMap = new HashMap<>();
-            int length = Math.min(row.length, columnNames.length);
-            for (int i = 0; i < length; i++) {
-                rowMap.put(columnNames[i], row[i]);
-            }
-
-            T instance = null;
-            try {
-                instance = clazz.getDeclaredConstructor().newInstance();
-                BeanWrapper beanWrapper = new BeanWrapperImpl(instance);
-                rowMap.forEach((propertyName, propertyValue) -> {
-                    try {
-                        beanWrapper.setPropertyValue(
-                                propertyName.split(
-                                        propertyName.contains(".") ? "\\." : "\\s")[propertyName.contains(".") ? 1 : 0],
-                                propertyValue);
-                    } catch (Exception e) {
-                        System.out.println("Erro ao definir a propriedade: " + propertyName + " - " + e.getMessage());
-                    }
-                });
-                resultList.add(instance);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException
-                    | NoSuchMethodException e) {
-                throw new RuntimeException("Failed to instantiate " + clazz.getName(), e);
-            }
-        }
-
-        return resultList;
-    }
-
-    /**
      * Returns a map of requested fields where the key is the field name and
      * the value is a list of its subfields.
      * <p>
@@ -238,9 +178,20 @@ public abstract class Utils {
                         SelectedField::getName,
                         field -> field.getSelectionSet().getFields().stream()
                                 .map(SelectedField::getName)
-                                .collect(Collectors.toList())));
+                                .collect(Collectors.toList()),
+                        (existingList, newList) -> {
+                            existingList.addAll(newList);
+                            return existingList;
+                        }));
     }
 
+    /**
+     * Checks if a given field is a joinable field in the media entity.
+     *
+     * @param mediaRoot the root of the media entity
+     * @param field     the field to check
+     * @return true if the field is joinable, false otherwise
+     */
     public static boolean isJoinableField(Root<MediaModel> mediaRoot, String field) {
         try {
             return mediaRoot.getModel().getAttribute(field).isAssociation();
@@ -250,6 +201,21 @@ public abstract class Utils {
         }
     }
 
+    /**
+     * Returns a Pageable object based on the "page" and "size" arguments of the
+     * given DataFetchingEnvironment.
+     * <p>
+     * If the "page" argument is not provided, it defaults to 0. If the "size"
+     * argument is not provided, it defaults to 10.
+     * <p>
+     * The returned Pageable object can be used to construct a JPA query that
+     * will return the requested page of data.
+     * <p>
+     *
+     * @param dataFetchingEnvironment the DataFetchingEnvironment that contains
+     *                                the "page" and "size" arguments
+     * @return a Pageable object
+     */
     public static Pageable getPageable(DataFetchingEnvironment dataFetchingEnvironment) {
         int page = dataFetchingEnvironment.getArgumentOrDefault("page", 0);
         int size = dataFetchingEnvironment.getArgumentOrDefault("size", 10);

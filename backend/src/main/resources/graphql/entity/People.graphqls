@@ -1,5 +1,5 @@
 type People {
-    id: ID
-    name: String
+    idPeople: ID
+    namePerson: String
     typePerson: TypePerson
 }

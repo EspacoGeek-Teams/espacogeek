@@ -1,12 +1,12 @@
 scalar Date
 
 type Season {
-    id: ID
-    name: String
+    idSeason: ID
+    nameSeason: String
     airDate: Date
     endAirDate: Date
-    about: String
-    cover: String
+    aboutSeason: String
+    coverSeason: String
     seasonNumber: Int
     episodeCount: Int
 }

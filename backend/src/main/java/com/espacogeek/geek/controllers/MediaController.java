@@ -70,22 +70,15 @@ public class MediaController {
      *         name.
      */
     @QueryMapping(name = "tvserie")
-    @Transactional
-    public MediaPage getSerie(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
-        MediaPage response = new MediaPage();
+    public List<MediaModel> getSerie(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
+        List<MediaModel> response = new ArrayList<>();
         name = name == null ? null : name.trim();
 
         if (name == null & id == null || name == "" & id == null) {
             return response;
         }
 
-        var medias = this.mediaService.findSerieByIdOrName(id, name, Utils.getPageable(dataFetchingEnvironment));
-
-        response.setContent(Utils.updateMedia(medias.getContent(), serieController));
-        response.setTotalPages(medias.getTotalPages());
-        response.setTotalElements(medias.getTotalElements());
-        response.setNumber(medias.getNumber());
-        response.setSize(medias.getSize());
+        response = this.mediaService.findSerieByIdOrName(id, name, Utils.getRequestedFields(dataFetchingEnvironment));
 
         return response;
     }

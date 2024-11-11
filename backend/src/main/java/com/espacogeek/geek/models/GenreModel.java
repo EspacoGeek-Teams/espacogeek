@@ -27,10 +27,10 @@ public class GenreModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_genre")
-    private Integer id;
+    private Integer idGenre;
 
     @Column(name = "name_genre")
-    private String name;
+    private String nameGenre;
 
     @ManyToMany(mappedBy = "genre")
     @Transient

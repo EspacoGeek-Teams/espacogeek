@@ -26,10 +26,10 @@ public class CompanyModel implements Serializable {
     @Id
     @Column(name = "id_company")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer idCompany;
 
     @Column(name = "name_company")
-    private String name;
+    private String nameCompany;
 
     @ManyToMany(mappedBy = "company")
     private List<MediaModel> media;
