@@ -244,7 +244,11 @@ public abstract class Utils {
                         SelectedField::getName,
                         field -> field.getSelectionSet().getFields().stream()
                                 .map(SelectedField::getName)
-                                .collect(Collectors.toList())));
+                                .collect(Collectors.toList()),
+                        (existingList, newList) -> {
+                            existingList.addAll(newList);
+                            return existingList;
+                        }));
     }
 
     /**
@@ -286,13 +290,15 @@ public abstract class Utils {
     }
 
     /**
-     * Creates an instance of the given class, using the given tuple to populate its fields.
+     * Creates an instance of the given class, using the given tuple to populate its
+     * fields.
      * <p>
      * This method is used to convert a Tuple object returned by a JPA query into a
      * custom object. The Tuple object is expected to have the same fields as the
      * class provided, and the fields must have the same name.
      * <p>
-     * If any of the fields are not present in the tuple, or if any of the fields are
+     * If any of the fields are not present in the tuple, or if any of the fields
+     * are
      * not accessible, a GenericException is thrown.
      * <p>
      * The method returns the populated instance of the class.
@@ -301,8 +307,9 @@ public abstract class Utils {
      * @param tuple the tuple to use to populate the object
      * @param clazz the class to instantiate and populate
      * @return the populated instance of the class
-     * @throws GenericException if any of the fields are not present in the tuple, or if any of the
-     *                           fields are not accessible
+     * @throws GenericException if any of the fields are not present in the tuple,
+     *                          or if any of the
+     *                          fields are not accessible
      */
     public static <T> T fromTuple(Tuple tuple, Class<T> clazz) {
         try {
@@ -320,7 +327,8 @@ public abstract class Utils {
                 }
             }
             return instance;
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException
+                | InvocationTargetException e) {
             e.printStackTrace();
             // throw new GenericException(HttpStatus.INTERNAL_SERVER_ERROR.toString());
         }

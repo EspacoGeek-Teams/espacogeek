@@ -52,7 +52,6 @@ public class MediaController {
      *         name.
      */
     @QueryMapping(name = "tvserie")
-    @Transactional
     public List<MediaModel> getSerie(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
         List<MediaModel> response = new ArrayList<>();
         name = name == null ? null : name.trim();

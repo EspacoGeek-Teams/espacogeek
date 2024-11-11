@@ -21,6 +21,7 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Selection;
 
 @Repository
 public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
@@ -37,21 +38,24 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
             Integer category,
             Map<String, List<String>> requestedFields) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Tuple> query = cb.createQuery(Tuple.class);
+        CriteriaQuery<MediaModel> query = cb.createQuery(MediaModel.class);
         Root<MediaModel> mediaRoot = query.from(MediaModel.class);
         Join<MediaModel, AlternativeTitleModel> altTitlesJoin = mediaRoot.join("alternativeTitles", JoinType.LEFT);
 
+        List<Selection<?>> select = new ArrayList<>();
         requestedFields.forEach((field, subFields) -> {
             if (Utils.isJoinableField(mediaRoot, field)) {
                 Join<Object, Object> join = mediaRoot.join(field, JoinType.LEFT);
                 join.alias(field);
                 subFields.forEach(subField -> {
-                    query.multiselect(join.get(subField).alias(subField));
+                    select.add(join.get(subField).alias(subField));
                 });
             } else {
-                query.multiselect(mediaRoot.get(field).alias(field));
+                select.add(mediaRoot.get(field).alias(field));
             }
         });
+        query.distinct(true);
+        query.multiselect(select);
 
         List<Predicate> predicates = new ArrayList<>();
         if (category != null) {
@@ -75,10 +79,7 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
             query.where(cb.and(predicates.toArray(new Predicate[0])));
         }
 
-        List<MediaModel> medias = new ArrayList<>();
-        entityManager.createQuery(query).getResultList().forEach((tuple) -> {
-            medias.add(Utils.fromTuple(tuple, MediaModel.class));
-        });
+        List<MediaModel> medias = entityManager.createQuery(query).getResultList();
 
         return medias;
     }
