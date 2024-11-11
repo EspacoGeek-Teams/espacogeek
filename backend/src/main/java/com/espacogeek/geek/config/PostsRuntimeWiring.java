@@ -1,6 +1,7 @@
 package com.espacogeek.geek.config;
 
 import org.springframework.graphql.execution.RuntimeWiringConfigurer;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.types.Scalars;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 public class PostsRuntimeWiring implements RuntimeWiringConfigurer {
 
     @Override
-    public void configure(RuntimeWiring.Builder builder) {
+    public void configure(@NonNull RuntimeWiring.Builder builder) {
         builder
             .scalar(Scalars.dateType())
             .build();

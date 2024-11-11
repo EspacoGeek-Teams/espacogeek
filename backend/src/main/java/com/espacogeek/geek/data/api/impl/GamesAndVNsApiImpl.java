@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
@@ -22,10 +21,8 @@ import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
 import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.ExternalReferenceModel;
-import com.espacogeek.geek.models.GenreModel;
 import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
-import com.espacogeek.geek.models.SeasonModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.services.ApiKeyService;
 import com.espacogeek.geek.services.GenreService;
@@ -99,10 +96,10 @@ public class GamesAndVNsApiImpl implements MediaApi {
                     });
 
                     media.setGenre(genreService.findAllByNames(genresName));
-                    media.setAbout(result.getSummary());
-                    media.setName(result.getName());
+                    media.setAboutMedia(result.getSummary());
+                    media.setNameMedia(result.getName());
 
-                    media.setCover(
+                    media.setCoverMedia(
                             !"".equals(result.getCover().getImageId())
                                     ? ImageBuilderKt.imageBuilder(result.getCover().getImageId(),
                                             ImageSize.COVER_BIG, ImageType.PNG)
@@ -131,7 +128,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
     @Override
     @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<MediaModel> doSearch(String search, MediaCategoryModel mediaCategoryModel) {
-        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks.image_id, game.cover.image_id, game.name").where("game.genres " + (mediaCategoryModel.getId() == MediaDataController.GAME_ID ? "!=" : "=") + " [" + VN_ID_IGDB + "]");
+        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks.image_id, game.cover.image_id, game.name").where("game.genres " + (mediaCategoryModel.getIdMediaCategory() == MediaDataController.GAME_ID ? "!=" : "=") + " [" + VN_ID_IGDB + "]");
         List<MediaModel> medias = new ArrayList<>();
 
         try {
@@ -142,8 +139,8 @@ public class GamesAndVNsApiImpl implements MediaApi {
                     var media = new MediaModel();
                     var reference = new ExternalReferenceModel(null, String.valueOf(result.getGame().getId()), media, typeReference);
 
-                    media.setName(result.getGame().getName());
-                    media.setCover(
+                    media.setNameMedia(result.getGame().getName());
+                    media.setCoverMedia(
                             !"".equals(result.getGame().getCover().getImageId())
                                     ? ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(),
                                             ImageSize.COVER_BIG, ImageType.PNG)

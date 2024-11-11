@@ -6,7 +6,6 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.zip.GZIPInputStream;
@@ -34,7 +33,6 @@ import com.espacogeek.geek.services.TypeReferenceService;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbTvSeries;
-import info.movito.themoviedbapi.model.authentication.Session;
 import info.movito.themoviedbapi.model.core.AlternativeTitle;
 import info.movito.themoviedbapi.model.core.Genre;
 import info.movito.themoviedbapi.model.keywords.Keyword;
@@ -80,7 +78,7 @@ public class TvSeriesApiImpl implements MediaApi {
      * @throws IOException
      * @throws ParseException
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "null" })
     @Override
     @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public JSONArray updateTitles() {
@@ -202,7 +200,7 @@ public class TvSeriesApiImpl implements MediaApi {
         }
         var media = new MediaModel();
 
-        media.setCover(rawArtwork.getPosters().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getPosters().getFirst());
+        media.setCoverMedia(rawArtwork.getPosters().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getPosters().getFirst());
         media.setBanner(rawArtwork.getBackdrops().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getBackdrops().getFirst());
 
         return media;

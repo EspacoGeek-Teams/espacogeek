@@ -93,7 +93,6 @@ public class UserController {
         throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
     }
 
-    // TODO EDIT USER USERNAME
     @MutationMapping(name = "editUsername")
     @PreAuthorize("hasRole('user')")
     public String editUsernameUserLogged(Authentication authentication, @Argument String password, @Argument String newUsername) {
@@ -112,7 +111,6 @@ public class UserController {
         throw new GenericException(HttpStatus.UNAUTHORIZED.toString());
     }
 
-    // TODO EDIT USER EMAIL
     @MutationMapping(name = "editEmail")
     @PreAuthorize("hasRole('user')")
     public String editEmailUserLogged(Authentication authentication, @Argument String password, @Argument String newEmail) {

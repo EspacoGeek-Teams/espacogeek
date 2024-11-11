@@ -1,11 +1,6 @@
 package com.espacogeek.geek.repositories;
 
-import java.util.List;
 import java.util.Optional;
-import java.lang.foreign.Linker.Option;
-import java.util.ArrayList;
-import java.util.Map;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,15 +9,11 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
-import com.espacogeek.geek.models.AlternativeTitleModel;
-import com.espacogeek.geek.models.ExternalReferenceModel;
-import com.espacogeek.geek.models.MediaCategoryModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.criteria.*;
 
 @Repository
 public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer>, MediaRepositoryCustom {
@@ -49,9 +40,9 @@ public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer>, 
      */
     @Query("SELECT DISTINCT m FROM MediaModel m " +
             "LEFT JOIN AlternativeTitleModel a ON a MEMBER OF m.alternativeTitles " +
-            "WHERE m.mediaCategory.id = :category " +
-            "AND (m.name LIKE CONCAT('%',:name,'%') " +
-            "OR a.name LIKE CONCAT('%',:alternativeTitle,'%'))")
+            "WHERE m.mediaCategory.idMediaCategory = :category " +
+            "AND (m.nameMedia LIKE CONCAT('%',:name,'%') " +
+            "OR a.nameAlternativeTitle LIKE CONCAT('%',:alternativeTitle,'%'))")
     public Page<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
             @Param("name") String name,
             @Param("alternativeTitle") String alternativeTitle,

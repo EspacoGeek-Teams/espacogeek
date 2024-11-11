@@ -58,15 +58,15 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
 
         List<Predicate> predicates = new ArrayList<>();
         if (category != null) {
-            predicates.add(cb.equal(mediaRoot.get("mediaCategory").get("id"), category));
+            predicates.add(cb.equal(mediaRoot.get("mediaCategory").get("idMediaCategory"), category));
         }
 
         List<Predicate> namePredicates = new ArrayList<>();
         if (name != null && !name.isEmpty()) {
-            predicates.add(cb.like(mediaRoot.get("name"), "%" + name + "%"));
+            predicates.add(cb.like(mediaRoot.get("nameMedia"), "%" + name + "%"));
         }
         if (alternativeTitle != null) {
-            predicates.add(cb.like(altTitlesJoin.get("name"), "%" + alternativeTitle + "%"));
+            predicates.add(cb.like(altTitlesJoin.get("nameAlternativeTitle"), "%" + alternativeTitle + "%"));
         }
 
         if (!namePredicates.isEmpty()) {

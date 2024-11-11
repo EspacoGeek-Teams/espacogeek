@@ -178,11 +178,7 @@ public abstract class Utils {
                         SelectedField::getName,
                         field -> field.getSelectionSet().getFields().stream()
                                 .map(SelectedField::getName)
-                                .collect(Collectors.toList()),
-                        (existingList, newList) -> {
-                            existingList.addAll(newList);
-                            return existingList;
-                        }));
+                                .collect(Collectors.toList())));
     }
 
     /**

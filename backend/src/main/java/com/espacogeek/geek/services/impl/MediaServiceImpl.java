@@ -4,27 +4,22 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.espacogeek.geek.data.MediaDataController;
-import com.espacogeek.geek.exception.GenericException;
 import com.espacogeek.geek.models.ExternalReferenceModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.models.TypeReferenceModel;
 import com.espacogeek.geek.repositories.MediaRepository;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
-import com.espacogeek.geek.utils.Utils;
-
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.transaction.Transactional;
@@ -44,6 +39,7 @@ public class MediaServiceImpl implements MediaService {
     /**
      * @see MediaService#save(MediaModel)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public MediaModel save(MediaModel media) {
         return (MediaModel) this.mediaRepository.save(media);
@@ -52,6 +48,7 @@ public class MediaServiceImpl implements MediaService {
     /**
      * @see MediaService#saveAll(List<MediaModel>)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<MediaModel> saveAll(List<MediaModel> medias) {
         return this.mediaRepository.saveAll(medias);
@@ -60,6 +57,7 @@ public class MediaServiceImpl implements MediaService {
     /**
      * @see MediaService#findSerieByIdOrName(Integer, String, Pageable)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Page<MediaModel> findSerieByIdOrName(Integer id, String name, Pageable pageable) {
         if (id != null) {
@@ -67,13 +65,14 @@ public class MediaServiceImpl implements MediaService {
         }
 
         return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
-                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), pageable);
+                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getIdMediaCategory(), pageable);
     }
 
     /**
      * @see MediaService#findSerieByIdOrName(Integer, String, Map<String,
      *      List<String>>)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public List<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields) {
         var medias = new ArrayList<MediaModel>();
@@ -84,7 +83,7 @@ public class MediaServiceImpl implements MediaService {
         }
 
         var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
-                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), requestedFields);
+                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getIdMediaCategory(), requestedFields);
 
         return results;
     }
@@ -92,6 +91,7 @@ public class MediaServiceImpl implements MediaService {
     /**
      * @see MediaService#findGameByIdOrName(Integer, String, Pageable)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Page<MediaModel> findGameByIdOrName(Integer id, String name, Pageable pageable) {
         if (id != null) {
@@ -99,12 +99,13 @@ public class MediaServiceImpl implements MediaService {
         }
 
         return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
-                mediaCategoryService.findById(MediaDataController.GAME_ID).get().getId(), pageable);
+                mediaCategoryService.findById(MediaDataController.GAME_ID).get().getIdMediaCategory(), pageable);
     }
 
     /**
      * @see MediaService#findById(Integer)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Optional<MediaModel> findById(Integer idMedia) {
         return this.mediaRepository.findById(idMedia);
@@ -114,6 +115,7 @@ public class MediaServiceImpl implements MediaService {
      * @see MediaService#findByReferenceAndTypeReference(ExternalReferenceModel,
      *      TypeReferenceModel)
      */
+    @SuppressWarnings("unchecked")
     @Override
     public Optional<MediaModel> findByReferenceAndTypeReference(ExternalReferenceModel reference,
             TypeReferenceModel typeReference) {

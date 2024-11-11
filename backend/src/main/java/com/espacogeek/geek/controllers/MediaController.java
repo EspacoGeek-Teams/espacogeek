@@ -1,6 +1,8 @@
 package com.espacogeek.geek.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -46,7 +48,7 @@ public class MediaController {
     public MediaModel getMediaById(@Argument Integer id) {
         var media = this.mediaService.findByIdEager(id).orElseThrow(() -> new GenericException("Media not found"));
 
-        switch (media.getMediaCategory().getId()) {
+        switch (media.getMediaCategory().getIdMediaCategory()) {
             case MediaDataController.GAME_ID:
             case MediaDataController.VN_ID:
                 return Utils
