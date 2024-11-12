@@ -96,10 +96,10 @@ public class GamesAndVNsApiImpl implements MediaApi {
                     });
 
                     media.setGenre(genreService.findAllByNames(genresName));
-                    media.setAboutMedia(result.getSummary());
-                    media.setNameMedia(result.getName());
+                    media.setAbout(result.getSummary());
+                    media.setName(result.getName());
 
-                    media.setCoverMedia(
+                    media.setCover(
                             !"".equals(result.getCover().getImageId())
                                     ? ImageBuilderKt.imageBuilder(result.getCover().getImageId(),
                                             ImageSize.COVER_BIG, ImageType.PNG)
@@ -139,8 +139,8 @@ public class GamesAndVNsApiImpl implements MediaApi {
                     var media = new MediaModel();
                     var reference = new ExternalReferenceModel(null, String.valueOf(result.getGame().getId()), media, typeReference);
 
-                    media.setNameMedia(result.getGame().getName());
-                    media.setCoverMedia(
+                    media.setName(result.getGame().getName());
+                    media.setCover(
                             !"".equals(result.getGame().getCover().getImageId())
                                     ? ImageBuilderKt.imageBuilder(result.getGame().getCover().getImageId(),
                                             ImageSize.COVER_BIG, ImageType.PNG)

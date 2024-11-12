@@ -39,10 +39,10 @@ public class MediaModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_media")
-    private Integer idMedia;
+    private Integer id;
 
     @Column(name = "name_media")
-    private String nameMedia;
+    private String name;
 
     @Column(name = "episode_count")
     private Integer totalEpisodes;
@@ -51,10 +51,10 @@ public class MediaModel implements Serializable {
     private Integer episodeLength;
 
     @Column(name = "about", length = 10000)
-    private String aboutMedia;
+    private String about;
 
     @Column(name = "url_cover")
-    private String coverMedia;
+    private String cover;
 
     @Column(name = "url_banner")
     private String banner;

@@ -95,7 +95,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
         if (rawArtwork == null) return media;
 
-        media.setCoverMedia(rawArtwork.getCoverMedia());
+        media.setCover(rawArtwork.getCover());
         media.setBanner(rawArtwork.getBanner());
 
         return media;
@@ -123,8 +123,8 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
 
         if (media.getAlternativeTitles() == null) media.setAlternativeTitles(new ArrayList<>());
         for (AlternativeTitleModel title : allAlternativeTitles) {
-            if (media.getAlternativeTitles().stream().noneMatch((alternativeTitle) -> alternativeTitle.getNameAlternativeTitle().equals(title.getNameAlternativeTitle()))) {
-                media.getAlternativeTitles().add(new AlternativeTitleModel(null, title.getNameAlternativeTitle(), media));
+            if (media.getAlternativeTitles().stream().noneMatch((alternativeTitle) -> alternativeTitle.getName().equals(title.getName()))) {
+                media.getAlternativeTitles().add(new AlternativeTitleModel(null, title.getName(), media));
             }
         }
 
@@ -186,7 +186,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         if (CollectionUtils.isEmpty(rawGenres)) return media.getGenre();
 
         rawGenres.forEach((rawGenre) -> {
-            if (media.getGenre().stream().noneMatch((genre) -> genre.getIdGenre().equals(rawGenre.getIdGenre()))) {
+            if (media.getGenre().stream().noneMatch((genre) -> genre.getId().equals(rawGenre.getId()))) {
                 rawGenre.setMedias(new ArrayList<>(Arrays.asList(media)));
                 media.getGenre().add(rawGenre);
             }
@@ -214,8 +214,8 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         if (CollectionUtils.isEmpty(rawSeasons)) return media.getSeason();
 
         rawSeasons.forEach((rawSeason) -> {
-            if (!media.getSeason().stream().anyMatch((season) -> season.getNameSeason().equals(rawSeason.getNameSeason()))) {
-                seasons.add(new SeasonModel(null, rawSeason.getNameSeason(), rawSeason.getAirDate(), null, rawSeason.getAboutSeason(), rawSeason.getCoverSeason(), rawSeason.getSeasonNumber(), rawSeason.getEpisodeCount(), media));
+            if (!media.getSeason().stream().anyMatch((season) -> season.getName().equals(rawSeason.getName()))) {
+                seasons.add(new SeasonModel(null, rawSeason.getName(), rawSeason.getAirDate(), null, rawSeason.getAbout(), rawSeason.getCover(), rawSeason.getSeasonNumber(), rawSeason.getEpisodeCount(), media));
             }
         });
 
@@ -311,7 +311,7 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
         for (ExternalReferenceModel ereference : media.getExternalReference()) {
             var external = externalReferenceService.findByReferenceAndType(ereference.getReference(), typeReference);
             if (external == null || external.isEmpty()) {
-                media.setIdMedia(null);
+                media.setId(null);
                 return mediaService.save(media);
             } else {
                 if (external.orElseThrow().getMedia() != null) {

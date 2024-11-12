@@ -67,12 +67,12 @@ public class SerieControllerImpl extends GenericMediaDataControllerImpl {
                     return keyword.getName().toLowerCase() == "anime" ? false : true;
                 })) {
 
-                    media.setNameMedia(json.get("original_name").toString());
+                    media.setName(json.get("original_name").toString());
                     externalReference.setReference(json.get("id").toString());
 
                     var externalReferenceExisted = externalReferenceService.findByReferenceAndType(externalReference.getReference(), typeReference);
                     if (externalReferenceExisted.isPresent()) {
-                        media.setIdMedia(externalReferenceExisted.get().getMedia().getIdMedia());
+                        media.setId(externalReferenceExisted.get().getMedia().getId());
                         externalReference.setIdExternalReference(externalReferenceExisted.get().getIdExternalReference());
                     }
 

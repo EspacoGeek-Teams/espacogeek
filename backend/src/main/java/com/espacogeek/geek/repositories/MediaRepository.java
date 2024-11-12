@@ -40,9 +40,9 @@ public interface MediaRepository<T> extends JpaRepository<MediaModel, Integer>, 
      */
     @Query("SELECT DISTINCT m FROM MediaModel m " +
             "LEFT JOIN AlternativeTitleModel a ON a MEMBER OF m.alternativeTitles " +
-            "WHERE m.mediaCategory.idMediaCategory = :category " +
-            "AND (m.nameMedia LIKE CONCAT('%',:name,'%') " +
-            "OR a.nameAlternativeTitle LIKE CONCAT('%',:alternativeTitle,'%'))")
+            "WHERE m.mediaCategory.id = :category " +
+            "AND (m.name LIKE CONCAT('%',:name,'%') " +
+            "OR a.name LIKE CONCAT('%',:alternativeTitle,'%'))")
     public Page<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
             @Param("name") String name,
             @Param("alternativeTitle") String alternativeTitle,

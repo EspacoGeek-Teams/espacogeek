@@ -179,7 +179,11 @@ public abstract class Utils {
                         SelectedField::getName,
                         field -> field.getSelectionSet().getFields().stream()
                                 .map(SelectedField::getName)
-                                .collect(Collectors.toList())));
+                                .collect(Collectors.toList()),
+                        (existing, replacement) -> {
+                            existing.addAll(replacement);
+                            return existing;
+                        }));
     }
 
     /**
@@ -234,4 +238,8 @@ public abstract class Utils {
         Pageable pageable = PageRequest.of(page, size);
         return pageable;
     }
+
+    public static String capitalize(String field) {
+        return field.substring(0, 1).toUpperCase() + field.substring(1);
+    };
 }

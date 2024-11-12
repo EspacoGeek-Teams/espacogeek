@@ -29,10 +29,10 @@ public class PeopleModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_person")
-    private Integer idPeople;
+    private Integer id;
 
     @Column(name = "name_person")
-    private String namePerson;
+    private String name;
 
     @ManyToOne
     @NotNull

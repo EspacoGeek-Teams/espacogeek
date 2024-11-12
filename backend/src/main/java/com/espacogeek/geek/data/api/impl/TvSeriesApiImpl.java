@@ -200,7 +200,7 @@ public class TvSeriesApiImpl implements MediaApi {
         }
         var media = new MediaModel();
 
-        media.setCoverMedia(rawArtwork.getPosters().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getPosters().getFirst());
+        media.setCover(rawArtwork.getPosters().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getPosters().getFirst());
         media.setBanner(rawArtwork.getBackdrops().isEmpty() ? "" : URL_IMAGE_TMDB + rawArtwork.getBackdrops().getFirst());
 
         return media;

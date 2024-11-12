@@ -27,10 +27,10 @@ public class AlternativeTitleModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_alternative_title")
-    private Integer idAlternativeTitle;
+    private Integer id;
 
     @Column(name = "name_title", length = 1000)
-    private String nameAlternativeTitle;
+    private String name;
 
     @ManyToOne
     @NotNull

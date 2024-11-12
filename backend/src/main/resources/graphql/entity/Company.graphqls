@@ -1,4 +1,4 @@
 type Company{
-    idCompany: ID
-    nameCompany: String
+    id: ID
+    name: String
 }

@@ -62,11 +62,11 @@ public class SerieTests {
             var media = mediaTest;
 
             media.setBanner(null);
-            media.setCoverMedia(null);
+            media.setCover(null);
 
             media = serieController.updateArtworks(media, null, typeReference, tvSeriesApi);
 
-            assertNotNull(media.getCoverMedia());
+            assertNotNull(media.getCover());
             assertNotNull(media.getBanner());
         }
 
@@ -115,7 +115,7 @@ public class SerieTests {
         @Test
         void querySerieById_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("id", mediaTest.getIdMedia())
+                    .variable("id", mediaTest.getId())
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
@@ -126,7 +126,7 @@ public class SerieTests {
         @Test
         void querySerieByName_shouldReturnSomething() {
             var response = tester.documentName("media")
-                    .variable("name", mediaTest.getNameMedia())
+                    .variable("name", mediaTest.getName())
                     .execute()
                     .path("tvserie")
                     .entityList(MediaModel.class);
