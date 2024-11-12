@@ -1,5 +1,6 @@
 package com.espacogeek.geek.utils;
 
+import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -193,7 +194,22 @@ public abstract class Utils {
             return mediaRoot.getModel().getAttribute(field).isAssociation();
         } catch (IllegalArgumentException e) {
             return false;
+        }
+    }
 
+    /**
+     * Checks if a given field exists in a class.
+     *
+     * @param clazz    the class to check
+     * @param fieldName the name of the field to check
+     * @return true if the field exists, false otherwise
+     */
+    public static boolean isValidField(Class<?> clazz, String fieldName) {
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            return field != null;
+        } catch (NoSuchFieldException e) {
+            return false;
         }
     }
 

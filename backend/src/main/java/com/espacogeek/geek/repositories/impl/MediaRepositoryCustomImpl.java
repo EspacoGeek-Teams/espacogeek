@@ -43,18 +43,21 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
 
         List<Selection<?>> select = new ArrayList<>();
         requestedFields.forEach((field, subFields) -> {
-            if (Utils.isJoinableField(mediaRoot, field)) {
-                Join<Object, Object> join = mediaRoot.join(field, JoinType.LEFT);
-                join.alias(field);
-                subFields.forEach(subField -> {
-                    select.add(join.get(subField).alias(subField));
-                });
-            } else {
-                select.add(mediaRoot.get(field).alias(field));
-            }
+            try {
+                if ("alternativeTitles".equals(field)) {
+                    
+                } else if (Utils.isJoinableField(mediaRoot, field)) {
+                    Join<Object, Object> join = mediaRoot.join(field, JoinType.LEFT);
+                    join.alias(field);
+                    subFields.forEach(subField -> {
+                        if (Utils.isValidField(join.getModel().getBindableJavaType(), subField)) select.add(join.get(subField).as(join.getModel().getBindableJavaType()).alias(subField));
+                    });
+                } else if (Utils.isValidField(MediaModel.class, field)) {
+                    select.add(mediaRoot.get(field).alias(field));
+                }
+            } catch (Exception e) {}
         });
-        query.distinct(true);
-        query.multiselect(select);
+        query.multiselect(select).distinct(true);
 
         List<Predicate> predicates = new ArrayList<>();
         if (category != null) {
@@ -79,6 +82,8 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
         }
 
         List<MediaModel> medias = entityManager.createQuery(query).getResultList();
+
+        System.out.println(query);
 
         return medias;
     }
