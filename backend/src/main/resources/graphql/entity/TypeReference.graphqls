@@ -1,0 +1,4 @@
+type TypeReference {
+    id: ID
+    nameReference: String
+} 

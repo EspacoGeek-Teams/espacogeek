@@ -1,0 +1,29 @@
+type Media {
+    id: ID
+    name: String
+    totalEpisodes: Int
+    episodeLength: Int
+    about: String
+    cover: String
+    banner: String
+    mediaCategory: MediaCategory
+    company: [Company]
+    people: [People]
+    genre: [Genre]
+    externalReference: [ExternalReference]
+    alternativeTitles: [AlternativeTitles]
+    season: [Season]
+}
+
+input MediaInput {
+    id: ID
+    name: String
+}
+
+type MediaPage {
+    content: [Media]
+    totalPages: Int
+    totalElements: Int
+    number: Int
+    size: Int
+}

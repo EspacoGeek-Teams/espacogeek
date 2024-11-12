@@ -11,14 +11,14 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 @Configuration
 public class GraphiQlConfiguration {
-    
+
     @Bean
 	@Order(0)
 	public RouterFunction<ServerResponse> graphiQlRouterFunction() {
 		RouterFunctions.Builder builder = RouterFunctions.route();
 		ClassPathResource graphiQlPage = new ClassPathResource("graphiql/index.html"); 
 		GraphiQlHandler graphiQLHandler = new GraphiQlHandler("/api", "", graphiQlPage); 
-		builder = builder.GET("/api/graphiql", graphiQLHandler::handleRequest); 
+		builder = builder.GET("/graphiql", graphiQLHandler::handleRequest); 
 		return builder.build(); 
 	}
 }

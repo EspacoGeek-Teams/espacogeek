@@ -1,0 +1,3 @@
+mutation editEmail ($password: String!, $newEmail: String!) {
+    editEmail (password: $password, newEmail: $newEmail)
+}

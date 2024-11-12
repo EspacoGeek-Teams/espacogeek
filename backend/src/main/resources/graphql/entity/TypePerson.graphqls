@@ -1,0 +1,4 @@
+type TypePerson{
+    id: ID
+    nameTypePerson: String
+}

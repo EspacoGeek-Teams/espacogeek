@@ -4,12 +4,6 @@ type User {
     email: String
 }
 
-input UserInput {
-    id: ID
-    username: String
-    email: String
-}
-
 input NewUser {
     username: String!
     email: String!

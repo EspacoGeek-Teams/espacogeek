@@ -1,0 +1,7 @@
+query findUser ($username: String, $email: String, $id: ID) {
+    findUser (username: $username, email: $email, id: $id) {
+        id
+        username
+        email
+    }
+}

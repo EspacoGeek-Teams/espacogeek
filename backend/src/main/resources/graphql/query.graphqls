@@ -1,3 +1,8 @@
 type Query {
-    findUser(filter: UserInput): User
+    findUser(id: ID, username: String, email: String): [User]
+    tvserie(id: ID, name: String): MediaPage
+    game(id: ID, name: String, page: Int, size: Int): MediaPage
+    vn(id: ID, name: String, page: Int, size: Int): MediaPage
+    media(id: ID): Media
+    login: String
 }
