@@ -200,7 +200,7 @@ public abstract class Utils {
     /**
      * Checks if a given field exists in a class.
      *
-     * @param clazz    the class to check
+     * @param clazz     the class to check
      * @param fieldName the name of the field to check
      * @return true if the field exists, false otherwise
      */

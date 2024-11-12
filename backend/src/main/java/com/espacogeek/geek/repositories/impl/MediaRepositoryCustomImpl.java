@@ -4,22 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Repository;
 
-import com.espacogeek.geek.models.AlternativeTitleModel;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.repositories.MediaRepositoryCustom;
 import com.espacogeek.geek.utils.Utils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Selection;
 
 @Repository
 public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
@@ -31,33 +32,22 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
      *      String, Integer, Map)
      */
     @Override
-    public List<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
+    public Page<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
             String name,
             String alternativeTitle,
             Integer category,
-            Map<String, List<String>> requestedFields) {
+            Map<String, List<String>> requestedFields,
+            @PageableDefault(size = 10, page = 0) Pageable pageable) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<MediaModel> query = cb.createQuery(MediaModel.class);
         Root<MediaModel> mediaRoot = query.from(MediaModel.class);
-        Join<MediaModel, AlternativeTitleModel> altTitlesJoin = mediaRoot.join("alternativeTitles", JoinType.LEFT);
+        mediaRoot.fetch("alternativeTitles");
 
-        List<Selection<?>> select = new ArrayList<>();
         requestedFields.forEach((field, subFields) -> {
-            try {
-                if ("alternativeTitles".equals(field)) {
-                    
-                } else if (Utils.isJoinableField(mediaRoot, field)) {
-                    Join<Object, Object> join = mediaRoot.join(field, JoinType.LEFT);
-                    join.alias(field);
-                    subFields.forEach(subField -> {
-                        if (Utils.isValidField(join.getModel().getBindableJavaType(), subField)) select.add(join.get(subField).as(join.getModel().getBindableJavaType()).alias(subField));
-                    });
-                } else if (Utils.isValidField(MediaModel.class, field)) {
-                    select.add(mediaRoot.get(field).alias(field));
-                }
-            } catch (Exception e) {}
+            if (!"alternativeTitles".equals(field) && Utils.isJoinableField(mediaRoot, field))
+                mediaRoot.fetch(field);
         });
-        query.multiselect(select).distinct(true);
+        query.select(mediaRoot).distinct(true);
 
         List<Predicate> predicates = new ArrayList<>();
         if (category != null) {
@@ -69,7 +59,7 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
             predicates.add(cb.like(mediaRoot.get("nameMedia"), "%" + name + "%"));
         }
         if (alternativeTitle != null) {
-            predicates.add(cb.like(altTitlesJoin.get("nameAlternativeTitle"), "%" + alternativeTitle + "%"));
+            predicates.add(cb.like(mediaRoot.get("alternativeTitles").get("nameAlternativeTitle"), "%" + alternativeTitle + "%"));
         }
 
         if (!namePredicates.isEmpty()) {
@@ -81,10 +71,11 @@ public class MediaRepositoryCustomImpl implements MediaRepositoryCustom {
             query.where(cb.and(predicates.toArray(new Predicate[0])));
         }
 
-        List<MediaModel> medias = entityManager.createQuery(query).getResultList();
+        TypedQuery<MediaModel> typedQuery = entityManager.createQuery(query);
+        typedQuery.setFirstResult((int) pageable.getOffset());
+        typedQuery.setMaxResults(pageable.getPageSize());
+        List<MediaModel> medias = typedQuery.getResultList();
 
-        System.out.println(query);
-
-        return medias;
+        return new PageImpl<>(medias, pageable, 0);
     }
 }

@@ -33,7 +33,7 @@ public interface MediaService {
      * @param requestedFields The fields to include in the response.
      * @return A list of Series (MediaModel) objects that match the provided ID or name.
      */
-    List<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields);
+    Page<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields, Pageable pageable);
 
     /**
      * Finds Game (MediaModel) objects by their ID or name.

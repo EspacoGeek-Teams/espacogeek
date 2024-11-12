@@ -3,6 +3,10 @@ package com.espacogeek.geek.repositories;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+
 import com.espacogeek.geek.models.MediaModel;
 
 public interface MediaRepositoryCustom {
@@ -23,11 +27,12 @@ public interface MediaRepositoryCustom {
      * @param category         The ID of the media category to filter results by.
      * @param requestedFields  A map of fields to return. If not provided, all
      *                         fields will be returned.
-     * @return a list of MediaModel objects that match the search criteria.
+     * @return a Page of MediaModel objects that match the search criteria.
      */
-    public List<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
+    public Page<MediaModel> findMediaByNameOrAlternativeTitleAndMediaCategory(
             String name,
             String alternativeTitle,
             Integer category,
-            Map<String, List<String>> requestedFields);
+            Map<String, List<String>> requestedFields,
+            @PageableDefault(size = 10, page = 0) Pageable pageable);
 }

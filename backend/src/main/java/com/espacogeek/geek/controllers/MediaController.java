@@ -1,8 +1,6 @@
 package com.espacogeek.geek.controllers;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -20,7 +18,6 @@ import com.espacogeek.geek.utils.Utils;
 import com.espacogeek.geek.exception.GenericException;
 
 import graphql.schema.DataFetchingEnvironment;
-import jakarta.transaction.Transactional;
 
 @Controller
 public class MediaController {
@@ -72,15 +69,20 @@ public class MediaController {
      *         name.
      */
     @QueryMapping(name = "tvserie")
-    public List<MediaModel> getSerie(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
-        List<MediaModel> response = new ArrayList<>();
+    public MediaPage getSerie(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
+        MediaPage response = new MediaPage();
         name = name == null ? null : name.trim();
 
         if (name == null & id == null || name == "" & id == null) {
             return response;
         }
 
-        response = this.mediaService.findSerieByIdOrName(id, name, Utils.getRequestedFields(dataFetchingEnvironment));
+        var medias = this.mediaService.findSerieByIdOrName(id, name, Utils.getRequestedFields(dataFetchingEnvironment), Utils.getPageable(dataFetchingEnvironment));
+        response.setTotalPages(medias.getTotalPages());
+        response.setTotalElements(medias.getTotalElements());
+        response.setNumber(medias.getNumber());
+        response.setSize(medias.getSize());
+        response.setContent(medias.getContent());
 
         return response;
     }
@@ -94,7 +96,6 @@ public class MediaController {
      *         name.
      */
     @QueryMapping(name = "game")
-    @Transactional
     public MediaPage getGame(@Argument Integer id, @Argument String name, DataFetchingEnvironment dataFetchingEnvironment) {
         MediaPage response = new MediaPage();
         name = name == null ? null : name.trim();
@@ -103,21 +104,13 @@ public class MediaController {
             return response;
         }
 
-        if (id != null) {
-            var medias = mediaService.findGameByIdOrName(id, null, Utils.getPageable(dataFetchingEnvironment));
-
-            response.setTotalPages(medias.getTotalPages());
-            response.setTotalElements(medias.getTotalElements());
-            response.setNumber(medias.getNumber());
-            response.setSize(medias.getSize());
-            response.setContent(Utils.updateGenericMedia(medias.getContent(), genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
-
-            return response;
-        }
-
         var medias = genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
 
-        response.setContent(Utils.updateGenericMedia(medias, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
+        response.setTotalPages(1);
+        response.setTotalElements(medias.size());
+        response.setNumber(1);
+        response.setSize(medias.size());
+        response.setContent(medias);
 
         return response;
     }
@@ -139,21 +132,14 @@ public class MediaController {
             return response;
         }
 
-        if (id != null) {
-            var medias = mediaService.findGameByIdOrName(id, null, Utils.getPageable(dataFetchingEnvironment));
-
-            response.setTotalPages(medias.getTotalPages());
-            response.setTotalElements(medias.getTotalElements());
-            response.setNumber(medias.getNumber());
-            response.setSize(medias.getSize());
-            response.setContent(Utils.updateGenericMedia(medias.getContent(), genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
-
-            return response;
-        }
-
         var medias = genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
 
-        response.setContent(Utils.updateGenericMedia(medias, genericMediaDataController, typeReferenceService.findById(MediaDataController.IGDB_ID).get(), gamesAndVNsAPI));
+        response.setContent(medias);
+        response.setTotalPages(1);
+        response.setTotalElements(medias.size());
+        response.setNumber(1);
+        response.setSize(medias.size());
+        response.setContent(medias);
 
         return response;
     }

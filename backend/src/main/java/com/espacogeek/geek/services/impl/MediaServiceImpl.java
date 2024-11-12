@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -69,21 +70,19 @@ public class MediaServiceImpl implements MediaService {
     }
 
     /**
-     * @see MediaService#findSerieByIdOrName(Integer, String, Map<String,
-     *      List<String>>)
+     * @see MediaService#findSerieByIdOrName(Integer, String, Map<String, List<String>>, Pageable)
      */
     @SuppressWarnings("unchecked")
     @Override
-    public List<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields) {
+    public Page<MediaModel> findSerieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields, Pageable pageable) {
         var medias = new ArrayList<MediaModel>();
 
         if (id != null) {
             medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(null));
-            return medias;
+            return new PageImpl<>(medias, pageable, medias.size());
         }
 
-        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
-                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getIdMediaCategory(), requestedFields);
+        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getIdMediaCategory(), requestedFields, pageable);
 
         return results;
     }
