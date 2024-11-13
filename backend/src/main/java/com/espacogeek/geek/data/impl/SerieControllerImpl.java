@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.api.MediaApi;
@@ -43,7 +44,7 @@ public class SerieControllerImpl extends GenericMediaDataControllerImpl {
      * <p>
      * Every day at 9:00AM this function is executed.
      */
-    // @Scheduled(cron = "* * 9 * * *")
+    @Scheduled(cron = "* * 9 * * *")
     // @Scheduled(initialDelay = 1)
     @SuppressWarnings("unused")
     private void updateTvSeries() {
