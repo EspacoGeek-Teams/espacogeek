@@ -7,8 +7,6 @@ type Media {
     cover: String
     banner: String
     mediaCategory: MediaCategory
-    company: [Company]
-    people: [People]
     genre: [Genre]
     externalReference: [ExternalReference]
     alternativeTitles: [AlternativeTitles]

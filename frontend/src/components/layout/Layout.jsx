@@ -1,7 +1,5 @@
 import React, { useState, useContext } from "react";
 import SearchBar from "./SearchBar";
-import SignInBar from "./SignInBar";
-import LogInBar from "./LogInBar";
 import { Toolbar } from "primereact/toolbar";
 import { useNavigate } from "react-router-dom";
 import { Button } from "primereact/button";
@@ -15,14 +13,6 @@ export function TopBar() {
     const navigate = useNavigate();
 
     const [SearchComponent, setSearchComponent] = useState(false);
-    const [SignInComponent, setSignInComponent] = useState(false);
-    const [LogInComponent, setLogInComponent] = useState(false);
-
-    const handleSignInClose = () => setSignInComponent(false);
-    const handleSignInShow = () => setSignInComponent(true);
-
-    const handleLogInClose = () => setLogInComponent(false);
-    const handleLogInShow = () => setLogInComponent(true);
 
     const handleSearchClose = () => setSearchComponent(false);
     const handleSearchShow = () => setSearchComponent(true);
@@ -60,36 +50,6 @@ export function TopBar() {
         </div>
     );
 
-    const endContent = (
-        <React.Fragment>
-            {/* <div className="flex align-items-center gap-2">
-                <Avatar
-                    image="https://primefaces.org/cdn/primereact/images/avatar/amyelsner.png"
-                    shape="circle"
-                />
-                <span className="font-bold text-bluegray-50">Amy Elsner</span>
-            </div> */}
-            <div className="flex align-items-center gap-2">
-                <Button
-                    type="button"
-                    label="Login"
-                    icon="pi pi-user"
-                    rounded
-                    outlined
-                    onClick={handleLogInShow}
-                />
-                <Button
-                    type="button"
-                    label="Sign In"
-                    icon="pi pi-sign-in"
-                    rounded
-                    outlined
-                    onClick={handleSignInShow}
-                />
-            </div>
-        </React.Fragment>
-    );
-
     const items = [
         {
             label: "Home",
@@ -104,22 +64,6 @@ export function TopBar() {
             command: () => {
                 handleSearchShow();
             },
-        },
-        {
-            label: "Login",
-            icon: "pi pi-user",
-            command: () => {
-                handleLogInShow();
-            }
-
-        },
-        {
-            label: "Sign In",
-            icon: "pi pi-sign-in",
-            command: () => {
-                handleSignInShow();
-            }
-
         }
     ];
 
@@ -134,7 +78,6 @@ export function TopBar() {
                 <Toolbar
                     start={startContent}
                     center={centerContent}
-                    end={endContent}
                     className="z-40 bg-slate-500 bg-opacity-10 backdrop-blur-sm rounded-full fixed top-2 left-2 right-2"
                 />
             </div>
@@ -154,18 +97,6 @@ export function TopBar() {
             </div>
 
             {SearchComponent && <SearchBar handleClose={handleSearchClose} />}
-            {SignInComponent && (
-                <SignInBar
-                    show={SignInComponent}
-                    handleClose={handleSignInClose}
-                />
-            )}
-            {LogInComponent && (
-                <LogInBar
-                    show={LogInComponent}
-                    handleClose={handleLogInClose}
-                />
-            )}
 
             <div>
                 <ScrollTop className="left-4 md:left-auto md:right-4" />
@@ -189,9 +120,6 @@ export function Footer() {
                             <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">INFORMATION</h2>
                             <ul className="text-gray-500 dark:text-gray-400 font-medium">
                                 <li className="mb-4">
-                                    <a href="/about" className="hover:underline">About us</a>
-                                </li>
-                                <li className="mb-4">
                                     <a href="/api" className="hover:underline">API</a>
                                 </li>
                             </ul>
@@ -201,17 +129,6 @@ export function Footer() {
                             <ul className="text-gray-500 dark:text-gray-400 font-medium">
                                 <li className="mb-4">
                                     <a target="_blank" rel="noreferrer" href="https://github.com/EspacoGeek-Teams/espacogeek" className="hover:underline ">Github</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Legal</h2>
-                            <ul className="text-gray-500 dark:text-gray-400 font-medium">
-                                <li className="mb-4">
-                                    <a href="/privacyPolicy" className="hover:underline">Privacy Policy</a>
-                                </li>
-                                <li>
-                                    <a href="/terms" className="hover:underline">Terms &amp; Conditions</a>
                                 </li>
                             </ul>
                         </div>
