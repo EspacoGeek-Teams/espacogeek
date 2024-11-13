@@ -82,4 +82,7 @@ public interface MediaService {
      * @return return a Optional Media.
      */
     Optional<MediaModel> findByIdEager(Integer id);
+
+    
+    Optional<String> randomArtwork();
 }

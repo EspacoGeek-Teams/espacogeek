@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,5 +163,21 @@ public class MediaServiceImpl implements MediaService {
         }
         return Character.toUpperCase(str.charAt(0)) + str.substring(1);
 
+    }
+
+    /**
+     * @see MediaService#randomArtwork()
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public Optional<String> randomArtwork() {
+        var total = this.mediaRepository.count();
+        Optional<MediaModel> media = Optional.of(new MediaModel());
+        while (media.isPresent() && (media.get().getBanner() == null || "".equals(media.get().getBanner()))) {
+            var random = ThreadLocalRandom.current().nextInt(1, (int) total + 1);
+            media = this.mediaRepository.findById(random);
+        }
+        String artwork = media.get().getBanner();
+        return Optional.ofNullable(artwork);
     }
 }

@@ -1,7 +1,13 @@
 package com.espacogeek.geek.controllers;
 
+import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Arrays;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -14,10 +20,14 @@ import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
 import com.espacogeek.geek.services.TypeReferenceService;
 import com.espacogeek.geek.types.MediaPage;
+import com.espacogeek.geek.types.QuoteArtwork;
 import com.espacogeek.geek.utils.Utils;
 import com.espacogeek.geek.exception.GenericException;
 
 import graphql.schema.DataFetchingEnvironment;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 @Controller
 public class MediaController {
@@ -33,6 +43,43 @@ public class MediaController {
     private TypeReferenceService typeReferenceService;
     @Autowired
     private MediaCategoryService mediaCategoryService;
+
+    @QueryMapping(name = "quote")
+    public QuoteArtwork getQuoteAndRandomArtwork() {
+        var client = new OkHttpClient().newBuilder().build();
+        Request request = null;
+        try {
+            request = new Request.Builder()
+                    .url("https://api.api-ninjas.com/v1/quotes")
+                    .method("GET", null)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("X-Api-Key", "X3PmjrwoiAlppLgbr+rOrQ==gXOo0RI5cRyAOEne")
+                    .build();
+        } catch (Exception e) {
+            throw new GenericException("Quote not found");
+        }
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            throw new GenericException("Quote not found");
+        }
+
+        var parser = new JSONParser();
+        var jsonArray = new JSONArray();
+        try {
+            jsonArray = (JSONArray) parser.parse(response.body().string());
+        } catch (ParseException | IOException e) {
+            throw new GenericException("Quote not found");
+        }
+
+        var jsonObject = (JSONObject) jsonArray.getFirst();
+
+        String artwork = mediaService.randomArtwork().orElseThrow(() -> new GenericException("Artwork not found"));
+
+        return new QuoteArtwork(jsonObject.get("quote").toString(), jsonObject.get("author").toString(), artwork);
+    }
 
     /**
      * Finds a MediaModel object by its ID.
