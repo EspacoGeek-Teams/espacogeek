@@ -43,7 +43,6 @@ import info.movito.themoviedbapi.model.tv.series.TvSeriesDb;
 import info.movito.themoviedbapi.tools.TmdbException;
 import info.movito.themoviedbapi.tools.appendtoresponse.TvSeriesAppendToResponse;
 import jakarta.annotation.PostConstruct;
-import lombok.var;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

@@ -28,7 +28,7 @@ public class MediaCategoryModel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_media_category")
-    private Integer idMediaCategory;
+    private Integer id;
 
     @Column(name = "type_category")
     private String typeCategory;

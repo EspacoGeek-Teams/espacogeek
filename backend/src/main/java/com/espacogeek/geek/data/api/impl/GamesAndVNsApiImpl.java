@@ -128,7 +128,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
     @Override
     @Retryable(maxAttempts = 2, backoff = @Backoff(delay = 2000), retryFor = com.espacogeek.geek.exception.RequestException.class)
     public List<MediaModel> doSearch(String search, MediaCategoryModel mediaCategoryModel) {
-        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks.image_id, game.cover.image_id, game.name").where("game.genres " + (mediaCategoryModel.getIdMediaCategory() == MediaDataController.GAME_ID ? "!=" : "=") + " [" + VN_ID_IGDB + "]").limit(10);
+        var apicalypse = new APICalypse().search(search).fields("game.age_ratings, game.aggregated_rating, game.alternative_names.name, game.artworks.image_id, game.cover.image_id, game.name").where("game.genres " + (mediaCategoryModel.getId() == MediaDataController.GAME_ID ? "!=" : "=") + " [" + VN_ID_IGDB + "]").limit(10);
         List<MediaModel> medias = new ArrayList<>();
 
         try {

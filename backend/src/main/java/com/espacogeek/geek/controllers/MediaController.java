@@ -45,7 +45,7 @@ public class MediaController {
     public MediaModel getMediaById(@Argument Integer id) {
         var media = this.mediaService.findByIdEager(id).orElseThrow(() -> new GenericException("Media not found"));
 
-        switch (media.getMediaCategory().getIdMediaCategory()) {
+        switch (media.getMediaCategory().getId()) {
             case MediaDataController.GAME_ID:
             case MediaDataController.VN_ID:
                 return Utils

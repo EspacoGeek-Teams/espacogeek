@@ -66,7 +66,7 @@ public class MediaServiceImpl implements MediaService {
         }
 
         return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
-                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getIdMediaCategory(), pageable);
+                mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), pageable);
     }
 
     /**
@@ -82,7 +82,7 @@ public class MediaServiceImpl implements MediaService {
             return new PageImpl<>(medias, pageable, medias.size());
         }
 
-        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getIdMediaCategory(), requestedFields, pageable);
+        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.SERIE_ID).get().getId(), requestedFields, pageable);
 
         return results;
     }
@@ -98,7 +98,7 @@ public class MediaServiceImpl implements MediaService {
         }
 
         return this.mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name,
-                mediaCategoryService.findById(MediaDataController.GAME_ID).get().getIdMediaCategory(), pageable);
+                mediaCategoryService.findById(MediaDataController.GAME_ID).get().getId(), pageable);
     }
 
     /**
