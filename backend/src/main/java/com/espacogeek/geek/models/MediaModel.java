@@ -66,7 +66,6 @@ public class MediaModel implements Serializable {
 
     @OneToMany(mappedBy = "media", fetch = FetchType.LAZY)
     @Fetch(FetchMode.SUBSELECT)
-    @NotNull
     private List<ExternalReferenceModel> externalReference;
 
     @ManyToMany(fetch = FetchType.LAZY)

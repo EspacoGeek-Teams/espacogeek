@@ -23,6 +23,7 @@ public interface MediaDataController {
     public static final int SERIE_ID = 1;
     public static final int GAME_ID = 2;
     public static final int VN_ID = 3;
+    public static final int MOVIE_ID = 4;
 
     /**
      * This method update all information from provide <code>MediaModel</code>.

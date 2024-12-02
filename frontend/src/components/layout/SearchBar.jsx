@@ -2,6 +2,8 @@ import React, { useEffect, useState, useContext } from "react";
 import { useQuery } from '@apollo/client';
 import searchTvSerieQuery from '../apollo/schemas/queries/tvserieSearch';
 import searchGameQuery from '../apollo/schemas/queries/gameSearch';
+import searchVNQuery from '../apollo/schemas/queries/vnSearch';
+import searchMovieQuery from '../apollo/schemas/queries/movieSearch';
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { InputIcon } from 'primereact/inputicon';
@@ -19,8 +21,13 @@ function SearchBar({ handleClose }) {
     const { setErrorMessage } = useContext(ErrorContext);
     const [selectedQuery, setSelectedQuery] = useState({ name: 'TVSerie', code: 'tvserie' });
     const navigate = useNavigate();
-    const { loading, error, data } = useQuery(selectedQuery?.code === 'tvserie' ? searchTvSerieQuery : searchGameQuery, { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } });
     const { setGlobalLoading } = useContext(GlobalLoadingContext);
+    const { loading, error, data } = useQuery(
+        selectedQuery?.code === 'tvserie' ? searchTvSerieQuery :
+        selectedQuery?.code === 'game' ? searchGameQuery :
+        selectedQuery?.code === 'vn' ? searchVNQuery : null,
+        { variables: { id: /^\d+$/.test(value) ? parseInt(value) : null, name: value } }
+    );
 
     useEffect(() => {
         setGlobalLoading(loading);
@@ -49,7 +56,7 @@ function SearchBar({ handleClose }) {
 
     const itemTemplate = (media) => {
         return (
-            <div className="select-none hover:bg-slate-300/10 rounded-lg cursor-pointer" key={media.id} onClick={() => handleMediaClick(media.id, media.name.replace(/\s+/g, '-').toLowerCase())}>
+            <div className="select-none hover:bg-slate-300/10 rounded-lg cursor-pointer" key={media.id} onClick={() => handleMediaClick(media.id, encodeURIComponent(media.name.replace(/\s+/g, '-').toLowerCase()))}>
                 <div className="flex flex-row align-items-start p-4 gap-4">
                     <img className="w-9 sm:w-12 shadow-sm block mx-auto rounded-lg" src={media.cover} alt={media.name} />
                     <div className="flex flex-row justify-content-between align-items-start flex-1 gap-4">
@@ -64,8 +71,8 @@ function SearchBar({ handleClose }) {
 
     return (
         <>
-            <div className="fixed top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 flex items-center flex-col gap-6">
-                <div className="flex items-start gap-5 flex-col md:flex-row">
+            <div className="fixed flex flex-col items-center w-full h-full z-50 mt-10">
+                <div className="flex items-start gap-5 flex-col md:flex-row z-50">
                     <Dropdown value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name"  className="w-full md:w-14rem md:hidden" />
                     <ListBox value={selectedQuery} onChange={(e) => setSelectedQuery(e.value)} options={queries} optionLabel="name" className="w-36 hidden md:block" style={{ backgroundColor: 'transparent' }} />
                     <div className="flex flex-col items-center gap-2">
@@ -75,7 +82,7 @@ function SearchBar({ handleClose }) {
                                     placeholder="Search"
                                     value={value}
                                     autoFocus
-                                    className="px-9 p-4 text-xl"
+                                    className="px-12 p-4 text-xl"
                                     onInput={(e) => { setValue(e.target.value); }} />
                                 <InputIcon className={loading ? "pi pi-spin pi-spinner" : "pi pi-search"} />
                             </IconField>
@@ -90,7 +97,7 @@ function SearchBar({ handleClose }) {
                                 <DataView
                                     value={data?.[selectedQuery?.code].content}
                                     itemTemplate={itemTemplate}
-                                    className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent"
+                                    className="flex flex-col gap-6 [&>_.p-dataview-content]:bg-transparent max-w-[24rem]"
                                     emptyMessage=" " />
                             )}
                         </div>

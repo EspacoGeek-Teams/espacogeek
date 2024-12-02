@@ -9,12 +9,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
+import com.espacogeek.geek.data.impl.GenericMediaDataControllerImpl;
 import com.espacogeek.geek.models.MediaModel;
 import com.espacogeek.geek.services.MediaCategoryService;
 import com.espacogeek.geek.services.MediaService;
@@ -25,6 +29,7 @@ import com.espacogeek.geek.utils.Utils;
 import com.espacogeek.geek.exception.GenericException;
 
 import graphql.schema.DataFetchingEnvironment;
+import jakarta.annotation.PostConstruct;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -32,7 +37,7 @@ import okhttp3.Response;
 @Controller
 public class MediaController {
     @Autowired
-    protected MediaService mediaService;
+    private MediaService mediaService;
     @Autowired
     private MediaDataController serieController;
     @Autowired
@@ -53,7 +58,7 @@ public class MediaController {
                     .url("https://api.api-ninjas.com/v1/quotes")
                     .method("GET", null)
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("X-Api-Key", "X3PmjrwoiAlppLgbr+rOrQ==gXOo0RI5cRyAOEne")
+                    .addHeader("X-Api-Key", "")
                     .build();
         } catch (Exception e) {
             throw new GenericException("Quote not found");
@@ -179,7 +184,7 @@ public class MediaController {
             return response;
         }
 
-        var medias = genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.GAME_ID).orElseThrow());
+        var medias = genericMediaDataController.searchMedia(name, gamesAndVNsAPI, typeReferenceService.findById(MediaDataController.IGDB_ID).orElseThrow(), mediaCategoryService.findById(MediaDataController.VN_ID).orElseThrow());
 
         response.setContent(medias);
         response.setTotalPages(1);

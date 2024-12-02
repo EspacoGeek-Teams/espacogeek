@@ -1,5 +1,5 @@
-CREATE DATABASE  IF NOT EXISTS `vitor4744_espacogeekdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `vitor4744_espacogeekdb`;
+CREATE DATABASE IF NOT EXISTS `espacogeekdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `espacogeekdb`;
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
 -- ------------------------------------------------------
@@ -30,7 +30,7 @@ CREATE TABLE `alternative_titles` (
   PRIMARY KEY (`id_alternative_title`),
   KEY `FK83l2mt6jjneoh5sjaplq383h8` (`id_media`),
   CONSTRAINT `FK83l2mt6jjneoh5sjaplq383h8` FOREIGN KEY (`id_media`) REFERENCES `medias` (`id_media`)
-) ENGINE=InnoDB AUTO_INCREMENT=75741 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,7 +79,7 @@ CREATE TABLE `externals_references` (
   KEY `FK8035glbs4hk83dgecytsinse0` (`type_reference`),
   CONSTRAINT `FK8035glbs4hk83dgecytsinse0` FOREIGN KEY (`type_reference`) REFERENCES `type_reference` (`id_type_reference`),
   CONSTRAINT `FK8pknhg4ms458dlxwc29rpnhx9` FOREIGN KEY (`medias_id_media`) REFERENCES `medias` (`id_media`)
-) ENGINE=InnoDB AUTO_INCREMENT=48703 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,7 +93,7 @@ CREATE TABLE `genres` (
   `id_genre` int NOT NULL AUTO_INCREMENT,
   `name_genre` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_genre`)
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,7 +107,7 @@ CREATE TABLE `media_categories` (
   `id_media_category` int NOT NULL AUTO_INCREMENT,
   `type_category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_media_category`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `medias` (
   PRIMARY KEY (`id_media`),
   KEY `fk_medias_media_categories_idx` (`id_category`),
   CONSTRAINT `fk_medias_media_categories` FOREIGN KEY (`id_category`) REFERENCES `media_categories` (`id_media_category`)
-) ENGINE=InnoDB AUTO_INCREMENT=48313 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -221,7 +221,7 @@ CREATE TABLE `seasons` (
   PRIMARY KEY (`id_season`),
   KEY `FK5rqeql12uopcxqf61ni31t1nu` (`medias_id_medias`),
   CONSTRAINT `FK5rqeql12uopcxqf61ni31t1nu` FOREIGN KEY (`medias_id_medias`) REFERENCES `medias` (`id_media`)
-) ENGINE=InnoDB AUTO_INCREMENT=1612 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,7 +235,7 @@ CREATE TABLE `type_reference` (
   `id_type_reference` int NOT NULL AUTO_INCREMENT,
   `name_reference` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_type_reference`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -280,7 +280,7 @@ CREATE TABLE `users` (
   `username` varchar(20) NOT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

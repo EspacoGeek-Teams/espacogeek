@@ -180,4 +180,18 @@ public class MediaServiceImpl implements MediaService {
         String artwork = media.get().getBanner();
         return Optional.ofNullable(artwork);
     }
+
+    @Override
+    public Page<MediaModel> findMovieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields, Pageable pageable) {
+        var medias = new ArrayList<MediaModel>();
+
+        if (id != null) {
+            medias.add((MediaModel) this.mediaRepository.findById(id).orElseGet(null));
+            return new PageImpl<>(medias, pageable, medias.size());
+        }
+
+        var results = mediaRepository.findMediaByNameOrAlternativeTitleAndMediaCategory(name, name, mediaCategoryService.findById(MediaDataController.MOVIE_ID).get().getId(), pageable);
+
+        return results;
+    }
 }

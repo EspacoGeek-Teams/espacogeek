@@ -102,7 +102,7 @@ public class TvSeriesApiImpl implements MediaApi {
                     .addHeader("Content-Type", "application/json")
                     .build();
         } catch (Exception e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
 
         Response response = null;
@@ -145,7 +145,7 @@ public class TvSeriesApiImpl implements MediaApi {
         try {
             rawSerieDetails = api.getDetails(id, "en-US", TvSeriesAppendToResponse.EXTERNAL_IDS, TvSeriesAppendToResponse.ALTERNATIVE_TITLES, TvSeriesAppendToResponse.IMAGES, TvSeriesAppendToResponse.VIDEOS);
         } catch (TmdbException e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
 
         var season = formatSeason(rawSerieDetails.getSeasons());
@@ -195,7 +195,7 @@ public class TvSeriesApiImpl implements MediaApi {
         try {
             rawArtwork = api.getImages(id, "en");
         } catch (TmdbException e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
         var media = new MediaModel();
 
@@ -214,7 +214,7 @@ public class TvSeriesApiImpl implements MediaApi {
         try {
             return api.getKeywords(id).getResults();
         } catch (TmdbException e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
     }
 
@@ -228,7 +228,7 @@ public class TvSeriesApiImpl implements MediaApi {
         try {
             rawAlternativeTitles = api.getAlternativeTitles(id).getResults();
         } catch (TmdbException e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
         return formatAlternativeTitles(rawAlternativeTitles);
     }
@@ -253,7 +253,7 @@ public class TvSeriesApiImpl implements MediaApi {
         try {
             rawExternalReferences = api.getExternalIds(id);
         } catch (TmdbException e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
         return formatExternalReference(rawExternalReferences, id);
     }
@@ -286,7 +286,7 @@ public class TvSeriesApiImpl implements MediaApi {
         try {
             rawSerieDetails = api.getDetails(id, "en-US");
         } catch (TmdbException e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
 
         if (rawSerieDetails == null || rawSerieDetails.getGenres() == null) {
@@ -327,7 +327,7 @@ public class TvSeriesApiImpl implements MediaApi {
         try {
             rawSession = api.getDetails(id, "en-US").getSeasons();
         } catch (TmdbException e) {
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
 
         return formatSeason(rawSession);

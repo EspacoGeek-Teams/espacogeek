@@ -44,6 +44,8 @@ public interface MediaService {
      */
     Page<MediaModel> findGameByIdOrName(Integer id, String name, Pageable pageable);
 
+    Page<MediaModel> findMovieByIdOrName(Integer id, String name, Map<String, List<String>> requestedFields, Pageable pageable);
+
     /**
      * Saves a MediaModel object to the database.
      *
@@ -83,6 +85,6 @@ public interface MediaService {
      */
     Optional<MediaModel> findByIdEager(Integer id);
 
-    
+
     Optional<String> randomArtwork();
 }

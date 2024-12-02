@@ -9,6 +9,10 @@ import java.time.ZoneOffset;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -33,7 +37,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 
 @Component("genericMediaDataController")
-public abstract class GenericMediaDataControllerImpl implements MediaDataController {
+@Qualifier("genericMediaDataController")
+public class GenericMediaDataControllerImpl implements MediaDataController {
 
     @Autowired
     protected MediaService mediaService;
@@ -45,6 +50,10 @@ public abstract class GenericMediaDataControllerImpl implements MediaDataControl
     private ExternalReferenceService externalReferenceService;
     @Autowired
     private SeasonService seasonService;
+
+    public GenericMediaDataControllerImpl getInstance() {
+        return this;
+    }
 
     /**
      * @see MediaDataController#updateAllInformation(MediaModel, MediaModel, TypeReferenceModel, MediaApi)

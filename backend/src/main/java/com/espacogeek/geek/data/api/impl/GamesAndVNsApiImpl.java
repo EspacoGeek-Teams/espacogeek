@@ -120,7 +120,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
 
         } catch (RequestException e) {
             newToken();
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
         return media;
     }
@@ -164,7 +164,7 @@ public class GamesAndVNsApiImpl implements MediaApi {
 
         } catch (RequestException e) {
             newToken();
-            throw new com.espacogeek.geek.exception.RequestException("");
+            throw new com.espacogeek.geek.exception.RequestException();
         }
 
         return medias;

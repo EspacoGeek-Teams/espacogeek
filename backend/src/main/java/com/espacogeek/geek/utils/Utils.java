@@ -10,9 +10,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 import com.espacogeek.geek.data.MediaDataController;
 import com.espacogeek.geek.data.api.MediaApi;
@@ -23,6 +25,7 @@ import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.SelectedField;
 import jakarta.persistence.criteria.Root;
 
+@Component
 public abstract class Utils {
 
     /**
