@@ -58,5 +58,5 @@ frontend/yarn-error.log*
 
 backend/src/main/resources/application.properties
 /imageDB
-/frontend/
 /frontend
+frontend/build.zip
